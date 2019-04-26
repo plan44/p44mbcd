@@ -19,6 +19,7 @@
 		ED25C42717EC59D1005B115F /* socketcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED55760B174CC03A00CCC4DD /* socketcomm.cpp */; };
 		ED25C42917EC59D1005B115F /* jsonobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5576131750B15E00CCC4DD /* jsonobject.cpp */; };
 		ED25C42D17EC8382005B115F /* jsonwebclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED07E26017DA37BF00889CC3 /* jsonwebclient.cpp */; };
+		ED3F75302273012E00E9A249 /* ubus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED3F752E2273012E00E9A249 /* ubus.cpp */; };
 		ED41FABA1918046300E0DCED /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED41FAB81918046300E0DCED /* crc32.cpp */; };
 		ED7D396F17EF5BC100A920FF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* main.cpp */; };
 		ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED8A99A12020D17A0069EBF6 /* civetweb.c */; };
@@ -67,6 +68,8 @@
 		ED369999178D6A2C00376405 /* iopin.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = iopin.hpp; sourceTree = "<group>"; };
 		ED36999C178DA01D00376405 /* i2c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = i2c.cpp; sourceTree = "<group>"; };
 		ED36999D178DA01E00376405 /* i2c.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = i2c.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED3F752E2273012E00E9A249 /* ubus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ubus.cpp; sourceTree = "<group>"; };
+		ED3F752F2273012E00E9A249 /* ubus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ubus.hpp; sourceTree = "<group>"; };
 		ED41FAB81918046300E0DCED /* crc32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc32.cpp; sourceTree = "<group>"; };
 		ED41FAB91918046300E0DCED /* crc32.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = crc32.hpp; sourceTree = "<group>"; };
 		ED5372F61DFCAD3C0066FF5A /* sqlite3pp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3pp.cpp; sourceTree = "<group>"; };
@@ -201,6 +204,8 @@
 				ED5B2934174124D400334C71 /* sqlite3persistence.hpp */,
 				EDB1892F17D4B7330088B6A5 /* ssdpsearch.cpp */,
 				EDB1893017D4B7330088B6A5 /* ssdpsearch.hpp */,
+				ED3F752E2273012E00E9A249 /* ubus.cpp */,
+				ED3F752F2273012E00E9A249 /* ubus.hpp */,
 				ED026CF7171D9CAB00AD5FD6 /* utils.cpp */,
 				ED026CF8171D9CAB00AD5FD6 /* utils.hpp */,
 				ED93DFF21D256BD400D6AF0A /* p44utils_common.hpp */,
@@ -361,6 +366,7 @@
 				EDF1AF261D0D98D000302F77 /* spi.cpp in Sources */,
 				EDDEE88917FC6BEE00A65599 /* digitalio.cpp in Sources */,
 				ED25C42417EC59D1005B115F /* application.cpp in Sources */,
+				ED3F75302273012E00E9A249 /* ubus.cpp in Sources */,
 				ED25C42217EC59D1005B115F /* error.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,6 +385,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"NO_SSL_DL=1",
+					"ENABLE_UBUS=1",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -387,6 +394,7 @@
 					"$(inherited)",
 					"/usr/local/include/json-c",
 					/usr/local/Cellar/openssl/1.0.2q/include,
+					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -408,6 +416,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"NO_SSL_DL=1",
+					"ENABLE_UBUS=1",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -416,6 +425,7 @@
 					"$(inherited)",
 					"/usr/local/include/json-c",
 					/usr/local/Cellar/openssl/1.0.2q/include,
+					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

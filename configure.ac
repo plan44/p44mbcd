@@ -25,10 +25,22 @@ AC_ARG_ENABLE(
 )
 AM_CONDITIONAL([P44_BUILD_OW], [test "x$enable_p44buildow" = xyes])
 
+AC_ARG_ENABLE(
+  [ubus],
+  [AS_HELP_STRING([--enable-ubus], [Enable ubus API support (requires libubus)])]
+)
+AM_CONDITIONAL([ENABLE_UBUS], [test "x$enable_ubus" = xyes])
+
 
 AC_CHECK_LIB(m, atan2, [], [AC_MSG_ERROR([Could not find math lib (m) with atan2])])
 AC_CHECK_LIB(rt, clock_gettime, [], [AC_MSG_ERROR([Could not find rt lib with clock_gettime])])
 AC_CHECK_LIB(dl, dlopen, [], [AC_MSG_ERROR([Could not find libdl with dlopen])])
+
+AM_COND_IF([ENABLE_UBUS], [
+  AC_CHECK_LIB(ubus, ubus_connect_ctx, [], [AC_MSG_ERROR([Could not find libubus with ubus_connect_ctx])])
+  AC_CHECK_LIB(ubox, uloop_init, [], [AC_MSG_ERROR([Could not find libubox with uloop_init])])
+  AC_CHECK_LIB(blobmsg_json, blobmsg_add_object, [], [AC_MSG_ERROR([Could not find libblobmsg_json with blobmsg_add_object])])
+], [])
 
 AC_CHECK_LIB(json-c, json_tokener_get_error, [], [AC_MSG_ERROR([Could not find JSON-C / libjson0 with json_tokener_get_error supported (>=0.10)])])
 AC_CHECK_LIB(ssl, TLSv1_client_method, [], [AC_MSG_ERROR([Could not find libssl with TLSv1_client_method])])

@@ -14,6 +14,21 @@ p44mbcd_PLATFORM = -D P44_BUILD_OW=1
 endif
 
 
+# ubus support via libubus
+if ENABLE_UBUS
+
+UBUS_SOURCES = \
+  src/p44utils/ubus.cpp \
+  src/p44utils/ubus.hpp
+UBUS_FLAGS = -D ENABLE_UBUS=1
+
+else
+
+UBUS_FLAGS = -D ENABLE_UBUS=0
+
+endif
+
+
 p44mbcd_LDADD = ${JSONC_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
 p44mbcd_EXTRACFLAGS = -D NO_SSL_DL=1
 
@@ -34,13 +49,7 @@ p44mbcd_CPPFLAGS = \
 
 
 p44mbcd_SOURCES = \
-  src/p44utils/thirdparty/civetweb/civetweb.c \
-  src/p44utils/thirdparty/civetweb/civetweb.h \
-  src/p44utils/thirdparty/civetweb/handle_form.inl \
-  src/p44utils/thirdparty/civetweb/md5.inl \
-  src/p44utils/thirdparty/civetweb/sha1.inl \
-  src/p44utils/thirdparty/civetweb/hostcheck.inl \
-  src/p44utils/thirdparty/civetweb/openssl_hostname_validation.inl \
+  ${UBUS_SOURCES} \
   src/p44utils/application.cpp \
   src/p44utils/application.hpp \
   src/p44utils/consolekey.cpp \
@@ -78,5 +87,12 @@ p44mbcd_SOURCES = \
   src/p44utils/socketcomm.hpp \
   src/p44utils/utils.cpp \
   src/p44utils/utils.hpp \
+  src/p44utils/thirdparty/civetweb/civetweb.c \
+  src/p44utils/thirdparty/civetweb/civetweb.h \
+  src/p44utils/thirdparty/civetweb/handle_form.inl \
+  src/p44utils/thirdparty/civetweb/md5.inl \
+  src/p44utils/thirdparty/civetweb/sha1.inl \
+  src/p44utils/thirdparty/civetweb/hostcheck.inl \
+  src/p44utils/thirdparty/civetweb/openssl_hostname_validation.inl \
   src/p44utils/p44utils_common.hpp \
   src/main.cpp
