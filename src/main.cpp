@@ -35,6 +35,10 @@ public:
     const char *usageText =
     "Usage: %1$s [options]\n";
     const CmdLineOptionDescriptor options[] = {
+      { 0  , "rs485connection", true,  "serial_if;RS485 serial interface where display is connected (/device or IP:port)" },
+      { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable or DTR or RTS" },
+      { 0  , "rs485txoffdelay", true,  "delay;time to keep tx enabled after sending [ms], defaults to 0" },
+      { 0  , "rs485rxenable",   true,  "pinspec;a digital output pin specification for RX driver enable" },
       { 0  , "ubusapi",         false, "enable ubus api" },
       { 'l', "loglevel",        true,  "level;set max level of log message detail to show on stderr" },
       { 0  , "deltatstamps",    false, "show timestamp delta between log lines" },
