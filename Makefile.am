@@ -55,6 +55,14 @@ p44mbcd_SOURCES = \
   src/p44utils/consolekey.hpp \
   src/p44utils/digitalio.cpp \
   src/p44utils/digitalio.hpp \
+  src/p44utils/i2c.cpp \
+  src/p44utils/i2c.hpp \
+  src/p44utils/spi.cpp \
+  src/p44utils/spi.hpp \
+  src/p44utils/pwm.cpp \
+  src/p44utils/pwm.hpp \
+  src/p44utils/analogio.cpp \
+  src/p44utils/analogio.hpp \
   src/p44utils/error.cpp \
   src/p44utils/error.hpp \
   src/p44utils/fnv.cpp \
