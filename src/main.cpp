@@ -117,7 +117,7 @@ public:
     if (aMethod=="log") {
       if (aJsonRequest) {
         JsonObjectPtr o;
-        if (aJsonRequest->get("loglevel", o)) {
+        if (aJsonRequest->get("level", o)) {
           int oldLevel = LOGLEVEL;
           int newLevel = o->int32Value();
           SETLOGLEVEL(newLevel);
