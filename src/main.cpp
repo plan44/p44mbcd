@@ -84,7 +84,7 @@ public:
     int loglevel = DEFAULT_LOGLEVEL;
     getIntOption("loglevel", loglevel);
     SETLOGLEVEL(loglevel);
-    SETERRLEVEL(loglevel, false); // all diagnostics go to stderr
+    SETERRLEVEL(LOG_ERR, true); // errors and more serious go to stderr, all log goes to stdout
     SETDELTATIME(getOption("deltatstamps"));
 
     #if ENABLE_UBUS
