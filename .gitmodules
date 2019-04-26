@@ -2,3 +2,11 @@
 	path = src/p44utils
 	url = ../p44utils.git
 	branch = luz
+[submodule "p44mbcd/src/lvgl"]
+	path = src/lvgl
+	url = ../lvgl.git
+	branch = luz
+[submodule "p44mbcd/src/lv_drivers"]
+	path = src/lv_drivers
+	url = ../lv_drivers.git
+	branch = luz
