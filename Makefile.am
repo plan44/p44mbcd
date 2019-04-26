@@ -37,11 +37,10 @@ p44mbcd_CPPFLAGS = \
   -I ${srcdir}/src/p44utils \
   -I ${srcdir}/src \
   -I ${srcdir}/src/p44utils/thirdparty/civetweb \
-  -D DISABLE_I2C=1 \
-  -D DISABLE_SPI=1 \
   ${BOOST_CPPFLAGS} \
   ${JSONC_CFLAGS} \
   ${PTHREAD_CFLAGS} \
+  ${UBUS_FLAGS} \
   ${p44mbcd_EXTRACFLAGS} \
   ${p44mbcd_PLATFORM} \
   ${p44mbcd_DEBUG}
