@@ -18,6 +18,12 @@
 
 #include <stdio.h>
 
+#include "lvgl/lvgl.h"
+#include "lv_drivers/display/fbdev.h"
+
+#include "lv_examples/lv_apps/demo/demo.h"
+
+
 #define DEFAULT_LOGLEVEL LOG_NOTICE
 
 using namespace p44;
@@ -45,9 +51,15 @@ class P44mbcd : public CmdLineApp
   UbusServerPtr ubusApiServer; ///< ubus API for openwrt web interface
   #endif
 
+  // littlevGL
+  lv_disp_drv_t disp_drv; ///< the display driver
+  MLTicket lvglTicket; ///< the display tasks timer
+  MLMicroSeconds lastLvglTick; ///< last tick
+
 public:
 
-  P44mbcd()
+  P44mbcd() :
+    lastLvglTick(Never)
   {
   }
 
@@ -151,7 +163,42 @@ public:
       ubusApiServer->startServer();
     }
     #endif
+
+    // start littlevGL
+    initLvgl();
   }
+
+
+  void initLvgl()
+  {
+    // - init library
+    lv_init();
+    // - init frame buffer driver
+    fbdev_init();
+    // - add display
+    lv_disp_drv_init(&disp_drv);
+    disp_drv.disp_flush = fbdev_flush;      /*It flushes the internal graphical buffer to the frame buffer*/
+    lv_disp_drv_register(&disp_drv);
+    // - create demo
+    demo_create();
+    // - schedule updates
+    lvglTicket.executeOnce(boost::bind(&P44mbcd::lvglTask, this, _1, _2));
+  }
+
+
+  #define LVGL_TICK_PERIOD (5*MilliSecond)
+
+  void lvglTask(MLTimer &aTimer, MLMicroSeconds aNow)
+  {
+    if (lastLvglTick==Never) lastLvglTick=aNow;
+    uint32_t ms = (uint32_t)((aNow-lastLvglTick)/1000);
+    lv_tick_inc(5);
+    lv_task_handler();
+    lastLvglTick = aNow;
+    MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
+  }
+
+
 
 };
 
