@@ -925,10 +925,10 @@
 		ED6D7BE71716B6B1005DED18 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				ED6D7BEA1716B6B1005DED18 /* main.cpp */,
 				ED9D3C662276F294009B43A8 /* lv_conf.h */,
 				ED9D3C672276F2F9009B43A8 /* lv_drv_conf.h */,
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
+				ED6D7BEA1716B6B1005DED18 /* main.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -936,27 +936,27 @@
 		ED9D39A22276F0A4009B43A8 /* lvgl */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D39A32276F0A4009B43A8 /* lv_core */,
-				ED9D39B32276F0A4009B43A8 /* lv_misc */,
-				ED9D39D42276F0A4009B43A8 /* lv_conf_templ.h */,
-				ED9D39D52276F0A4009B43A8 /* lv_porting */,
-				ED9D39DC2276F0A4009B43A8 /* docs */,
-				ED9D39E12276F0A4009B43A8 /* lv_conf_checker.h */,
-				ED9D39E22276F0A4009B43A8 /* lv_themes */,
-				ED9D39F62276F0A4009B43A8 /* LICENCE.txt */,
-				ED9D39F72276F0A4009B43A8 /* .gitmodules */,
-				ED9D39F82276F0A4009B43A8 /* lv_conf_checker.py */,
 				ED9D39F92276F0A4009B43A8 /* .editorconfig */,
-				ED9D39FA2276F0A4009B43A8 /* README.md */,
-				ED9D39FB2276F0A4009B43A8 /* .gitignore */,
-				ED9D39FC2276F0A4009B43A8 /* lv_fonts */,
 				ED9D3A112276F0A4009B43A8 /* .github */,
-				ED9D3A132276F0A4009B43A8 /* lvgl.mk */,
-				ED9D3A142276F0A4009B43A8 /* lv_hal */,
+				ED9D39FB2276F0A4009B43A8 /* .gitignore */,
+				ED9D39F72276F0A4009B43A8 /* .gitmodules */,
+				ED9D39DC2276F0A4009B43A8 /* docs */,
+				ED9D39F62276F0A4009B43A8 /* LICENCE.txt */,
+				ED9D39E12276F0A4009B43A8 /* lv_conf_checker.h */,
+				ED9D39F82276F0A4009B43A8 /* lv_conf_checker.py */,
+				ED9D39D42276F0A4009B43A8 /* lv_conf_templ.h */,
+				ED9D39A32276F0A4009B43A8 /* lv_core */,
 				ED9D3A1D2276F0A4009B43A8 /* lv_draw */,
+				ED9D39FC2276F0A4009B43A8 /* lv_fonts */,
+				ED9D3A142276F0A4009B43A8 /* lv_hal */,
+				ED9D39B32276F0A4009B43A8 /* lv_misc */,
+				ED9D3A332276F0A4009B43A8 /* lv_objx */,
+				ED9D39D52276F0A4009B43A8 /* lv_porting */,
+				ED9D39E22276F0A4009B43A8 /* lv_themes */,
 				ED9D3A312276F0A4009B43A8 /* lv_version.h */,
 				ED9D3A322276F0A4009B43A8 /* lvgl.h */,
-				ED9D3A332276F0A4009B43A8 /* lv_objx */,
+				ED9D3A132276F0A4009B43A8 /* lvgl.mk */,
+				ED9D39FA2276F0A4009B43A8 /* README.md */,
 			);
 			name = lvgl;
 			path = src/lvgl;
@@ -965,21 +965,21 @@
 		ED9D39A32276F0A4009B43A8 /* lv_core */ = {
 			isa = PBXGroup;
 			children = (
+				ED9D39AB2276F0A4009B43A8 /* lv_core.mk */,
+				ED9D39AF2276F0A4009B43A8 /* lv_group.c */,
 				ED9D39A42276F0A4009B43A8 /* lv_group.h */,
 				ED9D39A52276F0A4009B43A8 /* lv_indev.c */,
-				ED9D39A62276F0A4009B43A8 /* lv_obj.h */,
-				ED9D39A72276F0A4009B43A8 /* lv_lang.h */,
-				ED9D39A82276F0A4009B43A8 /* lv_refr.c */,
-				ED9D39A92276F0A4009B43A8 /* lv_vdb.c */,
-				ED9D39AA2276F0A4009B43A8 /* lv_style.c */,
-				ED9D39AB2276F0A4009B43A8 /* lv_core.mk */,
-				ED9D39AC2276F0A4009B43A8 /* lv_lang.c */,
-				ED9D39AD2276F0A4009B43A8 /* lv_obj.c */,
 				ED9D39AE2276F0A4009B43A8 /* lv_indev.h */,
-				ED9D39AF2276F0A4009B43A8 /* lv_group.c */,
-				ED9D39B02276F0A4009B43A8 /* lv_style.h */,
-				ED9D39B12276F0A4009B43A8 /* lv_vdb.h */,
+				ED9D39AC2276F0A4009B43A8 /* lv_lang.c */,
+				ED9D39A72276F0A4009B43A8 /* lv_lang.h */,
+				ED9D39AD2276F0A4009B43A8 /* lv_obj.c */,
+				ED9D39A62276F0A4009B43A8 /* lv_obj.h */,
+				ED9D39A82276F0A4009B43A8 /* lv_refr.c */,
 				ED9D39B22276F0A4009B43A8 /* lv_refr.h */,
+				ED9D39AA2276F0A4009B43A8 /* lv_style.c */,
+				ED9D39B02276F0A4009B43A8 /* lv_style.h */,
+				ED9D39A92276F0A4009B43A8 /* lv_vdb.c */,
+				ED9D39B12276F0A4009B43A8 /* lv_vdb.h */,
 			);
 			path = lv_core;
 			sourceTree = "<group>";

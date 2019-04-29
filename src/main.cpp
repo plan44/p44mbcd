@@ -19,7 +19,9 @@
 #include <stdio.h>
 
 #include "lvgl/lvgl.h"
+
 #include "lv_drivers/display/fbdev.h"
+#include "lv_drivers/indev/evdev.h"
 
 #include "lv_examples/lv_apps/demo/demo.h"
 
@@ -52,13 +54,18 @@ class P44mbcd : public CmdLineApp
   #endif
 
   // littlevGL
-  lv_disp_drv_t disp_drv; ///< the display driver
+  lv_disp_t *dispdev; ///< the display device
+  lv_indev_t *pointer_indev; ///< the input device for pointer (touch, mouse)
+  lv_indev_t *keyboard_indev; ///< the input device for keyboard
   MLTicket lvglTicket; ///< the display tasks timer
   MLMicroSeconds lastLvglTick; ///< last tick
 
 public:
 
   P44mbcd() :
+    dispdev(NULL),
+    pointer_indev(NULL),
+    keyboard_indev(NULL),
     lastLvglTick(Never)
   {
   }
@@ -169,6 +176,8 @@ public:
   }
 
 
+  #define SHOW_MOUSE_CURSOR 1
+
   void initLvgl()
   {
     // - init library
@@ -176,9 +185,30 @@ public:
     // - init frame buffer driver
     fbdev_init();
     // - add display
+    lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.disp_flush = fbdev_flush;      /*It flushes the internal graphical buffer to the frame buffer*/
-    lv_disp_drv_register(&disp_drv);
+    dispdev = lv_disp_drv_register(&disp_drv);
+    // - init evdev driver
+    evdev_init();
+    // - add pointer (touch, mouse)
+    lv_indev_drv_t pointer_indev_drv;
+    lv_indev_drv_init(&pointer_indev_drv);
+    pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
+    pointer_indev_drv.read = evdev_read;
+    pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
+    #if SHOW_MOUSE_CURSOR
+    lv_obj_t *cursor;
+    cursor = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_size(cursor, 24, 24);
+    static lv_style_t style_round;
+    lv_style_copy(&style_round, &lv_style_plain);
+    style_round.body.radius = LV_RADIUS_CIRCLE;
+    style_round.body.main_color = LV_COLOR_RED;
+    style_round.body.opa = LV_OPA_COVER;
+    lv_obj_set_style(cursor, &style_round);
+    lv_indev_set_cursor(pointer_indev, cursor);
+    #endif
     // - create demo
     demo_create();
     // - schedule updates
@@ -192,7 +222,7 @@ public:
   {
     if (lastLvglTick==Never) lastLvglTick=aNow;
     uint32_t ms = (uint32_t)((aNow-lastLvglTick)/1000);
-    lv_tick_inc(5);
+    lv_tick_inc(ms);
     lv_task_handler();
     lastLvglTick = aNow;
     MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
