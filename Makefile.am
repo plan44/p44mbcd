@@ -28,6 +28,133 @@ UBUS_FLAGS = -D ENABLE_UBUS=0
 
 endif
 
+# littlevGL
+LVGL_SOURCES = \
+  src/lv_conf.h \
+  src/lv_drv_conf.h \
+  src/lvgl/lv_core/lv_group.c \
+  src/lvgl/lv_core/lv_indev.c \
+  src/lvgl/lv_core/lv_obj.c \
+  src/lvgl/lv_core/lv_refr.c \
+  src/lvgl/lv_core/lv_style.c \
+  src/lvgl/lv_core/lv_vdb.c \
+  src/lvgl/lv_core/lv_lang.c \
+  src/lvgl/lv_misc/lv_font.c \
+  src/lvgl/lv_misc/lv_circ.c \
+  src/lvgl/lv_misc/lv_area.c \
+  src/lvgl/lv_misc/lv_task.c \
+  src/lvgl/lv_misc/lv_fs.c \
+  src/lvgl/lv_misc/lv_anim.c \
+  src/lvgl/lv_misc/lv_mem.c \
+  src/lvgl/lv_misc/lv_ll.c \
+  src/lvgl/lv_misc/lv_color.c \
+  src/lvgl/lv_misc/lv_txt.c \
+  src/lvgl/lv_misc/lv_ufs.c \
+  src/lvgl/lv_misc/lv_math.c \
+  src/lvgl/lv_misc/lv_log.c \
+  src/lvgl/lv_misc/lv_gc.c \
+  src/lvgl/lv_themes/lv_theme_alien.c \
+  src/lvgl/lv_themes/lv_theme.c \
+  src/lvgl/lv_themes/lv_theme_default.c \
+  src/lvgl/lv_themes/lv_theme_night.c \
+  src/lvgl/lv_themes/lv_theme_templ.c \
+  src/lvgl/lv_themes/lv_theme_zen.c \
+  src/lvgl/lv_themes/lv_theme_material.c \
+  src/lvgl/lv_themes/lv_theme_nemo.c \
+  src/lvgl/lv_themes/lv_theme_mono.c \
+  src/lvgl/lv_fonts/lv_font_builtin.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_10.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_20.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_30.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_40.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_10_cyrillic.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_20_cyrillic.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_30_cyrillic.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_40_cyrillic.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_10_latin_sup.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_20_latin_sup.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_30_latin_sup.c \
+  src/lvgl/lv_fonts/lv_font_dejavu_40_latin_sup.c \
+  src/lvgl/lv_fonts/lv_font_symbol_10.c \
+  src/lvgl/lv_fonts/lv_font_symbol_20.c \
+  src/lvgl/lv_fonts/lv_font_symbol_30.c \
+  src/lvgl/lv_fonts/lv_font_symbol_40.c \
+  src/lvgl/lv_fonts/lv_font_monospace_8.c \
+  src/lvgl/lv_hal/lv_hal_disp.c \
+  src/lvgl/lv_hal/lv_hal_indev.c \
+  src/lvgl/lv_hal/lv_hal_tick.c \
+  src/lvgl/lv_draw/lv_draw_vbasic.c \
+  src/lvgl/lv_draw/lv_draw_rbasic.c \
+  src/lvgl/lv_draw/lv_draw.c \
+  src/lvgl/lv_draw/lv_draw_rect.c \
+  src/lvgl/lv_draw/lv_draw_label.c \
+  src/lvgl/lv_draw/lv_draw_line.c \
+  src/lvgl/lv_draw/lv_draw_img.c \
+  src/lvgl/lv_draw/lv_draw_arc.c \
+  src/lvgl/lv_draw/lv_draw_triangle.c \
+  src/lvgl/lv_objx/lv_arc.c \
+  src/lvgl/lv_objx/lv_bar.c \
+  src/lvgl/lv_objx/lv_cb.c \
+  src/lvgl/lv_objx/lv_ddlist.c \
+  src/lvgl/lv_objx/lv_kb.c \
+  src/lvgl/lv_objx/lv_line.c \
+  src/lvgl/lv_objx/lv_mbox.c \
+  src/lvgl/lv_objx/lv_preload.c \
+  src/lvgl/lv_objx/lv_roller.c \
+  src/lvgl/lv_objx/lv_table.c \
+  src/lvgl/lv_objx/lv_tabview.c \
+  src/lvgl/lv_objx/lv_tileview.c \
+  src/lvgl/lv_objx/lv_btn.c \
+  src/lvgl/lv_objx/lv_calendar.c \
+  src/lvgl/lv_objx/lv_chart.c \
+  src/lvgl/lv_objx/lv_canvas.c \
+  src/lvgl/lv_objx/lv_gauge.c \
+  src/lvgl/lv_objx/lv_label.c \
+  src/lvgl/lv_objx/lv_list.c \
+  src/lvgl/lv_objx/lv_slider.c \
+  src/lvgl/lv_objx/lv_ta.c \
+  src/lvgl/lv_objx/lv_spinbox.c \
+  src/lvgl/lv_objx/lv_btnm.c \
+  src/lvgl/lv_objx/lv_cont.c \
+  src/lvgl/lv_objx/lv_img.c \
+  src/lvgl/lv_objx/lv_imgbtn.c \
+  src/lvgl/lv_objx/lv_led.c \
+  src/lvgl/lv_objx/lv_lmeter.c \
+  src/lvgl/lv_objx/lv_page.c \
+  src/lvgl/lv_objx/lv_sw.c \
+  src/lvgl/lv_objx/lv_win.c \
+  src/lv_drivers/indev/FT5406EE8.c \
+  src/lv_drivers/indev/keyboard.c \
+  src/lv_drivers/indev/mouse.c \
+  src/lv_drivers/indev/mousewheel.c \
+  src/lv_drivers/indev/evdev.c \
+  src/lv_drivers/indev/XPT2046.c \
+  src/lv_drivers/display/fbdev.c \
+  src/lv_drivers/display/monitor.c \
+  src/lv_drivers/display/R61581.c \
+  src/lv_drivers/display/SSD1963.c \
+  src/lv_drivers/display/ST7565.c \
+  src/lv_examples/lv_apps/demo/demo.c \
+  src/lv_examples/lv_apps/demo/img_bubble_pattern.c
+
+
+
+LVGL_FLAGS = \
+  -I ${srcdir}/src/lvgl/lv_core \
+  -I ${srcdir}/src/lvgl/lv_misc \
+  -I ${srcdir}/src/lvgl/lv_themes \
+  -I ${srcdir}/src/lvgl/lv_fonts \
+  -I ${srcdir}/src/lvgl/lv_hal \
+  -I ${srcdir}/src/lvgl/lv_draw \
+  -I ${srcdir}/src/lvgl/lv_objx \
+  -I ${srcdir}/src/lv_drivers \
+  -I ${srcdir}/src/lv_drivers/indev \
+  -I ${srcdir}/src/lv_drivers/display \
+  -I ${srcdir}/src/lv_examples/lv_apps/demo
+
+
+
+# main
 
 p44mbcd_LDADD = ${JSONC_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
 p44mbcd_EXTRACFLAGS = -D NO_SSL_DL=1
@@ -41,6 +168,7 @@ p44mbcd_CPPFLAGS = \
   ${JSONC_CFLAGS} \
   ${PTHREAD_CFLAGS} \
   ${UBUS_FLAGS} \
+  ${LVGL_FLAGS} \
   ${p44mbcd_EXTRACFLAGS} \
   ${p44mbcd_PLATFORM} \
   ${p44mbcd_DEBUG}
@@ -49,6 +177,7 @@ p44mbcd_CPPFLAGS = \
 
 p44mbcd_SOURCES = \
   ${UBUS_SOURCES} \
+  ${LVGL_SOURCES} \
   src/p44utils/application.cpp \
   src/p44utils/application.hpp \
   src/p44utils/consolekey.cpp \
