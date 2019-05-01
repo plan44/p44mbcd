@@ -220,6 +220,8 @@ p44mbcd_SOURCES = \
   src/p44utils/mainloop.hpp \
   src/p44utils/p44obj.cpp \
   src/p44utils/p44obj.hpp \
+  src/p44utils/serialcomm.cpp \
+  src/p44utils/serialcomm.hpp \
   src/p44utils/socketcomm.cpp \
   src/p44utils/socketcomm.hpp \
   src/p44utils/utils.cpp \

@@ -184,7 +184,7 @@ public:
             int numReg = 1;
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
             if (aJsonRequest->get("count", o)) numReg = o->int32Value();
-            if (numReg<0 || reg<0 || reg+numReg>=MAX_REG) {
+            if (reg<0 || numReg>=MAX_REG) {
               err = TextError::err("invalid reg=%d and count=%d combination", reg, numReg);
             }
             else {
@@ -241,7 +241,8 @@ public:
       ubusApiServer->startServer();
     }
     #endif
-
+    // init modbus
+    initModbus();
     // start littlevGL
     initLvgl();
   }
