@@ -61,10 +61,17 @@ public:
 };
 
 
+extern "C" {
+  void setRts(modbus_t *ctx, int on);
+}
+
 
 class P44mbcd : public CmdLineApp
 {
   typedef CmdLineApp inherited;
+
+  friend void setRts(modbus_t *ctx, int on);
+
 
   #if ENABLE_UBUS
   UbusServerPtr ubusApiServer; ///< ubus API for openwrt web interface
@@ -151,6 +158,7 @@ public:
     UbusObjectPtr u = new UbusObject("p44mbcd", boost::bind(&P44mbcd::ubusApiRequestHandler, this, _1, _2, _3));
     u->addMethod("log", logapi_policy);
     u->addMethod("api", p44mbcapi_policy);
+    u->addMethod("quit");
     ubusApiServer->registerObject(u);
   }
 
@@ -171,6 +179,11 @@ public:
       }
       aUbusRequest->sendResponse(JsonObjectPtr());
     }
+    else if (aMethod=="quit") {
+      LOG(LOG_WARNING, "terminated via UBUS quit method");
+      terminateApp(1);
+      aUbusRequest->sendResponse(JsonObjectPtr());
+    }
     else if (aMethod=="api") {
       ErrorPtr err;
       JsonObjectPtr result;
@@ -179,33 +192,44 @@ public:
         if (aJsonRequest->get("modbus", o) && modbus) {
           // modbus commands
           string cmd = o->stringValue();
-          if (cmd=="read_registers") {
-            int reg = 0;
+          if (cmd=="debug_on") {
+            modbus_set_debug(modbus, 1);
+          }
+          else if (cmd=="debug_off") {
+            modbus_set_debug(modbus, 0);
+          }
+          else if (cmd=="read_registers") {
+            int reg = -1;
             int numReg = 1;
+            int slave = -1;
+            if (aJsonRequest->get("slave", o)) slave = o->int32Value();
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
             if (aJsonRequest->get("count", o)) numReg = o->int32Value();
-            if (reg<0 || numReg>=MAX_REG) {
-              err = TextError::err("invalid reg=%d and count=%d combination", reg, numReg);
+            if (reg<0 || numReg<1 || numReg>=MAX_REG || slave<0) {
+              err = TextError::err("invalid reg=%d, count=%d, slave=%d combination", reg, numReg, slave);
             }
             else {
-              int ret = modbus_connect(modbus);
-              if (ret<0) {
-                err = ModBusError::err<ModBusError>(ret);
+              if (modbus_set_slave(modbus, slave)<0) {
+                err = ModBusError::err<ModBusError>(errno);
               }
               else {
-                uint16_t tab_reg[MAX_REG];
-                ret = modbus_read_registers(modbus, reg, numReg, tab_reg);
-                if (ret<0) {
-                  err = ModBusError::err<ModBusError>(ret);
+                if (modbus_connect(modbus)<0) {
+                  err = ModBusError::err<ModBusError>(errno);
                 }
                 else {
-                  result = JsonObject::newArray();
-                  for (int i=0; i<numReg; i++) {
-                    result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
+                  uint16_t tab_reg[MAX_REG];
+                  if (modbus_read_registers(modbus, reg, numReg, tab_reg)<0) {
+                    err = ModBusError::err<ModBusError>(errno);
                   }
+                  else {
+                    result = JsonObject::newArray();
+                    for (int i=0; i<numReg; i++) {
+                      result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
+                    }
+                  }
+                  // anyway, close
+                  modbus_close(modbus);
                 }
-                // anyway, close
-                modbus_close(modbus);
               }
             }
           }
@@ -250,14 +274,6 @@ public:
 
   // MARK: ===== modbus
 
-  static void setRts(modbus_t *ctx, int on)
-  {
-    P44mbcd* app = dynamic_cast<P44mbcd*>(Application::sharedApplication());
-    if (app) {
-      if (app->modbusRTSEnable) app->modbusRTSEnable->set(on);
-    }
-  }
-
 
   void initModbus()
   {
@@ -297,7 +313,7 @@ public:
       hardwareHandshake,
       connectionPort
     );
-    int ret = 0;
+    int mberr = 0;
     if (rtu) {
       if (baudRate==0 || connectionPath.empty()) {
         terminateAppWith(TextError::err("invalid RTU connection params"));
@@ -310,21 +326,27 @@ public:
         charSize,
         twoStopBits ? 2 : 1
       );
-      if (modbus==0) ret = errno;
-      if (ret==0) {
+      if (modbus==0) mberr = errno;
+      if (mberr==0) {
         if (rs232) {
-          ret = modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS232);
+          if (modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS232)<0) mberr = errno;
         }
         else {
-          ret = modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS485);
-          if (ret==0 && modbusRTSEnable) {
-            ret = modbus_rtu_set_custom_rts(modbus, setRts);
+          // set custom RTS if needed (FIRST, otherwise modbus_rtu_set_serial_mode() might fail when TIOCSRS485 does not work)
+          if (mberr==0 && modbusRTSEnable) {
+            if (modbus_rtu_set_custom_rts(modbus, setRts)<0) mberr = errno;
+          }
+          if (mberr==0) {
+            if (modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS485)<0) mberr = errno;
+          }
+          if (mberr==0) {
+            if (modbus_rtu_set_rts(modbus, MODBUS_RTU_RTS_UP)<0) mberr = errno;
           }
         }
-        if (ret==0) {
+        if (mberr==0) {
           int rtsDelayUs;
           if (getIntOption("rs485rtsdelay", rtsDelayUs)) {
-            ret = modbus_rtu_set_rts_delay(modbus, rtsDelayUs);
+            if (modbus_rtu_set_rts_delay(modbus, rtsDelayUs)<0) mberr = errno;
           }
         }
       }
@@ -335,10 +357,10 @@ public:
         return;
       }
       modbus = modbus_new_tcp(connectionPath.c_str(), connectionPort);
-      if (modbus==0) ret = errno;
+      if (modbus==0) mberr = errno;
     }
-    if (ret<0) {
-      terminateAppWith(ModBusError::err<ModBusError>(ret));
+    if (mberr!=0) {
+      terminateAppWith(ModBusError::err<ModBusError>(mberr));
       return;
     }
     LOG(LOG_NOTICE, "successfully initialized modbus");
@@ -403,6 +425,20 @@ public:
 
 
 };
+
+
+extern "C" {
+
+  void setRts(modbus_t *ctx, int on) {
+    P44mbcd* app = dynamic_cast<P44mbcd*>(Application::sharedApplication());
+    if (app) {
+      if (app->modbusRTSEnable) app->modbusRTSEnable->set(on);
+    }
+  }
+
+}
+
+
 
 
 int main(int argc, char **argv)
