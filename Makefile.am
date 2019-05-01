@@ -156,7 +156,7 @@ LVGL_FLAGS = \
 
 # main
 
-p44mbcd_LDADD = ${JSONC_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
+p44mbcd_LDADD = ${JSONC_LIBS} ${MODBUS_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
 p44mbcd_EXTRACFLAGS = -D NO_SSL_DL=1
 
 
@@ -166,6 +166,7 @@ p44mbcd_CPPFLAGS = \
   -I ${srcdir}/src/p44utils/thirdparty/civetweb \
   ${BOOST_CPPFLAGS} \
   ${JSONC_CFLAGS} \
+  ${MODBUS_CFLAGS} \
   ${PTHREAD_CFLAGS} \
   ${UBUS_FLAGS} \
   ${LVGL_FLAGS} \
