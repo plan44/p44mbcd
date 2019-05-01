@@ -10,6 +10,7 @@
 
 #include "macaddress.hpp"
 #include "digitalio.hpp"
+#include "serialcomm.hpp"
 #include "utils.hpp"
 
 #if ENABLE_UBUS
@@ -18,15 +19,21 @@
 
 #include <stdio.h>
 
+// little vGL
 #include "lvgl/lvgl.h"
-
 #include "lv_drivers/display/fbdev.h"
 #include "lv_drivers/indev/evdev.h"
 
+// FIXME: remove later
 #include "lv_examples/lv_apps/demo/demo.h"
+
+// modbus
+#include <modbus/modbus-rtu.h>
 
 
 #define DEFAULT_LOGLEVEL LOG_NOTICE
+#define DEFAULT_MODBUS_RTU_PARAMS "9600,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
+#define DEFAULT_MODBUS_IP_PORT 1502
 
 using namespace p44;
 
@@ -45,6 +52,16 @@ static const struct blobmsg_policy p44mbcapi_policy[] = {
 #endif
 
 
+class ModBusError : public Error
+{
+public:
+  static const char *domain() { return "Modbus"; }
+  virtual const char *getErrorDomain() const { return ModBusError::domain(); };
+  ModBusError(ErrorCode aError) : Error(aError, modbus_strerror((int)aError)) {};
+};
+
+
+
 class P44mbcd : public CmdLineApp
 {
   typedef CmdLineApp inherited;
@@ -59,6 +76,10 @@ class P44mbcd : public CmdLineApp
   lv_indev_t *keyboard_indev; ///< the input device for keyboard
   MLTicket lvglTicket; ///< the display tasks timer
   MLMicroSeconds lastLvglTick; ///< last tick
+
+  // modbus
+  modbus_t *modbus;
+  DigitalIoPtr modbusRTSEnable;
 
 public:
 
@@ -75,10 +96,10 @@ public:
     const char *usageText =
     "Usage: %1$s [options]\n";
     const CmdLineOptionDescriptor options[] = {
-      { 0  , "rs485connection", true,  "serial_if;RS485 serial interface where display is connected (/device or IP:port)" },
+      { 0  , "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable or DTR or RTS" },
-      { 0  , "rs485txoffdelay", true,  "delay;time to keep tx enabled after sending [ms], defaults to 0" },
-      { 0  , "rs485rxenable",   true,  "pinspec;a digital output pin specification for RX driver enable" },
+      { 0  , "rs485rtsdelay",   true,  "delay;delay of tx enable signal (RTS) in uS" },
+      { 0  , "rs232",           false, "use RS-232 for RTU" },
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
@@ -122,6 +143,8 @@ public:
 
   #if ENABLE_UBUS
 
+  #define MAX_REG 64
+
   void initUbusApi()
   {
     ubusApiServer = UbusServerPtr(new UbusServer(MainLoop::currentMainLoop()));
@@ -149,7 +172,55 @@ public:
       aUbusRequest->sendResponse(JsonObjectPtr());
     }
     else if (aMethod=="api") {
-      aUbusRequest->sendResponse(JsonObjectPtr(), UBUS_STATUS_INVALID_COMMAND);
+      ErrorPtr err;
+      JsonObjectPtr result;
+      if (aJsonRequest) {
+        JsonObjectPtr o;
+        if (aJsonRequest->get("modbus", o) && modbus) {
+          // modbus commands
+          string cmd = o->stringValue();
+          if (cmd=="read_registers") {
+            int reg = 0;
+            int numReg = 1;
+            if (aJsonRequest->get("reg", o)) reg = o->int32Value();
+            if (aJsonRequest->get("count", o)) numReg = o->int32Value();
+            if (numReg<0 || reg<0 || reg+numReg>=MAX_REG) {
+              err = TextError::err("invalid reg=%d and count=%d combination", reg, numReg);
+            }
+            else {
+              int ret = modbus_connect(modbus);
+              if (ret<0) {
+                err = ModBusError::err<ModBusError>(ret);
+              }
+              else {
+                uint16_t tab_reg[MAX_REG];
+                ret = modbus_read_registers(modbus, reg, numReg, tab_reg);
+                if (ret<0) {
+                  err = ModBusError::err<ModBusError>(ret);
+                }
+                else {
+                  result = JsonObject::newArray();
+                  for (int i=0; i<numReg; i++) {
+                    result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
+                  }
+                }
+                // anyway, close
+                modbus_close(modbus);
+              }
+            }
+          }
+          else {
+            err = TextError::err("unknown modbus command");
+          }
+        }
+      }
+      else {
+        err = TextError::err("missing command object");
+      }
+      JsonObjectPtr response = JsonObject::newObj();
+      if (result) response->add("result", result);
+      if (err) response->add("error", JsonObject::newString(err->description()));
+      aUbusRequest->sendResponse(response);
     }
     else {
       // no other methods implemented yet
@@ -176,10 +247,110 @@ public:
   }
 
 
+  // MARK: ===== modbus
+
+  static void setRts(modbus_t *ctx, int on)
+  {
+    P44mbcd* app = dynamic_cast<P44mbcd*>(Application::sharedApplication());
+    if (app) {
+      if (app->modbusRTSEnable) app->modbusRTSEnable->set(on);
+    }
+  }
+
+
+  void initModbus()
+  {
+    LOG(LOG_NOTICE, "initializing modbus");
+    // init modbus library
+    string rs485conn;
+    if (!getStringOption("connection", rs485conn)) {
+      terminateAppWith(TextError::err("must specify --rs485connection"));
+      return;
+    }
+    bool rs232 = getOption("rs232")!=NULL;
+    if (!rs232) {
+      string rtsEn;
+      if (getStringOption("rs485txenable", rtsEn)) {
+        modbusRTSEnable = DigitalIoPtr(new DigitalIo(rtsEn.c_str(), true, false));
+      }
+      else {
+        LOG(LOG_WARNING, "no --rs485txenable specified, RTS of serial port must exist");
+      }
+    }
+    string connectionPath;
+    uint16_t connectionPort;
+    int baudRate;
+    int charSize; // character size 5..8 bits
+    bool parityEnable;
+    bool evenParity;
+    bool twoStopBits;
+    bool hardwareHandshake;
+    bool rtu = SerialComm::parseConnectionSpecification(
+      rs485conn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
+      connectionPath,
+      baudRate,
+      charSize,
+      parityEnable,
+      evenParity,
+      twoStopBits,
+      hardwareHandshake,
+      connectionPort
+    );
+    int ret = 0;
+    if (rtu) {
+      if (baudRate==0 || connectionPath.empty()) {
+        terminateAppWith(TextError::err("invalid RTU connection params"));
+        return;
+      }
+      modbus = modbus_new_rtu(
+        connectionPath.c_str(),
+        baudRate,
+        parityEnable ? (evenParity ? 'E' : 'O') : 'N',
+        charSize,
+        twoStopBits ? 2 : 1
+      );
+      if (modbus==0) ret = errno;
+      if (ret==0) {
+        if (rs232) {
+          ret = modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS232);
+        }
+        else {
+          ret = modbus_rtu_set_serial_mode(modbus, MODBUS_RTU_RS485);
+          if (ret==0 && modbusRTSEnable) {
+            ret = modbus_rtu_set_custom_rts(modbus, setRts);
+          }
+        }
+        if (ret==0) {
+          int rtsDelayUs;
+          if (getIntOption("rs485rtsdelay", rtsDelayUs)) {
+            ret = modbus_rtu_set_rts_delay(modbus, rtsDelayUs);
+          }
+        }
+      }
+    }
+    else {
+      if (connectionPath.empty()) {
+        terminateAppWith(TextError::err("invalid TCP connection params"));
+        return;
+      }
+      modbus = modbus_new_tcp(connectionPath.c_str(), connectionPort);
+      if (modbus==0) ret = errno;
+    }
+    if (ret<0) {
+      terminateAppWith(ModBusError::err<ModBusError>(ret));
+      return;
+    }
+    LOG(LOG_NOTICE, "successfully initialized modbus");
+  }
+
+
+  // MARK: ===== littlevGL
+
   #define SHOW_MOUSE_CURSOR 1
 
   void initLvgl()
   {
+    LOG(LOG_NOTICE, "initializing littlevGL");
     // - init library
     lv_init();
     // - init frame buffer driver

@@ -132,6 +132,7 @@
 		ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AFC2276F0C3009B43A8 /* win_drv.c */; };
 		ED9D3C7222775E12009B43A8 /* img_bubble_pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */; };
 		ED9D3C7322775E12009B43A8 /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6F22775E11009B43A8 /* demo.c */; };
+		ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB284481733B59500EAE5DE /* serialcomm.cpp */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
 		EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
@@ -1171,6 +1172,7 @@
 				EDDEE88B17FC6EDE00A65599 /* consolekey.cpp in Sources */,
 				ED9D3AAE2276F0A5009B43A8 /* lv_draw_vbasic.c in Sources */,
 				EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */,
+				ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */,
 				ED9D3A7C2276F0A5009B43A8 /* lv_txt.c in Sources */,
 				ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */,
 				ED9D3AB92276F0A5009B43A8 /* lv_label.c in Sources */,
