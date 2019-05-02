@@ -233,6 +233,51 @@ public:
               }
             }
           }
+          else if (cmd=="write_registers") {
+            int reg = -1;
+            int slave = -1;
+            if (aJsonRequest->get("slave", o)) slave = o->int32Value();
+            if (aJsonRequest->get("reg", o)) reg = o->int32Value();
+            int numReg = 0;
+            uint16_t tab_reg[MAX_REG];
+            if (aJsonRequest->get("values", o)) {
+              if (o->isType(json_type_array)) {
+                // multiple
+                for(int i=0; i<o->arrayLength(); i++) {
+                  tab_reg[i] = o->arrayGet(i)->int32Value();
+                  numReg++;
+                }
+              }
+              else {
+                // single
+                numReg = 1;
+                tab_reg[0] = o->int32Value();
+              }
+            }
+            if (reg<0 || numReg<1 || numReg>=MAX_REG || slave<0) {
+              err = TextError::err("invalid reg=%d, values=[%d], slave=%d combination", reg, numReg, slave);
+            }
+            else {
+              if (modbus_set_slave(modbus, slave)<0) {
+                err = ModBusError::err<ModBusError>(errno);
+              }
+              else {
+                if (modbus_connect(modbus)<0) {
+                  err = ModBusError::err<ModBusError>(errno);
+                }
+                else {
+                  if (modbus_write_registers(modbus, reg, numReg, tab_reg)<0) {
+                    err = ModBusError::err<ModBusError>(errno);
+                  }
+                  else {
+                    result = JsonObject::newBool(true);
+                  }
+                  // anyway, close
+                  modbus_close(modbus);
+                }
+              }
+            }
+          }
           else {
             err = TextError::err("unknown modbus command");
           }
@@ -367,9 +412,34 @@ public:
   }
 
 
+  // MARK: ===== app logic
+
+  int reg104 = 0;
+  int reg202 = 0;
+
+
+
+  void buttonPressed(int aButtonId)
+  {
+    // id 1 = plus
+    // id 2 = minus
+
+
+
+  }
+
+
+
   // MARK: ===== littlevGL
 
   #define SHOW_MOUSE_CURSOR 1
+
+  static void demoButtonPressed(int aButtonId)
+  {
+    P44mbcd *p44mbcd = dynamic_cast<P44mbcd *>(Application::sharedApplication());
+    p44mbcd->buttonPressed(aButtonId);
+  }
+
 
   void initLvgl()
   {
@@ -405,6 +475,8 @@ public:
     #endif
     // - create demo
     demo_create();
+    demo_setNewText("Ready");
+    demo_setButtonCallback(demoButtonPressed);
     // - schedule updates
     lvglTicket.executeOnce(boost::bind(&P44mbcd::lvglTask, this, _1, _2));
   }

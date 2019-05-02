@@ -35,6 +35,7 @@ static lv_res_t list_btn_action(lv_obj_t * slider);
 static void tab_switcher(void * tv);
 #endif
 
+
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -47,6 +48,7 @@ static lv_obj_t * plusButton;
 static lv_obj_t * minusButton;
 static lv_obj_t * dispLabel;
 
+static p44BtnCallBack_t p44BtnCallBack = NULL;
 
 static lv_style_t style_kb;
 static lv_style_t style_kb_rel;
@@ -97,6 +99,10 @@ void demo_create(void)
     style_tv_btn_pr.body.border.width = 0;
     style_tv_btn_pr.text.color = LV_COLOR_GRAY;
 
+#if ONLY_DEMO
+    p44mbc_create(lv_scr_act());
+#else
+
     lv_obj_t * tv = lv_tabview_create(lv_scr_act(), NULL);
 
 #if LV_DEMO_WALLPAPER
@@ -104,10 +110,10 @@ void demo_create(void)
     lv_obj_set_pos(wp, 0, -5);
 #endif
 
+    lv_obj_t * tab4 = lv_tabview_add_tab(tv, "Demo");
     lv_obj_t * tab1 = lv_tabview_add_tab(tv, "Write");
     lv_obj_t * tab2 = lv_tabview_add_tab(tv, "List");
     lv_obj_t * tab3 = lv_tabview_add_tab(tv, "Chart");
-    lv_obj_t * tab4 = lv_tabview_add_tab(tv, "Demo");
 
 #if LV_DEMO_WALLPAPER == 0
     /*Blue bg instead of wallpaper*/
@@ -120,14 +126,17 @@ void demo_create(void)
     lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_REL, &style_tv_btn_rel);
     lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_PR, &style_tv_btn_pr);
 
+    p44mbc_create(tab4);
     write_create(tab1);
     list_create(tab2);
     chart_create(tab3);
-    p44mbc_create(tab4);
 
 #if LV_DEMO_SLIDE_SHOW
     lv_task_create(tab_switcher, 3000, LV_TASK_PRIO_MID, tv);
 #endif
+
+#endif // !ONLY_DEMO
+
 }
 
 
@@ -360,6 +369,18 @@ static void chart_create(lv_obj_t * parent)
 
 // MARK: === p44mbc
 
+void demo_setButtonCallback(p44BtnCallBack_t aCallBack)
+{
+  p44BtnCallBack = aCallBack;
+}
+
+void demo_setNewText(const char *aText)
+{
+  lv_label_set_text(dispLabel, aText);
+}
+
+
+
 static int count = 0;
 
 static lv_res_t btn_click_action(lv_obj_t * btn)
@@ -369,11 +390,18 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
 
   printf("Button %d is released\n", id);
 
-  if (id==1) count++;
-  else if (id==2) count--;
-  snprintf(buf, 32, "%d", count);
-  lv_label_set_text(dispLabel, buf);
-  return LV_RES_OK; /*Return OK if the button is not deleted*/
+  if (p44BtnCallBack) {
+    // custom
+    p44BtnCallBack(id);
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
+  }
+  else {
+    if (id==1) count++;
+    else if (id==2) count--;
+    snprintf(buf, 32, "%d", count);
+    lv_label_set_text(dispLabel, buf);
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
+  }
 }
 
 
@@ -412,10 +440,11 @@ static void p44mbc_create(lv_obj_t * parent)
   lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_DOT);
   lv_label_set_recolor(dispLabel, true);
   lv_label_set_align(dispLabel, LV_LABEL_ALIGN_CENTER);
-  lv_label_set_text(dispLabel, "#FF0000R# #00FF00G# #0000FFB#");
+  lv_label_set_text(dispLabel, "-");
   lv_obj_set_width(dispLabel, lv_obj_get_width(parent)); // expand to full width
   lv_obj_align(dispLabel, NULL, LV_ALIGN_CENTER, 0, 0);
 
+#if RGB_SAMPLES
 
   static lv_style_t styleRed;
   lv_style_copy(&styleRed, &lv_style_plain);
@@ -447,6 +476,8 @@ static void p44mbc_create(lv_obj_t * parent)
   lv_obj_set_style(blue, &styleBlue);
   lv_obj_set_size(blue, 40, 20);
   lv_obj_align(blue, green, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+
+#endif
 
 }
 

@@ -41,6 +41,15 @@ extern "C" {
  */
 void demo_create(void);
 
+#define ONLY_DEMO 1
+#define RGB_SAMPLES 0
+
+// P44
+typedef void (*p44BtnCallBack_t)(int aButtonId);
+void demo_setButtonCallback(p44BtnCallBack_t aCallBack);
+void demo_setNewText(const char *aText);
+
+
 /**********************
  *      MACROS
  **********************/
