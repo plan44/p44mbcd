@@ -88,6 +88,9 @@ class P44mbcd : public CmdLineApp
   modbus_t *modbus;
   DigitalIoPtr modbusRTSEnable;
 
+  // app
+  MLTicket appTicket;
+
 public:
 
   P44mbcd() :
@@ -159,6 +162,8 @@ public:
     u->addMethod("log", logapi_policy);
     u->addMethod("api", p44mbcapi_policy);
     u->addMethod("quit");
+    u->addMethod("buttonup");
+    u->addMethod("buttondown");
     ubusApiServer->registerObject(u);
   }
 
@@ -177,6 +182,14 @@ public:
           SETDELTATIME(o->boolValue());
         }
       }
+      aUbusRequest->sendResponse(JsonObjectPtr());
+    }
+    else if (aMethod=="buttonup") {
+      buttonPressed(1);
+      aUbusRequest->sendResponse(JsonObjectPtr());
+    }
+    else if (aMethod=="buttondown") {
+      buttonPressed(2);
       aUbusRequest->sendResponse(JsonObjectPtr());
     }
     else if (aMethod=="quit") {
@@ -314,6 +327,8 @@ public:
     initModbus();
     // start littlevGL
     initLvgl();
+    // start app
+    initApp();
   }
 
 
@@ -414,18 +429,84 @@ public:
 
   // MARK: ===== app logic
 
-  int reg104 = 0;
-  int reg202 = 0;
+  uint16_t reg104 = 0;
+  uint16_t reg202 = 0;
 
+  static const char *reg104Texts(int aReg)
+  {
+    switch (aReg) {
+      case 0 : return "AUS";
+      case 1 : return "Auto";
+      case 2 : return "Heizen";
+      case 3 : return "Kühlen";
+      case 4 : return "Ventilation";
+      default : return "<unbekannt>";
+    }
+  }
+
+  static const char *reg202Texts(int aReg)
+  {
+    switch (aReg) {
+      case 0 : return "AUS";
+      case 1 : return "Manuell 1";
+      case 2 : return "Manuell 2";
+      case 3 : return "Manuell 3";
+      case 4 : return "Auto 1";
+      case 5 : return "Auto 2";
+      case 6 : return "Auto 3";
+      default : return "<unbekannt>";
+    }
+  }
+
+
+  void initApp()
+  {
+    modbus_read_registers(modbus, 104, 1, &reg104);
+    modbus_read_registers(modbus, 202, 1, &reg202);
+    // repeatedly
+    appTicket.executeOnce(boost::bind(&P44mbcd::appTask, this, _1, _2));
+  }
+
+
+  #define APP_TASK_PERIOD (2*Second)
+
+  void appTask(MLTimer &aTimer, MLMicroSeconds aNow)
+  {
+    modbus_read_registers(modbus, 202, 1, &reg202);
+    update_display();
+    MainLoop::currentMainLoop().retriggerTimer(aTimer, APP_TASK_PERIOD);
+  }
+
+
+  void update_display()
+  {
+    string s = string_format(
+      "%s [%d]\n%s [%d]",
+      reg104Texts(reg104), reg104,
+      reg202Texts(reg202), reg202
+    );
+    demo_setNewText(s.c_str());
+  }
 
 
   void buttonPressed(int aButtonId)
   {
     // id 1 = plus
     // id 2 = minus
-
-
-
+    if (aButtonId==1) {
+      if (reg104<4) {
+        reg104++;
+      }
+      modbus_write_registers(modbus, 104, 1, &reg104);
+      update_display();
+    }
+    if (aButtonId==2) {
+      if (reg104>0) {
+        reg104--;
+      }
+      modbus_write_registers(modbus, 104, 1, &reg104);
+      update_display();
+    }
   }
 
 

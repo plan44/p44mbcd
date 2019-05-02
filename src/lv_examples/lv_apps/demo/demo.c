@@ -146,6 +146,7 @@ void demo_create(void)
 
 static void write_create(lv_obj_t * parent)
 {
+  
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
@@ -407,12 +408,14 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
 
 static void p44mbc_create(lv_obj_t * parent)
 {
+#if !ONLY_DEMO
   lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
   lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
   lv_page_set_scrl_fit(parent, false, false);
   lv_page_set_scrl_height(parent, lv_obj_get_height(parent));
   lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
+#endif
 
   lv_obj_t *lbl; // temp
 
