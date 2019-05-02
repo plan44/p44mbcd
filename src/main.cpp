@@ -83,13 +83,16 @@ class P44mbcd : public CmdLineApp
   lv_indev_t *keyboard_indev; ///< the input device for keyboard
   MLTicket lvglTicket; ///< the display tasks timer
   MLMicroSeconds lastLvglTick; ///< last tick
+  bool showCursor = false;
 
   // modbus
+  int slave = 1;
   modbus_t *modbus;
   DigitalIoPtr modbusRTSEnable;
 
   // app
   MLTicket appTicket;
+  bool testmode;
 
 public:
 
@@ -110,6 +113,9 @@ public:
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable or DTR or RTS" },
       { 0  , "rs485rtsdelay",   true,  "delay;delay of tx enable signal (RTS) in uS" },
       { 0  , "rs232",           false, "use RS-232 for RTU" },
+      { 0  , "slave",           true,  "slave;use this slave by default" },
+      { 0  , "mousecursor",     false, "show mouse cursor" },
+      { 0  , "testmode",        false, "FCU test mode" },
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
@@ -222,26 +228,12 @@ public:
               err = TextError::err("invalid reg=%d, count=%d, slave=%d combination", reg, numReg, slave);
             }
             else {
-              if (modbus_set_slave(modbus, slave)<0) {
-                err = ModBusError::err<ModBusError>(errno);
-              }
-              else {
-                if (modbus_connect(modbus)<0) {
-                  err = ModBusError::err<ModBusError>(errno);
-                }
-                else {
-                  uint16_t tab_reg[MAX_REG];
-                  if (modbus_read_registers(modbus, reg, numReg, tab_reg)<0) {
-                    err = ModBusError::err<ModBusError>(errno);
-                  }
-                  else {
-                    result = JsonObject::newArray();
-                    for (int i=0; i<numReg; i++) {
-                      result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
-                    }
-                  }
-                  // anyway, close
-                  modbus_close(modbus);
+              uint16_t tab_reg[MAX_REG];
+              err = mb_read_registers(slave, reg, numReg, tab_reg);
+              if (Error::isOK(err)) {
+                result = JsonObject::newArray();
+                for (int i=0; i<numReg; i++) {
+                  result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
                 }
               }
             }
@@ -271,23 +263,9 @@ public:
               err = TextError::err("invalid reg=%d, values=[%d], slave=%d combination", reg, numReg, slave);
             }
             else {
-              if (modbus_set_slave(modbus, slave)<0) {
-                err = ModBusError::err<ModBusError>(errno);
-              }
-              else {
-                if (modbus_connect(modbus)<0) {
-                  err = ModBusError::err<ModBusError>(errno);
-                }
-                else {
-                  if (modbus_write_registers(modbus, reg, numReg, tab_reg)<0) {
-                    err = ModBusError::err<ModBusError>(errno);
-                  }
-                  else {
-                    result = JsonObject::newBool(true);
-                  }
-                  // anyway, close
-                  modbus_close(modbus);
-                }
+              err = mb_write_registers(slave, reg, numReg, tab_reg);
+              if (Error::isOK(err)) {
+                result = JsonObject::newBool(true);
               }
             }
           }
@@ -309,6 +287,50 @@ public:
       aUbusRequest->sendResponse(JsonObjectPtr(), UBUS_STATUS_INVALID_COMMAND);
     }
   }
+
+
+  ErrorPtr mb_read_registers(int slave, int addr, int nb, uint16_t *dest)
+  {
+    ErrorPtr err;
+    if (modbus_set_slave(modbus, slave)<0) {
+      err = ModBusError::err<ModBusError>(errno);
+    }
+    else {
+      if (modbus_connect(modbus)<0) {
+        err = ModBusError::err<ModBusError>(errno);
+      }
+      else {
+        if (modbus_read_registers(modbus, addr, nb, dest)<0) {
+          err = ModBusError::err<ModBusError>(errno);
+        }
+      }
+    }
+    modbus_close(modbus);
+    return err;
+  }
+
+
+  ErrorPtr mb_write_registers(int slave, int addr, int nb, uint16_t *src)
+  {
+    ErrorPtr err;
+    if (modbus_set_slave(modbus, slave)<0) {
+      err = ModBusError::err<ModBusError>(errno);
+    }
+    else {
+      if (modbus_connect(modbus)<0) {
+        err = ModBusError::err<ModBusError>(errno);
+      }
+      else {
+        if (modbus_write_registers(modbus, addr, nb, src)<0) {
+          err = ModBusError::err<ModBusError>(errno);
+        }
+      }
+    }
+    modbus_close(modbus);
+    return err;
+  }
+
+
 
   #endif
 
@@ -423,6 +445,7 @@ public:
       terminateAppWith(ModBusError::err<ModBusError>(mberr));
       return;
     }
+    getIntOption("slave", slave);
     LOG(LOG_NOTICE, "successfully initialized modbus");
   }
 
@@ -431,6 +454,8 @@ public:
 
   uint16_t reg104 = 0;
   uint16_t reg202 = 0;
+
+  uint16_t reg137 = -1;
 
   static const char *reg104Texts(int aReg)
   {
@@ -461,8 +486,13 @@ public:
 
   void initApp()
   {
-    modbus_read_registers(modbus, 104, 1, &reg104);
-    modbus_read_registers(modbus, 202, 1, &reg202);
+    testmode = getOption("testmode");
+    // get status
+    mb_read_registers(slave, 104, 1, &reg104);
+    mb_read_registers(slave, 202, 1, &reg202);
+    // start in normal mode
+    reg137 = 0;
+    mb_write_registers(slave, 137, 1, &reg137);
     // repeatedly
     appTicket.executeOnce(boost::bind(&P44mbcd::appTask, this, _1, _2));
   }
@@ -472,8 +502,36 @@ public:
 
   void appTask(MLTimer &aTimer, MLMicroSeconds aNow)
   {
-    modbus_read_registers(modbus, 202, 1, &reg202);
-    update_display();
+    ErrorPtr err = mb_read_registers(slave, 104, 1, &reg104);
+    if (Error::isOK(err)) {
+      if (testmode) {
+        if (reg104==1 || reg104==2) {
+          // heating
+          if (reg137!=1) {
+            reg137 = 1; // heating test
+            mb_write_registers(slave, 137, 1, &reg137);
+          }
+        }
+        else if (reg104==3 || reg104==4) {
+          // cooling
+          if (reg137!=2) {
+            reg137 = 2; // cooling test
+            mb_write_registers(slave, 137, 1, &reg137);
+          }
+        }
+        else if (reg104==0) {
+          reg137 = 0; // off
+          mb_write_registers(slave, 137, 1, &reg137);
+        }
+      }
+      mb_read_registers(slave, 202, 1, &reg202);
+      update_display();
+    }
+    else {
+      // error
+      demo_setNewText(err->description().c_str());
+    }
+    // again
     MainLoop::currentMainLoop().retriggerTimer(aTimer, APP_TASK_PERIOD);
   }
 
@@ -481,7 +539,7 @@ public:
   void update_display()
   {
     string s = string_format(
-      "%s [%d]\n%s [%d]",
+      "Mode: %s [%d]\nFan: %s [%d]",
       reg104Texts(reg104), reg104,
       reg202Texts(reg202), reg202
     );
@@ -497,14 +555,14 @@ public:
       if (reg104<4) {
         reg104++;
       }
-      modbus_write_registers(modbus, 104, 1, &reg104);
+      mb_write_registers(slave, 104, 1, &reg104);
       update_display();
     }
     if (aButtonId==2) {
       if (reg104>0) {
         reg104--;
       }
-      modbus_write_registers(modbus, 104, 1, &reg104);
+      mb_write_registers(slave, 104, 1, &reg104);
       update_display();
     }
   }
@@ -525,6 +583,7 @@ public:
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
+    showCursor = getOption("mousecursor");
     // - init library
     lv_init();
     // - init frame buffer driver
@@ -542,18 +601,20 @@ public:
     pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
     pointer_indev_drv.read = evdev_read;
     pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
-    #if SHOW_MOUSE_CURSOR
-    lv_obj_t *cursor;
-    cursor = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_size(cursor, 24, 24);
-    static lv_style_t style_round;
-    lv_style_copy(&style_round, &lv_style_plain);
-    style_round.body.radius = LV_RADIUS_CIRCLE;
-    style_round.body.main_color = LV_COLOR_RED;
-    style_round.body.opa = LV_OPA_COVER;
-    lv_obj_set_style(cursor, &style_round);
-    lv_indev_set_cursor(pointer_indev, cursor);
-    #endif
+    if (showCursor) {
+      #if SHOW_MOUSE_CURSOR
+      lv_obj_t *cursor;
+      cursor = lv_obj_create(lv_scr_act(), NULL);
+      lv_obj_set_size(cursor, 24, 24);
+      static lv_style_t style_round;
+      lv_style_copy(&style_round, &lv_style_plain);
+      style_round.body.radius = LV_RADIUS_CIRCLE;
+      style_round.body.main_color = LV_COLOR_RED;
+      style_round.body.opa = LV_OPA_COVER;
+      lv_obj_set_style(cursor, &style_round);
+      lv_indev_set_cursor(pointer_indev, cursor);
+      #endif
+    }
     // - create demo
     demo_create();
     demo_setNewText("Ready");

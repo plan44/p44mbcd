@@ -34,6 +34,9 @@ static lv_res_t list_btn_action(lv_obj_t * slider);
 #if LV_DEMO_SLIDE_SHOW
 static void tab_switcher(void * tv);
 #endif
+#if USE_THEME
+static lv_theme_t *th;
+#endif
 
 
 /**********************
@@ -71,6 +74,12 @@ LV_IMG_DECLARE(img_bubble_pattern);
  */
 void demo_create(void)
 {
+
+#if USE_THEME
+    th = lv_theme_material_init(10, NULL);
+    lv_theme_set_current(th);
+#endif
+
 
 #if LV_DEMO_WALLPAPER
     lv_obj_t * wp = lv_img_create(lv_scr_act(), NULL);
@@ -146,7 +155,7 @@ void demo_create(void)
 
 static void write_create(lv_obj_t * parent)
 {
-  
+
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
@@ -424,27 +433,31 @@ static void p44mbc_create(lv_obj_t * parent)
   lv_obj_set_free_num(plusButton, 1);   /*Set a unique number for the button*/
   lv_btn_set_action(plusButton, LV_BTN_ACTION_CLICK, btn_click_action);
   lbl = lv_label_create(plusButton, NULL);
-  lv_label_set_text(lbl, "+ Increase +");
-  lv_obj_set_width(plusButton, lv_obj_get_width(parent)); // expand to full width
+  lv_btn_set_fit(plusButton, false, true);
+  lv_label_set_text(lbl, "+ Plus +");
+  lv_obj_set_width(plusButton, lv_obj_get_width(parent)-20); // expand to full width
   lv_obj_align(plusButton, NULL, LV_ALIGN_IN_TOP_MID, 0, 10);
 
   minusButton = lv_btn_create(parent, plusButton); // mostly same
   lv_obj_set_free_num(minusButton, 2);   /*Set a unique number for the button*/
   lbl = lv_label_create(minusButton, NULL);
-  lv_label_set_text(lbl, "- Decrease -");
-  lv_obj_set_width(minusButton, lv_obj_get_width(parent)); // expand to full width
+  lv_btn_set_fit(minusButton, false, true);
+  lv_label_set_text(lbl, "- Minus -");
+  lv_obj_set_width(minusButton, lv_obj_get_width(parent)-20); // expand to full width
   lv_obj_align(minusButton, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -10);
 
   dispLabel = lv_label_create(parent, NULL);
   static lv_style_t dispLabelStyle;
   lv_style_copy(&dispLabelStyle, &lv_style_plain);
-  dispLabelStyle.text.font = &lv_font_dejavu_40;
+  dispLabelStyle.text.font = &lv_font_dejavu_30;
   lv_obj_set_style(dispLabel, &dispLabelStyle);
-  lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_DOT);
+  lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_CROP);
   lv_label_set_recolor(dispLabel, true);
   lv_label_set_align(dispLabel, LV_LABEL_ALIGN_CENTER);
   lv_label_set_text(dispLabel, "-");
+  lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_ROLL);
   lv_obj_set_width(dispLabel, lv_obj_get_width(parent)); // expand to full width
+  lv_obj_set_height(dispLabel, 70);
   lv_obj_align(dispLabel, NULL, LV_ALIGN_CENTER, 0, 0);
 
 #if RGB_SAMPLES

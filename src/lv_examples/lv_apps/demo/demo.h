@@ -43,6 +43,7 @@ void demo_create(void);
 
 #define ONLY_DEMO 1
 #define RGB_SAMPLES 0
+#define USE_THEME 1
 
 // P44
 typedef void (*p44BtnCallBack_t)(int aButtonId);
