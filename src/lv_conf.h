@@ -37,9 +37,8 @@
  *===================*/
 
 /* Horizontal and vertical resolution of the library.*/
-#define LV_HOR_RES          (240)
-#define LV_VER_RES          (320)
-#define FBDEV_ROTATE_SCREEN 0 // does not work yet, so leave 0
+#define LV_HOR_RES          (320)
+#define LV_VER_RES          (240)
 
 
 /* Dot Per Inch: used to initialize default sizes. E.g. a button with width = LV_DPI / 2 -> half inch wide
