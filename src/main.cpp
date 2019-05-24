@@ -35,6 +35,8 @@
 #define DEFAULT_MODBUS_RTU_PARAMS "9600,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
 #define DEFAULT_MODBUS_IP_PORT 1502
 
+#define ENABLE_IRQTEST 1
+
 using namespace p44;
 
 
@@ -76,6 +78,9 @@ class P44mbcd : public CmdLineApp
   #if ENABLE_UBUS
   UbusServerPtr ubusApiServer; ///< ubus API for openwrt web interface
   #endif
+  #if ENABLE_IRQTEST
+  DigitalIoPtr irqTestPin;
+  #endif
 
   // littlevGL
   lv_disp_t *dispdev; ///< the display device
@@ -116,6 +121,9 @@ public:
       { 0  , "slave",           true,  "slave;use this slave by default" },
       { 0  , "mousecursor",     false, "show mouse cursor" },
       { 0  , "testmode",        false, "FCU test mode" },
+      #if ENABLE_IRQTEST
+      { 0  , "irqtest",         true,  "pinspec;IRQ input test" },
+      #endif
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
@@ -150,10 +158,26 @@ public:
     }
     #endif
 
+    #if ENABLE_IRQTEST
+    string spec;
+    if (getStringOption("irqtest", spec)) {
+      irqTestPin = DigitalIoPtr(new DigitalIo(spec.c_str(), false, false));
+      irqTestPin->setInputChangedHandler(boost::bind(&P44mbcd::irqTestHandler, this, _1), 0, Infinite);
+    }
+    #endif
+
+
     // app now ready to run
     return run();
   }
 
+
+  #if ENABLE_IRQTEST
+  void irqTestHandler(bool aNewState)
+  {
+    LOG(LOG_NOTICE, "New state is %d", aNewState);
+  }
+  #endif
 
   // MARK: ===== ubus API
 
