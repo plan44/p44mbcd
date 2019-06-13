@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED16C41822B25188003F4276 /* modbus.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41122B25188003F4276 /* modbus.c */; };
+		ED16C41922B25188003F4276 /* modbus-data.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41322B25188003F4276 /* modbus-data.c */; };
+		ED16C41A22B25188003F4276 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41422B25188003F4276 /* modbus-tcp.c */; };
+		ED16C41B22B25188003F4276 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41622B25188003F4276 /* modbus-rtu.c */; };
+		ED16C41D22B25F14003F4276 /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF12276F0C3009B43A8 /* monitor.c */; };
+		ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; };
+		ED16C42022B27591003F4276 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ED2461AB189BBB3000464D42 /* fnv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDCFE85E17203E47001D35F3 /* fnv.cpp */; };
 		ED25C41F17EC59D1005B115F /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEE1716EAA6005DED18 /* logger.cpp */; };
 		ED25C42017EC59D1005B115F /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026CF7171D9CAB00AD5FD6 /* utils.cpp */; };
@@ -143,6 +150,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		ED16C42122B27591003F4276 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ED16C42022B27591003F4276 /* SDL2.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ED25C41317EC5947005B115F /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,6 +185,20 @@
 		ED0E441D1732FE4F00C4C283 /* application.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = application.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907917B3FD0A009F9FE2 /* jsonrpccomm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = jsonrpccomm.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907A17B3FD0A009F9FE2 /* jsonrpccomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = jsonrpccomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED16C40C22B25188003F4276 /* modbus-tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp.h"; path = "src/modbus-tcp.h"; sourceTree = "<group>"; };
+		ED16C40D22B25188003F4276 /* modbus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; };
+		ED16C40E22B25188003F4276 /* modbus-rtu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu.h"; path = "src/modbus-rtu.h"; sourceTree = "<group>"; };
+		ED16C40F22B25188003F4276 /* modbus-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-private.h"; path = "src/modbus-private.h"; sourceTree = "<group>"; };
+		ED16C41022B25188003F4276 /* modbus-rtu-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; };
+		ED16C41122B25188003F4276 /* modbus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = modbus.c; path = src/modbus.c; sourceTree = "<group>"; };
+		ED16C41222B25188003F4276 /* modbus-tcp-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; };
+		ED16C41322B25188003F4276 /* modbus-data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-data.c"; path = "src/modbus-data.c"; sourceTree = "<group>"; };
+		ED16C41422B25188003F4276 /* modbus-tcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-tcp.c"; path = "src/modbus-tcp.c"; sourceTree = "<group>"; };
+		ED16C41522B25188003F4276 /* modbus-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-version.h"; path = "src/modbus-version.h"; sourceTree = "<group>"; };
+		ED16C41622B25188003F4276 /* modbus-rtu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-rtu.c"; path = "src/modbus-rtu.c"; sourceTree = "<group>"; };
+		ED16C41722B25188003F4276 /* modbus-version.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "modbus-version.h.in"; path = "src/modbus-version.h.in"; sourceTree = "<group>"; };
+		ED16C41C22B25334003F4276 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
+		ED16C41E22B27590003F4276 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		ED17F4C61769F51D0076B47C /* persistentparams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = persistentparams.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED17F4C71769F51D0076B47C /* persistentparams.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = persistentparams.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED25C41517EC5947005B115F /* p44mbcd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = p44mbcd; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -490,6 +522,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */,
 				ED8A99AD2020D6540069EBF6 /* libcrypto.1.0.0.dylib in Frameworks */,
 				ED8A99AE2020D6540069EBF6 /* libssl.1.0.0.dylib in Frameworks */,
 			);
@@ -498,6 +531,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		ED16C40B22B25136003F4276 /* libmodbus */ = {
+			isa = PBXGroup;
+			children = (
+				ED16C41C22B25334003F4276 /* config.h */,
+				ED16C41322B25188003F4276 /* modbus-data.c */,
+				ED16C40F22B25188003F4276 /* modbus-private.h */,
+				ED16C41022B25188003F4276 /* modbus-rtu-private.h */,
+				ED16C41622B25188003F4276 /* modbus-rtu.c */,
+				ED16C40E22B25188003F4276 /* modbus-rtu.h */,
+				ED16C41222B25188003F4276 /* modbus-tcp-private.h */,
+				ED16C41422B25188003F4276 /* modbus-tcp.c */,
+				ED16C40C22B25188003F4276 /* modbus-tcp.h */,
+				ED16C41522B25188003F4276 /* modbus-version.h */,
+				ED16C41722B25188003F4276 /* modbus-version.h.in */,
+				ED16C41122B25188003F4276 /* modbus.c */,
+				ED16C40D22B25188003F4276 /* modbus.h */,
+			);
+			name = libmodbus;
+			path = "src/libmodbus-3.1.4";
+			sourceTree = "<group>";
+		};
 		ED3699B5178DA83800376405 /* p44utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -569,6 +623,7 @@
 		ED4D033C1F83EAFD00BF1820 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ED16C41E22B27590003F4276 /* SDL2.framework */,
 				ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */,
 				ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */,
 			);
@@ -627,6 +682,7 @@
 				ED9D3AD52276F0C3009B43A8 /* lv_drivers */,
 				ED9D3C6922775E11009B43A8 /* lv_examples */,
 				ED6D7BE71716B6B1005DED18 /* src */,
+				ED16C40B22B25136003F4276 /* libmodbus */,
 				ED6D7BDC1716B63A005DED18 /* Products */,
 				ED4D033C1F83EAFD00BF1820 /* Frameworks */,
 			);
@@ -1054,6 +1110,7 @@
 				ED25C41117EC5947005B115F /* Sources */,
 				ED25C41217EC5947005B115F /* Frameworks */,
 				ED25C41317EC5947005B115F /* CopyFiles */,
+				ED16C42122B27591003F4276 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1107,7 +1164,9 @@
 				ED9D3B012276F0C4009B43A8 /* XPT2046.c in Sources */,
 				ED9D3A802276F0A5009B43A8 /* lv_color.c in Sources */,
 				ED9D3ACC2276F0A5009B43A8 /* lv_table.c in Sources */,
+				ED16C41B22B25188003F4276 /* modbus-rtu.c in Sources */,
 				ED9D3A8B2276F0A5009B43A8 /* lv_port_indev_templ.c in Sources */,
+				ED16C41922B25188003F4276 /* modbus-data.c in Sources */,
 				ED9D3A902276F0A5009B43A8 /* lv_theme_nemo.c in Sources */,
 				ED9D3ACB2276F0A5009B43A8 /* lv_bar.c in Sources */,
 				ED9D3A982276F0A5009B43A8 /* lv_font_dejavu_40_cyrillic.c in Sources */,
@@ -1140,6 +1199,7 @@
 				ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */,
 				ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */,
 				ED9D3ABB2276F0A5009B43A8 /* lv_ta.c in Sources */,
+				ED16C41A22B25188003F4276 /* modbus-tcp.c in Sources */,
 				ED9D3A822276F0A5009B43A8 /* lv_log.c in Sources */,
 				ED9D3A892276F0A5009B43A8 /* lv_font.c in Sources */,
 				ED25C42717EC59D1005B115F /* socketcomm.cpp in Sources */,
@@ -1175,6 +1235,7 @@
 				ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */,
 				ED9D3A7C2276F0A5009B43A8 /* lv_txt.c in Sources */,
 				ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */,
+				ED16C41D22B25F14003F4276 /* monitor.c in Sources */,
 				ED9D3AB92276F0A5009B43A8 /* lv_label.c in Sources */,
 				ED9D3AC32276F0A5009B43A8 /* lv_tileview.c in Sources */,
 				ED9D3A872276F0A5009B43A8 /* lv_math.c in Sources */,
@@ -1187,6 +1248,7 @@
 				EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */,
 				ED9D3AD22276F0A5009B43A8 /* lv_objx_templ.c in Sources */,
 				ED9D3A912276F0A5009B43A8 /* lv_theme_templ.c in Sources */,
+				ED16C41822B25188003F4276 /* modbus.c in Sources */,
 				ED9D3ABF2276F0A5009B43A8 /* lv_spinbox.c in Sources */,
 				ED9D3B032276F0C4009B43A8 /* FT5406EE8.c in Sources */,
 				ED25C41F17EC59D1005B115F /* logger.cpp in Sources */,
@@ -1241,10 +1303,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"NO_SSL_DL=1",
-					"ENABLE_UBUS=1",
+					"ENABLE_UBUS=0",
 					"LV_CONF_INCLUDE_SIMPLE=1",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1253,13 +1319,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"/usr/local/include/json-c",
-					/usr/local/Cellar/openssl/1.0.2q/include,
+					/usr/local/opt/openssl/include,
 					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
 					"/Volumes/CaseSens/openwrt/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-4.14.95/include",
+					.,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/usr/local/Cellar/openssl/1.0.2q/lib\"",
+					/usr/local/opt/openssl/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1274,10 +1341,14 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"NO_SSL_DL=1",
-					"ENABLE_UBUS=1",
+					"ENABLE_UBUS=0",
 					"LV_CONF_INCLUDE_SIMPLE=1",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1286,13 +1357,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"/usr/local/include/json-c",
-					/usr/local/Cellar/openssl/1.0.2q/include,
+					/usr/local/opt/openssl/include,
 					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
 					"/Volumes/CaseSens/openwrt/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-4.14.95/include",
+					.,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"/usr/local/Cellar/openssl/1.0.2q/lib\"",
+					/usr/local/opt/openssl/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

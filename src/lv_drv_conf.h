@@ -77,7 +77,12 @@
  *  Monitor of PC
  *-------------------*/
 #ifndef USE_MONITOR
-#  define USE_MONITOR         0
+#  if defined(__APPLE__)
+#    define USE_MONITOR       1
+#    define MONITOR_P44UTILS  1
+#  else
+#    define USE_MONITOR       0
+#  endif
 #endif
 
 #if USE_MONITOR
@@ -174,7 +179,11 @@
  *  Linux frame buffer device (/dev/fbx)
  *-----------------------------------------*/
 #ifndef USE_FBDEV
-#  define USE_FBDEV           1
+#  if defined(__APPLE__)
+#    define USE_FBDEV         0
+#  else
+#    define USE_FBDEV         1
+#  endif
 #endif
 
 #if USE_FBDEV
@@ -230,7 +239,11 @@
  * Mouse or touchpad on PC (using SDL)
  *-------------------------------------*/
 #ifndef USE_MOUSE
-#  define USE_MOUSE           0
+#  if defined(__APPLE__)
+#    define USE_MOUSE         1
+#  else
+#    define USE_MOUSE         0
+#  endif
 #endif
 
 #if USE_MOUSE
@@ -252,7 +265,11 @@
  * Mouse or touchpad as evdev interface (for Linux based systems)
  *------------------------------------------------*/
 #ifndef USE_EVDEV
-#  define USE_EVDEV           1
+#  if defined(__APPLE__)
+#    define USE_EVDEV         0
+#  else
+#    define USE_EVDEV         1
+#  endif
 #endif
 
 #if USE_EVDEV

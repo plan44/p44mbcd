@@ -19,16 +19,26 @@
 
 #include <stdio.h>
 
-// little vGL
 #include "lvgl/lvgl.h"
-#include "lv_drivers/display/fbdev.h"
-#include "lv_drivers/indev/evdev.h"
+
+#if defined(__APPLE__)
+  // test&debugging build on MacOS, using SDL2 for graphics
+  // - little vGL
+  #include "lv_drivers/display/monitor.h"
+  #include "lv_drivers/indev/mouse.h"
+  // - modbus
+  #include "modbus-rtu.h"
+#else
+  // target platform build
+  // - little vGL
+  #include "lv_drivers/display/fbdev.h"
+  #include "lv_drivers/indev/evdev.h"
+  // - modbus
+  #include <modbus/modbus-rtu.h>
+#endif
 
 // FIXME: remove later
 #include "lv_examples/lv_apps/demo/demo.h"
-
-// modbus
-#include <modbus/modbus-rtu.h>
 
 
 #define DEFAULT_LOGLEVEL LOG_NOTICE
@@ -179,7 +189,7 @@ public:
   }
   #endif
 
-  // MARK: ===== ubus API
+  // MARK: - ubus API
 
   #if ENABLE_UBUS
 
@@ -312,53 +322,10 @@ public:
     }
   }
 
-
-  ErrorPtr mb_read_registers(int slave, int addr, int nb, uint16_t *dest)
-  {
-    ErrorPtr err;
-    if (modbus_set_slave(modbus, slave)<0) {
-      err = ModBusError::err<ModBusError>(errno);
-    }
-    else {
-      if (modbus_connect(modbus)<0) {
-        err = ModBusError::err<ModBusError>(errno);
-      }
-      else {
-        if (modbus_read_registers(modbus, addr, nb, dest)<0) {
-          err = ModBusError::err<ModBusError>(errno);
-        }
-      }
-    }
-    modbus_close(modbus);
-    return err;
-  }
+  #endif // ENABLE_UBUS
 
 
-  ErrorPtr mb_write_registers(int slave, int addr, int nb, uint16_t *src)
-  {
-    ErrorPtr err;
-    if (modbus_set_slave(modbus, slave)<0) {
-      err = ModBusError::err<ModBusError>(errno);
-    }
-    else {
-      if (modbus_connect(modbus)<0) {
-        err = ModBusError::err<ModBusError>(errno);
-      }
-      else {
-        if (modbus_write_registers(modbus, addr, nb, src)<0) {
-          err = ModBusError::err<ModBusError>(errno);
-        }
-      }
-    }
-    modbus_close(modbus);
-    return err;
-  }
-
-
-
-  #endif
-
-  // MARK: ===== initialisation
+  // MARK: - initialisation
 
   virtual void initialize()
   {
@@ -374,11 +341,12 @@ public:
     // start littlevGL
     initLvgl();
     // start app
-    initApp();
+    if (!isTerminated())
+      initApp();
   }
 
 
-  // MARK: ===== modbus
+  // MARK: - modbus
 
 
   void initModbus()
@@ -387,18 +355,8 @@ public:
     // init modbus library
     string rs485conn;
     if (!getStringOption("connection", rs485conn)) {
-      terminateAppWith(TextError::err("must specify --rs485connection"));
+      terminateAppWith(TextError::err("must specify --connection"));
       return;
-    }
-    bool rs232 = getOption("rs232")!=NULL;
-    if (!rs232) {
-      string rtsEn;
-      if (getStringOption("rs485txenable", rtsEn)) {
-        modbusRTSEnable = DigitalIoPtr(new DigitalIo(rtsEn.c_str(), true, false));
-      }
-      else {
-        LOG(LOG_WARNING, "no --rs485txenable specified, RTS of serial port must exist");
-      }
     }
     string connectionPath;
     uint16_t connectionPort;
@@ -421,6 +379,16 @@ public:
     );
     int mberr = 0;
     if (rtu) {
+      bool rs232 = getOption("rs232")!=NULL;
+      if (!rs232) {
+        string rtsEn;
+        if (getStringOption("rs485txenable", rtsEn)) {
+          modbusRTSEnable = DigitalIoPtr(new DigitalIo(rtsEn.c_str(), true, false));
+        }
+        else {
+          LOG(LOG_WARNING, "no --rs485txenable specified, RTS of serial port must exist");
+        }
+      }
       if (baudRate==0 || connectionPath.empty()) {
         terminateAppWith(TextError::err("invalid RTU connection params"));
         return;
@@ -474,7 +442,51 @@ public:
   }
 
 
-  // MARK: ===== app logic
+  ErrorPtr mb_read_registers(int slave, int addr, int nb, uint16_t *dest)
+  {
+    ErrorPtr err;
+    if (modbus_set_slave(modbus, slave)<0) {
+      err = ModBusError::err<ModBusError>(errno);
+    }
+    else {
+      if (modbus_connect(modbus)<0) {
+        err = ModBusError::err<ModBusError>(errno);
+      }
+      else {
+        if (modbus_read_registers(modbus, addr, nb, dest)<0) {
+          err = ModBusError::err<ModBusError>(errno);
+        }
+      }
+    }
+    modbus_close(modbus);
+    return err;
+  }
+
+
+  ErrorPtr mb_write_registers(int slave, int addr, int nb, uint16_t *src)
+  {
+    ErrorPtr err;
+    if (modbus_set_slave(modbus, slave)<0) {
+      err = ModBusError::err<ModBusError>(errno);
+    }
+    else {
+      if (modbus_connect(modbus)<0) {
+        err = ModBusError::err<ModBusError>(errno);
+      }
+      else {
+        if (modbus_write_registers(modbus, addr, nb, src)<0) {
+          err = ModBusError::err<ModBusError>(errno);
+        }
+      }
+    }
+    modbus_close(modbus);
+    return err;
+  }
+
+
+
+
+  // MARK: - app logic
 
   uint16_t reg104 = 0;
   uint16_t reg202 = 0;
@@ -593,7 +605,7 @@ public:
 
 
 
-  // MARK: ===== littlevGL
+  // MARK: - littlevGL
 
   #define SHOW_MOUSE_CURSOR 1
 
@@ -610,16 +622,31 @@ public:
     showCursor = getOption("mousecursor");
     // - init library
     lv_init();
-    // - init frame buffer driver
+    #if defined(__APPLE__)
+    // - init display driver
+    monitor_init();
+    lv_disp_drv_t disp_drv;
+    lv_disp_drv_init(&disp_drv);
+    disp_drv.disp_flush = monitor_flush;
+    disp_drv.disp_fill = monitor_fill;
+    disp_drv.disp_map = monitor_map;
+    dispdev = lv_disp_drv_register(&disp_drv);
+    // - init input driver
+    mouse_init();
+    lv_indev_drv_t pointer_indev_drv;
+    lv_indev_drv_init(&pointer_indev_drv);
+    pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
+    pointer_indev_drv.read = mouse_read;
+    pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
+    #else
+    // - init display driver
     fbdev_init();
-    // - add display
     lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.disp_flush = fbdev_flush;      /*It flushes the internal graphical buffer to the frame buffer*/
     dispdev = lv_disp_drv_register(&disp_drv);
-    // - init evdev driver
+    // - init input driver
     evdev_init();
-    // - add pointer (touch, mouse)
     lv_indev_drv_t pointer_indev_drv;
     lv_indev_drv_init(&pointer_indev_drv);
     pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
@@ -639,6 +666,7 @@ public:
       lv_indev_set_cursor(pointer_indev, cursor);
       #endif
     }
+    #endif
     // - create demo
     demo_create();
     demo_setNewText("Ready");
@@ -658,6 +686,10 @@ public:
     lv_task_handler();
     lastLvglTick = aNow;
     MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
+    #if defined(__APPLE__)
+    // also need to update SDL2
+    monitor_sdl_refr_core();
+    #endif
   }
 
 
@@ -684,6 +716,55 @@ int main(int argc, char **argv)
   // prevent all logging until command line determines level
   SETLOGLEVEL(LOG_EMERG);
   SETERRLEVEL(LOG_EMERG, false); // messages, if any, go to stderr
+
+
+  //The window we'll be rendering to
+  SDL_Window* window = NULL;
+
+  //The surface contained by the window
+  SDL_Surface* screenSurface = NULL;
+
+  /*
+  //Initialize SDL
+  if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+  {
+    printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+  }
+  else
+  {
+    //Create window
+    window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, LV_HOR_RES, LV_VER_RES, SDL_WINDOW_SHOWN );
+    if( window == NULL )
+    {
+      printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+    }
+    else
+    {
+      //Get window surface
+      screenSurface = SDL_GetWindowSurface( window );
+
+      //Fill the surface white
+      SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+
+      //Update the surface
+      SDL_UpdateWindowSurface( window );
+
+      //Wait two seconds
+      SDL_Delay( 2000 );
+    }
+  }
+
+  //Destroy window
+  SDL_DestroyWindow( window );
+
+  //Quit SDL subsystems
+  SDL_Quit();
+
+  return 0;
+  */
+
+
+
   // create app with current mainloop
   P44mbcd *application = new(P44mbcd);
   // pass control
