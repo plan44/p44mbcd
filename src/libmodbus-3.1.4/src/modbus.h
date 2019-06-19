@@ -154,6 +154,14 @@ extern const unsigned int libmodbus_version_micro;
 
 typedef struct _modbus modbus_t;
 
+/* This structure reduces the number of params in functions and so
+ * optimizes the speed of execution (~ 37%). */
+typedef struct _sft {
+    int slave;
+    int function;
+    int t_id;
+} sft_t;
+
 typedef struct {
     int nb_bits;
     int start_bits;
@@ -168,6 +176,8 @@ typedef struct {
     uint16_t *tab_input_registers;
     uint16_t *tab_registers;
 } modbus_mapping_t;
+
+typedef int (*modbus_function_handler_t)(modbus_t* ctx, sft_t *sft, int offset, const uint8_t *req, int req_length, uint8_t *rsp, void *user_ctx);
 
 typedef enum
 {
@@ -229,6 +239,14 @@ MODBUS_API int modbus_receive(modbus_t *ctx, uint8_t *req);
 
 MODBUS_API int modbus_receive_confirmation(modbus_t *ctx, uint8_t *rsp);
 
+MODBUS_API int modbus_process_request(modbus_t *ctx,
+                                      const uint8_t *req, int req_length,
+                                      uint8_t *rsp,
+                                      modbus_function_handler_t func_handler, void *func_handler_context);
+MODBUS_API int reg_mapping_handler(modbus_t* ctx,
+                                   sft_t *sft, int offset,
+                                   const uint8_t *req, int req_length,
+                                   uint8_t *rsp, void *user_ctx);
 MODBUS_API int modbus_reply(modbus_t *ctx, const uint8_t *req,
                             int req_length, modbus_mapping_t *mb_mapping);
 MODBUS_API int modbus_reply_exception(modbus_t *ctx, const uint8_t *req,
