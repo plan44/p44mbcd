@@ -14,6 +14,32 @@ p44mbcd_PLATFORM = -D P44_BUILD_OW=1
 endif
 
 
+# embedded libmodbus
+if EMBEDDED_LIBMODBUS
+
+LIBMODBUS_SOURCES = \
+  src/p44utils/thirdparty/libmodbus/modbus-data.c \
+  src/p44utils/thirdparty/libmodbus/modbus-private.h \
+  src/p44utils/thirdparty/libmodbus/modbus-rtu-private.h \
+  src/p44utils/thirdparty/libmodbus/modbus-rtu.c \
+  src/p44utils/thirdparty/libmodbus/modbus-rtu.h \
+  src/p44utils/thirdparty/libmodbus/modbus-tcp-private.h \
+  src/p44utils/thirdparty/libmodbus/modbus-tcp.c \
+  src/p44utils/thirdparty/libmodbus/modbus-tcp.h \
+  src/p44utils/thirdparty/libmodbus/modbus-version.h \
+  src/p44utils/thirdparty/libmodbus/modbus.c \
+  src/p44utils/thirdparty/libmodbus/modbus.h
+
+LIBMODBUS_CFLAGS = -I ${srcdir}/src/p44utils/thirdparty/libmodbus/src -D EMBEDDED_LIBMODBUS=1
+
+else
+
+LIBMODBUS_CFLAGS = ${MODBUS_CFLAGS}
+LIBMODBUS_LIBS = ${MODBUS_LIBS}
+
+endif
+
+
 # ubus support via libubus
 if ENABLE_UBUS
 
@@ -156,7 +182,7 @@ LVGL_FLAGS = \
 
 # main
 
-p44mbcd_LDADD = ${JSONC_LIBS} ${MODBUS_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
+p44mbcd_LDADD = ${JSONC_LIBS} ${LIBMODBUS_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
 p44mbcd_EXTRACFLAGS = -D NO_SSL_DL=1
 
 
@@ -166,7 +192,7 @@ p44mbcd_CPPFLAGS = \
   -I ${srcdir}/src/p44utils/thirdparty/civetweb \
   ${BOOST_CPPFLAGS} \
   ${JSONC_CFLAGS} \
-  ${MODBUS_CFLAGS} \
+  ${LIBMODBUS_CFLAGS} \
   ${PTHREAD_CFLAGS} \
   ${UBUS_FLAGS} \
   ${LVGL_FLAGS} \
@@ -178,6 +204,7 @@ p44mbcd_CPPFLAGS = \
 
 p44mbcd_SOURCES = \
   ${UBUS_SOURCES} \
+  ${LIBMODBUS_SOURCES} \
   ${LVGL_SOURCES} \
   src/p44utils/application.cpp \
   src/p44utils/application.hpp \
@@ -224,6 +251,8 @@ p44mbcd_SOURCES = \
   src/p44utils/serialcomm.hpp \
   src/p44utils/socketcomm.cpp \
   src/p44utils/socketcomm.hpp \
+  src/p44utils/modbus.cpp \
+  src/p44utils/modbus.hpp \
   src/p44utils/utils.cpp \
   src/p44utils/utils.hpp \
   src/p44utils/thirdparty/civetweb/civetweb.c \

@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ED16C41822B25188003F4276 /* modbus.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41122B25188003F4276 /* modbus.c */; };
-		ED16C41922B25188003F4276 /* modbus-data.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41322B25188003F4276 /* modbus-data.c */; };
-		ED16C41A22B25188003F4276 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41422B25188003F4276 /* modbus-tcp.c */; };
-		ED16C41B22B25188003F4276 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED16C41622B25188003F4276 /* modbus-rtu.c */; };
 		ED16C41D22B25F14003F4276 /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF12276F0C3009B43A8 /* monitor.c */; };
 		ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; };
 		ED16C42022B27591003F4276 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -28,6 +24,11 @@
 		ED25C42D17EC8382005B115F /* jsonwebclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED07E26017DA37BF00889CC3 /* jsonwebclient.cpp */; };
 		ED3F75302273012E00E9A249 /* ubus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED3F752E2273012E00E9A249 /* ubus.cpp */; };
 		ED41FABA1918046300E0DCED /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED41FAB81918046300E0DCED /* crc32.cpp */; };
+		ED43FCFA22CBFD5F00ED57F3 /* modbus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */; };
+		ED43FD7C22CC154900ED57F3 /* modbus-data.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */; };
+		ED43FD7D22CC154900ED57F3 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */; };
+		ED43FD7E22CC154900ED57F3 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */; };
+		ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6E22CC00BA00ED57F3 /* modbus.c */; };
 		ED7D396F17EF5BC100A920FF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* main.cpp */; };
 		ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED8A99A12020D17A0069EBF6 /* civetweb.c */; };
 		ED8A99AD2020D6540069EBF6 /* libcrypto.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */; };
@@ -185,19 +186,6 @@
 		ED0E441D1732FE4F00C4C283 /* application.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = application.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907917B3FD0A009F9FE2 /* jsonrpccomm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = jsonrpccomm.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907A17B3FD0A009F9FE2 /* jsonrpccomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = jsonrpccomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		ED16C40C22B25188003F4276 /* modbus-tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp.h"; path = "src/modbus-tcp.h"; sourceTree = "<group>"; };
-		ED16C40D22B25188003F4276 /* modbus.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; tabWidth = 4; };
-		ED16C40E22B25188003F4276 /* modbus-rtu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu.h"; path = "src/modbus-rtu.h"; sourceTree = "<group>"; };
-		ED16C40F22B25188003F4276 /* modbus-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-private.h"; path = "src/modbus-private.h"; sourceTree = "<group>"; };
-		ED16C41022B25188003F4276 /* modbus-rtu-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; };
-		ED16C41122B25188003F4276 /* modbus.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = modbus.c; path = src/modbus.c; sourceTree = "<group>"; tabWidth = 4; };
-		ED16C41222B25188003F4276 /* modbus-tcp-private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; };
-		ED16C41322B25188003F4276 /* modbus-data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-data.c"; path = "src/modbus-data.c"; sourceTree = "<group>"; };
-		ED16C41422B25188003F4276 /* modbus-tcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-tcp.c"; path = "src/modbus-tcp.c"; sourceTree = "<group>"; };
-		ED16C41522B25188003F4276 /* modbus-version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-version.h"; path = "src/modbus-version.h"; sourceTree = "<group>"; };
-		ED16C41622B25188003F4276 /* modbus-rtu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-rtu.c"; path = "src/modbus-rtu.c"; sourceTree = "<group>"; };
-		ED16C41722B25188003F4276 /* modbus-version.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "modbus-version.h.in"; path = "src/modbus-version.h.in"; sourceTree = "<group>"; };
-		ED16C41C22B25334003F4276 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
 		ED16C41E22B27590003F4276 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		ED17F4C61769F51D0076B47C /* persistentparams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = persistentparams.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED17F4C71769F51D0076B47C /* persistentparams.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = persistentparams.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
@@ -212,6 +200,21 @@
 		ED3F752F2273012E00E9A249 /* ubus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ubus.hpp; sourceTree = "<group>"; };
 		ED41FAB81918046300E0DCED /* crc32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc32.cpp; sourceTree = "<group>"; };
 		ED41FAB91918046300E0DCED /* crc32.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = crc32.hpp; sourceTree = "<group>"; };
+		ED43FCF822CBFD5E00ED57F3 /* modbus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = modbus.hpp; sourceTree = "<group>"; };
+		ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modbus.cpp; sourceTree = "<group>"; };
+		ED43FD6B22CC00BA00ED57F3 /* modbus-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-private.h"; path = "src/modbus-private.h"; sourceTree = "<group>"; };
+		ED43FD6C22CC00BA00ED57F3 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
+		ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "modbus-data.c"; path = "src/modbus-data.c"; sourceTree = "<group>"; };
+		ED43FD6E22CC00BA00ED57F3 /* modbus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = modbus.c; path = src/modbus.c; sourceTree = "<group>"; };
+		ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "modbus-tcp.c"; path = "src/modbus-tcp.c"; sourceTree = "<group>"; };
+		ED43FD7022CC00BA00ED57F3 /* modbus-rtu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu.h"; path = "src/modbus-rtu.h"; sourceTree = "<group>"; };
+		ED43FD7122CC00BA00ED57F3 /* modbus-version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-version.h"; path = "src/modbus-version.h"; sourceTree = "<group>"; };
+		ED43FD7222CC00BA00ED57F3 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile.am; path = src/Makefile.am; sourceTree = "<group>"; };
+		ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-rtu.c"; path = "src/modbus-rtu.c"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD7522CC00BA00ED57F3 /* modbus-tcp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp.h"; path = "src/modbus-tcp.h"; sourceTree = "<group>"; };
+		ED43FD7822CC00BA00ED57F3 /* modbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; };
+		ED43FD7922CC00BA00ED57F3 /* modbus-tcp-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; };
+		ED43FD7B22CC00BA00ED57F3 /* modbus-rtu-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; };
 		ED5372F61DFCAD3C0066FF5A /* sqlite3pp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3pp.cpp; sourceTree = "<group>"; };
 		ED5372F71DFCAD3C0066FF5A /* sqlite3pp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite3pp.h; sourceTree = "<group>"; };
 		ED5372F81DFCAD3C0066FF5A /* sqlite3ppext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3ppext.cpp; sourceTree = "<group>"; };
@@ -531,27 +534,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		ED16C40B22B25136003F4276 /* libmodbus */ = {
-			isa = PBXGroup;
-			children = (
-				ED16C41C22B25334003F4276 /* config.h */,
-				ED16C41322B25188003F4276 /* modbus-data.c */,
-				ED16C40F22B25188003F4276 /* modbus-private.h */,
-				ED16C41022B25188003F4276 /* modbus-rtu-private.h */,
-				ED16C41622B25188003F4276 /* modbus-rtu.c */,
-				ED16C40E22B25188003F4276 /* modbus-rtu.h */,
-				ED16C41222B25188003F4276 /* modbus-tcp-private.h */,
-				ED16C41422B25188003F4276 /* modbus-tcp.c */,
-				ED16C40C22B25188003F4276 /* modbus-tcp.h */,
-				ED16C41522B25188003F4276 /* modbus-version.h */,
-				ED16C41722B25188003F4276 /* modbus-version.h.in */,
-				ED16C41122B25188003F4276 /* modbus.c */,
-				ED16C40D22B25188003F4276 /* modbus.h */,
-			);
-			name = libmodbus;
-			path = "src/libmodbus-3.1.4";
-			sourceTree = "<group>";
-		};
 		ED3699B5178DA83800376405 /* p44utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -610,6 +592,8 @@
 				ED5B2934174124D400334C71 /* sqlite3persistence.hpp */,
 				EDB1892F17D4B7330088B6A5 /* ssdpsearch.cpp */,
 				EDB1893017D4B7330088B6A5 /* ssdpsearch.hpp */,
+				ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */,
+				ED43FCF822CBFD5E00ED57F3 /* modbus.hpp */,
 				ED3F752E2273012E00E9A249 /* ubus.cpp */,
 				ED3F752F2273012E00E9A249 /* ubus.hpp */,
 				ED026CF7171D9CAB00AD5FD6 /* utils.cpp */,
@@ -618,6 +602,26 @@
 			);
 			name = p44utils;
 			path = src/p44utils;
+			sourceTree = "<group>";
+		};
+		ED43FCFB22CC00B900ED57F3 /* libmodbus */ = {
+			isa = PBXGroup;
+			children = (
+				ED43FD6C22CC00BA00ED57F3 /* config.h */,
+				ED43FD7222CC00BA00ED57F3 /* Makefile.am */,
+				ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */,
+				ED43FD6B22CC00BA00ED57F3 /* modbus-private.h */,
+				ED43FD7B22CC00BA00ED57F3 /* modbus-rtu-private.h */,
+				ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */,
+				ED43FD7022CC00BA00ED57F3 /* modbus-rtu.h */,
+				ED43FD7922CC00BA00ED57F3 /* modbus-tcp-private.h */,
+				ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */,
+				ED43FD7522CC00BA00ED57F3 /* modbus-tcp.h */,
+				ED43FD7122CC00BA00ED57F3 /* modbus-version.h */,
+				ED43FD6E22CC00BA00ED57F3 /* modbus.c */,
+				ED43FD7822CC00BA00ED57F3 /* modbus.h */,
+			);
+			path = libmodbus;
 			sourceTree = "<group>";
 		};
 		ED4D033C1F83EAFD00BF1820 /* Frameworks */ = {
@@ -633,6 +637,7 @@
 		ED5372E11DFCAD3C0066FF5A /* thirdparty */ = {
 			isa = PBXGroup;
 			children = (
+				ED43FCFB22CC00B900ED57F3 /* libmodbus */,
 				ED5372E21DFCAD3C0066FF5A /* civetweb */,
 				ED5372F51DFCAD3C0066FF5A /* sqlite3pp */,
 			);
@@ -682,7 +687,6 @@
 				ED9D3AD52276F0C3009B43A8 /* lv_drivers */,
 				ED9D3C6922775E11009B43A8 /* lv_examples */,
 				ED6D7BE71716B6B1005DED18 /* src */,
-				ED16C40B22B25136003F4276 /* libmodbus */,
 				ED6D7BDC1716B63A005DED18 /* Products */,
 				ED4D033C1F83EAFD00BF1820 /* Frameworks */,
 			);
@@ -1161,12 +1165,12 @@
 				ED9D3A842276F0A5009B43A8 /* lv_ufs.c in Sources */,
 				ED9D3A762276F0A5009B43A8 /* lv_refr.c in Sources */,
 				ED25C42D17EC8382005B115F /* jsonwebclient.cpp in Sources */,
+				ED43FCFA22CBFD5F00ED57F3 /* modbus.cpp in Sources */,
 				ED9D3B012276F0C4009B43A8 /* XPT2046.c in Sources */,
 				ED9D3A802276F0A5009B43A8 /* lv_color.c in Sources */,
+				ED43FD7D22CC154900ED57F3 /* modbus-rtu.c in Sources */,
 				ED9D3ACC2276F0A5009B43A8 /* lv_table.c in Sources */,
-				ED16C41B22B25188003F4276 /* modbus-rtu.c in Sources */,
 				ED9D3A8B2276F0A5009B43A8 /* lv_port_indev_templ.c in Sources */,
-				ED16C41922B25188003F4276 /* modbus-data.c in Sources */,
 				ED9D3A902276F0A5009B43A8 /* lv_theme_nemo.c in Sources */,
 				ED9D3ACB2276F0A5009B43A8 /* lv_bar.c in Sources */,
 				ED9D3A982276F0A5009B43A8 /* lv_font_dejavu_40_cyrillic.c in Sources */,
@@ -1199,12 +1203,12 @@
 				ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */,
 				ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */,
 				ED9D3ABB2276F0A5009B43A8 /* lv_ta.c in Sources */,
-				ED16C41A22B25188003F4276 /* modbus-tcp.c in Sources */,
 				ED9D3A822276F0A5009B43A8 /* lv_log.c in Sources */,
 				ED9D3A892276F0A5009B43A8 /* lv_font.c in Sources */,
 				ED25C42717EC59D1005B115F /* socketcomm.cpp in Sources */,
 				ED9D3AA02276F0A5009B43A8 /* lv_font_symbol_10.c in Sources */,
 				ED9D3A942276F0A5009B43A8 /* lv_theme_default.c in Sources */,
+				ED43FD7E22CC154900ED57F3 /* modbus-tcp.c in Sources */,
 				ED9D3A8D2276F0A5009B43A8 /* lv_port_fs_templ.c in Sources */,
 				ED9D3ABC2276F0A5009B43A8 /* lv_lmeter.c in Sources */,
 				ED25C42317EC59D1005B115F /* mainloop.cpp in Sources */,
@@ -1248,7 +1252,6 @@
 				EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */,
 				ED9D3AD22276F0A5009B43A8 /* lv_objx_templ.c in Sources */,
 				ED9D3A912276F0A5009B43A8 /* lv_theme_templ.c in Sources */,
-				ED16C41822B25188003F4276 /* modbus.c in Sources */,
 				ED9D3ABF2276F0A5009B43A8 /* lv_spinbox.c in Sources */,
 				ED9D3B032276F0C4009B43A8 /* FT5406EE8.c in Sources */,
 				ED25C41F17EC59D1005B115F /* logger.cpp in Sources */,
@@ -1259,6 +1262,7 @@
 				ED9D3A962276F0A5009B43A8 /* lv_theme_night.c in Sources */,
 				ED9D3AA22276F0A5009B43A8 /* lv_font_symbol_40.c in Sources */,
 				ED25C42617EC59D1005B115F /* fdcomm.cpp in Sources */,
+				ED43FD7C22CC154900ED57F3 /* modbus-data.c in Sources */,
 				ED7D396F17EF5BC100A920FF /* main.cpp in Sources */,
 				ED9D3AB52276F0A5009B43A8 /* lv_gauge.c in Sources */,
 				ED9D3AC62276F0A5009B43A8 /* lv_preload.c in Sources */,
@@ -1277,6 +1281,7 @@
 				ED9D3AA62276F0A5009B43A8 /* lv_font_builtin.c in Sources */,
 				EDDEE88917FC6BEE00A65599 /* digitalio.cpp in Sources */,
 				ED9D3AA32276F0A5009B43A8 /* lv_font_dejavu_10.c in Sources */,
+				ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */,
 				ED25C42417EC59D1005B115F /* application.cpp in Sources */,
 				ED9D3A932276F0A5009B43A8 /* lv_theme_zen.c in Sources */,
 				ED3F75302273012E00E9A249 /* ubus.cpp in Sources */,
@@ -1310,6 +1315,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"NO_SSL_DL=1",
+					"EMBEDDED_LIBMODBUS=1",
+					"ENABLE_MODBUS=1",
 					"ENABLE_UBUS=0",
 					"LV_CONF_INCLUDE_SIMPLE=1",
 				);
