@@ -29,7 +29,33 @@
 		ED43FD7D22CC154900ED57F3 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */; };
 		ED43FD7E22CC154900ED57F3 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */; };
 		ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6E22CC00BA00ED57F3 /* modbus.c */; };
-		ED7D396F17EF5BC100A920FF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* main.cpp */; };
+		ED5A054322CE26BF0047D746 /* i2c.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED36999C178DA01D00376405 /* i2c.cpp */; };
+		ED5A054722CE26BF0047D746 /* modbus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */; };
+		ED5A054A22CE26BF0047D746 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */; };
+		ED5A055E22CE26BF0047D746 /* jsonobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5576131750B15E00CCC4DD /* jsonobject.cpp */; };
+		ED5A056922CE26BF0047D746 /* img_bubble_pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */; };
+		ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */; };
+		ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED74563E1731B813001C9565 /* mainloop.cpp */; };
+		ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
+		ED5A057C22CE26BF0047D746 /* evdev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AE72276F0C3009B43A8 /* evdev.c */; };
+		ED5A058022CE26BF0047D746 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026CF7171D9CAB00AD5FD6 /* utils.cpp */; };
+		ED5A058222CE26BF0047D746 /* p44obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED81337717C6C765003982CC /* p44obj.cpp */; };
+		ED5A058B22CE26BF0047D746 /* consolekey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC1166C177EDDDF00F27115 /* consolekey.cpp */; };
+		ED5A058D22CE26BF0047D746 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
+		ED5A058E22CE26BF0047D746 /* serialcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB284481733B59500EAE5DE /* serialcomm.cpp */; };
+		ED5A059622CE26BF0047D746 /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED41FAB81918046300E0DCED /* crc32.cpp */; };
+		ED5A059B22CE26BF0047D746 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
+		ED5A05A022CE26BF0047D746 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEE1716EAA6005DED18 /* logger.cpp */; };
+		ED5A05A422CE26BF0047D746 /* fnv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDCFE85E17203E47001D35F3 /* fnv.cpp */; };
+		ED5A05A722CE26BF0047D746 /* fdcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5BC1917B50E79004DB38D /* fdcomm.cpp */; };
+		ED5A05A822CE26BF0047D746 /* modbus-data.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */; };
+		ED5A05B522CE26BF0047D746 /* spi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDF1AF241D0D98D000302F77 /* spi.cpp */; };
+		ED5A05B922CE26BF0047D746 /* digitalio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369996178D5BD600376405 /* digitalio.cpp */; };
+		ED5A05BB22CE26BF0047D746 /* modbus.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6E22CC00BA00ED57F3 /* modbus.c */; };
+		ED5A05BC22CE26BF0047D746 /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED0E441C1732FE4F00C4C283 /* application.cpp */; };
+		ED5A05C322CE26BF0047D746 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026D03171E94D700AD5FD6 /* error.cpp */; };
+		ED5A05D422CE28B90047D746 /* p44mbutil_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */; };
+		ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */; };
 		ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED8A99A12020D17A0069EBF6 /* civetweb.c */; };
 		ED8A99AD2020D6540069EBF6 /* libcrypto.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */; };
 		ED8A99AE2020D6540069EBF6 /* libssl.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */; };
@@ -171,6 +197,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		ED5A05CC22CE26BF0047D746 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		ED5A05CD22CE26BF0047D746 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -233,9 +278,11 @@
 		ED557611174CFB3100CCC4DD /* jsoncomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = jsoncomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED5576131750B15E00CCC4DD /* jsonobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsonobject.cpp; sourceTree = "<group>"; };
 		ED5576141750B15F00CCC4DD /* jsonobject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = jsonobject.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED5A05D222CE26BF0047D746 /* p44mbutil */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = p44mbutil; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = p44mbutil_main.cpp; sourceTree = "<group>"; };
 		ED5B2933174124D300334C71 /* sqlite3persistence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3persistence.cpp; sourceTree = "<group>"; };
 		ED5B2934174124D400334C71 /* sqlite3persistence.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = sqlite3persistence.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		ED6D7BEA1716B6B1005DED18 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = p44mbcd_main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEE1716EAA6005DED18 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = logger.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEF1716EAA6005DED18 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = logger.hpp; sourceTree = "<group>"; };
 		ED6D7BF617180766005DED18 /* serialqueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = serialqueue.cpp; sourceTree = "<group>"; };
@@ -531,6 +578,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ED5A05C822CE26BF0047D746 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -696,6 +750,7 @@
 			isa = PBXGroup;
 			children = (
 				ED25C41517EC5947005B115F /* p44mbcd */,
+				ED5A05D222CE26BF0047D746 /* p44mbutil */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -706,7 +761,8 @@
 				ED9D3C662276F294009B43A8 /* lv_conf.h */,
 				ED9D3C672276F2F9009B43A8 /* lv_drv_conf.h */,
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
-				ED6D7BEA1716B6B1005DED18 /* main.cpp */,
+				ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */,
+				ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -1125,6 +1181,24 @@
 			productReference = ED25C41517EC5947005B115F /* p44mbcd */;
 			productType = "com.apple.product-type.tool";
 		};
+		ED5A053D22CE26BF0047D746 /* p44mbutil */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED5A05CF22CE26BF0047D746 /* Build configuration list for PBXNativeTarget "p44mbutil" */;
+			buildPhases = (
+				ED5A053E22CE26BF0047D746 /* Sources */,
+				ED5A05C822CE26BF0047D746 /* Frameworks */,
+				ED5A05CC22CE26BF0047D746 /* CopyFiles */,
+				ED5A05CD22CE26BF0047D746 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = p44mbutil;
+			productName = p44maintd;
+			productReference = ED5A05D222CE26BF0047D746 /* p44mbutil */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1148,6 +1222,7 @@
 			projectRoot = "";
 			targets = (
 				ED25C41417EC5947005B115F /* p44mbcd */,
+				ED5A053D22CE26BF0047D746 /* p44mbutil */,
 			);
 		};
 /* End PBXProject section */
@@ -1263,7 +1338,7 @@
 				ED9D3AA22276F0A5009B43A8 /* lv_font_symbol_40.c in Sources */,
 				ED25C42617EC59D1005B115F /* fdcomm.cpp in Sources */,
 				ED43FD7C22CC154900ED57F3 /* modbus-data.c in Sources */,
-				ED7D396F17EF5BC100A920FF /* main.cpp in Sources */,
+				ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */,
 				ED9D3AB52276F0A5009B43A8 /* lv_gauge.c in Sources */,
 				ED9D3AC62276F0A5009B43A8 /* lv_preload.c in Sources */,
 				ED9D3ACF2276F0A5009B43A8 /* lv_tabview.c in Sources */,
@@ -1294,6 +1369,39 @@
 				ED9D3AFE2276F0C4009B43A8 /* keyboard.c in Sources */,
 				ED9D3A862276F0A5009B43A8 /* lv_circ.c in Sources */,
 				ED9D3AAB2276F0A5009B43A8 /* lv_hal_disp.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED5A053E22CE26BF0047D746 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED5A054322CE26BF0047D746 /* i2c.cpp in Sources */,
+				ED5A054722CE26BF0047D746 /* modbus.cpp in Sources */,
+				ED5A054A22CE26BF0047D746 /* modbus-rtu.c in Sources */,
+				ED5A055E22CE26BF0047D746 /* jsonobject.cpp in Sources */,
+				ED5A056922CE26BF0047D746 /* img_bubble_pattern.c in Sources */,
+				ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */,
+				ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */,
+				ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */,
+				ED5A057C22CE26BF0047D746 /* evdev.c in Sources */,
+				ED5A058022CE26BF0047D746 /* utils.cpp in Sources */,
+				ED5A058222CE26BF0047D746 /* p44obj.cpp in Sources */,
+				ED5A058B22CE26BF0047D746 /* consolekey.cpp in Sources */,
+				ED5A058D22CE26BF0047D746 /* gpio.cpp in Sources */,
+				ED5A058E22CE26BF0047D746 /* serialcomm.cpp in Sources */,
+				ED5A059622CE26BF0047D746 /* crc32.cpp in Sources */,
+				ED5A059B22CE26BF0047D746 /* iopin.cpp in Sources */,
+				ED5A05A022CE26BF0047D746 /* logger.cpp in Sources */,
+				ED5A05A422CE26BF0047D746 /* fnv.cpp in Sources */,
+				ED5A05A722CE26BF0047D746 /* fdcomm.cpp in Sources */,
+				ED5A05A822CE26BF0047D746 /* modbus-data.c in Sources */,
+				ED5A05D422CE28B90047D746 /* p44mbutil_main.cpp in Sources */,
+				ED5A05B522CE26BF0047D746 /* spi.cpp in Sources */,
+				ED5A05B922CE26BF0047D746 /* digitalio.cpp in Sources */,
+				ED5A05BB22CE26BF0047D746 /* modbus.c in Sources */,
+				ED5A05BC22CE26BF0047D746 /* application.cpp in Sources */,
+				ED5A05C322CE26BF0047D746 /* error.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1377,6 +1485,73 @@
 			};
 			name = Release;
 		};
+		ED5A05D022CE26BF0047D746 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"EMBEDDED_LIBMODBUS=1",
+					"ENABLE_MODBUS=1",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/usr/local/include/json-c",
+					/usr/local/opt/openssl/include,
+					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
+					"/Volumes/CaseSens/openwrt/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-4.14.95/include",
+					.,
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		ED5A05D122CE26BF0047D746 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"EMBEDDED_LIBMODBUS=1",
+					"ENABLE_MODBUS=1",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/usr/local/include/json-c",
+					/usr/local/opt/openssl/include,
+					"/Volumes/CaseSens/openwrt/staging_dir/target-mipsel_24kc_musl/usr/include",
+					"/Volumes/CaseSens/openwrt/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-4.14.95/include",
+					.,
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		ED6D7BE21716B63A005DED18 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1447,6 +1622,15 @@
 			buildConfigurations = (
 				ED25C41B17EC5947005B115F /* Debug */,
 				ED25C41C17EC5947005B115F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED5A05CF22CE26BF0047D746 /* Build configuration list for PBXNativeTarget "p44mbutil" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED5A05D022CE26BF0047D746 /* Debug */,
+				ED5A05D122CE26BF0047D746 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

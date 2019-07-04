@@ -36,7 +36,6 @@
 #include "lv_examples/lv_apps/demo/demo.h"
 
 
-#define DEFAULT_LOGLEVEL LOG_NOTICE
 #define DEFAULT_MODBUS_RTU_PARAMS "9600,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
 #define DEFAULT_MODBUS_IP_PORT 1502
 
@@ -113,29 +112,21 @@ public:
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
-      { 'l', "loglevel",        true,  "level;set max level of log message detail to show on stderr" },
-      { 0  , "deltatstamps",    false, "show timestamp delta between log lines" },
-      { 'V', "version",         false, "show version" },
-      { 'h', "help",            false, "show this text" },
+      CMDLINE_APPLICATION_LOGOPTIONS,
+      CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
     };
 
     // parse the command line, exits when syntax errors occur
     setCommandDescriptors(usageText, options);
     parseCommandLine(argc, argv);
+    processStandardLogOptions(true); // daemon defaults
 
     if (numOptions()<1) {
       // show usage
       showUsage();
       terminateApp(EXIT_SUCCESS);
     }
-
-    // log level?
-    int loglevel = DEFAULT_LOGLEVEL;
-    getIntOption("loglevel", loglevel);
-    SETLOGLEVEL(loglevel);
-    SETERRLEVEL(LOG_ERR, true); // errors and more serious go to stderr, all log goes to stdout
-    SETDELTATIME(getOption("deltatstamps"));
 
     #if ENABLE_UBUS
     // Prepare ubus API

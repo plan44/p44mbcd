@@ -32,10 +32,10 @@ AC_ARG_ENABLE(
 AM_CONDITIONAL([ENABLE_UBUS], [test "x$enable_ubus" = xyes])
 
 AC_ARG_ENABLE(
-  [libmodbusembedded],
-  [AS_HELP_STRING([--enable-embeddedlibmodbus], [Enable embedded libmodbus])]
+  [embeddedlibmodbus],
+  [AS_HELP_STRING([--enable-embeddedlibmodbus], [Enable embedded libmodbus (instead of using standard package)])]
 )
-AM_CONDITIONAL([EMBEDDED_LIBMODBUS], [test "x$embeddedlibmodbus" = xyes])
+AM_CONDITIONAL([EMBEDDED_LIBMODBUS], [test "x$enable_embeddedlibmodbus" = xyes])
 
 
 
@@ -49,8 +49,8 @@ AM_COND_IF([ENABLE_UBUS], [
   AC_CHECK_LIB(blobmsg_json, blobmsg_add_object, [], [AC_MSG_ERROR([Could not find libblobmsg_json with blobmsg_add_object])])
 ], [])
 
-AM_COND_IF([EMBEDDED_LIBMODBUS], [],
-  AC_CHECK_LIB(modbus, modbus_rtu_set_custom_rts_ex, [], [AC_MSG_ERROR([Could not find libmodbus with modbus_rtu_set_custom_rts_ex (plan44 enhanced version!)])])
+AM_COND_IF([EMBEDDED_LIBMODBUS], [], [
+  AC_CHECK_LIB(modbus, modbus_rtu_set_custom_rts_ex, [], [AC_MSG_ERROR([Could not find libmodbus with modbus_rtu_set_custom_rts_ex - plan44 enhanced version!])])
 ])
 AC_CHECK_LIB(json-c, json_tokener_get_error, [], [AC_MSG_ERROR([Could not find JSON-C / libjson0 with json_tokener_get_error supported (>=0.10)])])
 AC_CHECK_LIB(ssl, TLSv1_client_method, [], [AC_MSG_ERROR([Could not find libssl with TLSv1_client_method])])

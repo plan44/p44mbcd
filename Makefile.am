@@ -1,34 +1,23 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
-bin_PROGRAMS = p44mbcd
-
-# p44mbcd
-
-if DEBUG
-p44mbcd_DEBUG = -D DEBUG=1
-endif
-
-if P44_BUILD_OW
-p44mbcd_PLATFORM = -D P44_BUILD_OW=1
-endif
-
+bin_PROGRAMS = p44mbcd p44mbutil
 
 # embedded libmodbus
 if EMBEDDED_LIBMODBUS
 
 LIBMODBUS_SOURCES = \
-  src/p44utils/thirdparty/libmodbus/modbus-data.c \
-  src/p44utils/thirdparty/libmodbus/modbus-private.h \
-  src/p44utils/thirdparty/libmodbus/modbus-rtu-private.h \
-  src/p44utils/thirdparty/libmodbus/modbus-rtu.c \
-  src/p44utils/thirdparty/libmodbus/modbus-rtu.h \
-  src/p44utils/thirdparty/libmodbus/modbus-tcp-private.h \
-  src/p44utils/thirdparty/libmodbus/modbus-tcp.c \
-  src/p44utils/thirdparty/libmodbus/modbus-tcp.h \
-  src/p44utils/thirdparty/libmodbus/modbus-version.h \
-  src/p44utils/thirdparty/libmodbus/modbus.c \
-  src/p44utils/thirdparty/libmodbus/modbus.h
+  src/p44utils/thirdparty/libmodbus/src/modbus-data.c \
+  src/p44utils/thirdparty/libmodbus/src/modbus-private.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus-rtu-private.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus-rtu.c \
+  src/p44utils/thirdparty/libmodbus/src/modbus-rtu.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus-tcp-private.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus-tcp.c \
+  src/p44utils/thirdparty/libmodbus/src/modbus-tcp.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus-version.h \
+  src/p44utils/thirdparty/libmodbus/src/modbus.c \
+  src/p44utils/thirdparty/libmodbus/src/modbus.h
 
 LIBMODBUS_CFLAGS = -I ${srcdir}/src/p44utils/thirdparty/libmodbus/src -D EMBEDDED_LIBMODBUS=1
 
@@ -53,6 +42,7 @@ else
 UBUS_FLAGS = -D ENABLE_UBUS=0
 
 endif
+
 
 # littlevGL
 LVGL_SOURCES = \
@@ -180,6 +170,17 @@ LVGL_FLAGS = \
 
 
 
+# p44mbcd
+
+if DEBUG
+p44mbcd_DEBUG = -D DEBUG=1
+endif
+
+if P44_BUILD_OW
+p44mbcd_PLATFORM = -D P44_BUILD_OW=1
+endif
+
+
 # main
 
 p44mbcd_LDADD = ${JSONC_LIBS} ${LIBMODBUS_LIBS} ${PTHREAD_LIBS} ${SQLITE3_LIBS}
@@ -263,4 +264,79 @@ p44mbcd_SOURCES = \
   src/p44utils/thirdparty/civetweb/hostcheck.inl \
   src/p44utils/thirdparty/civetweb/openssl_hostname_validation.inl \
   src/p44utils/p44utils_common.hpp \
-  src/main.cpp
+  src/p44mbcd_main.cpp
+
+
+# p44mbutil
+
+if DEBUG
+p44mbutil_DEBUG = -D DEBUG=1
+endif
+
+if P44_BUILD_OW
+p44mbutil_PLATFORM = -D P44_BUILD_OW=1
+endif
+
+# main
+
+p44mbutil_LDADD = ${LIBMODBUS_LIBS} ${PTHREAD_LIBS}
+p44mbutil_EXTRACFLAGS = -D NO_SSL_DL=1
+
+
+p44mbutil_CPPFLAGS = \
+  -I ${srcdir}/src/p44utils \
+  -I ${srcdir}/src \
+  ${BOOST_CPPFLAGS} \
+  ${LIBMODBUS_CFLAGS} \
+  ${PTHREAD_CFLAGS} \
+  ${p44mbutil_EXTRACFLAGS} \
+  ${p44mbutil_PLATFORM} \
+  ${p44mbutil_DEBUG}
+
+
+
+p44mbutil_SOURCES = \
+  ${LIBMODBUS_SOURCES} \
+  src/p44utils/application.cpp \
+  src/p44utils/application.hpp \
+  src/p44utils/consolekey.cpp \
+  src/p44utils/consolekey.hpp \
+  src/p44utils/digitalio.cpp \
+  src/p44utils/digitalio.hpp \
+  src/p44utils/i2c.cpp \
+  src/p44utils/i2c.hpp \
+  src/p44utils/spi.cpp \
+  src/p44utils/spi.hpp \
+  src/p44utils/pwm.cpp \
+  src/p44utils/pwm.hpp \
+  src/p44utils/analogio.cpp \
+  src/p44utils/analogio.hpp \
+  src/p44utils/error.cpp \
+  src/p44utils/error.hpp \
+  src/p44utils/fnv.cpp \
+  src/p44utils/fnv.hpp \
+  src/p44utils/crc32.cpp \
+  src/p44utils/crc32.hpp \
+  src/p44utils/fdcomm.cpp \
+  src/p44utils/fdcomm.hpp \
+  src/p44utils/gpio.cpp \
+  src/p44utils/gpio.h \
+  src/p44utils/gpio.hpp \
+  src/p44utils/iopin.cpp \
+  src/p44utils/iopin.hpp \
+  src/p44utils/logger.cpp \
+  src/p44utils/logger.hpp \
+  src/p44utils/macaddress.cpp \
+  src/p44utils/macaddress.hpp \
+  src/p44utils/mainloop.cpp \
+  src/p44utils/mainloop.hpp \
+  src/p44utils/p44obj.cpp \
+  src/p44utils/p44obj.hpp \
+  src/p44utils/serialcomm.cpp \
+  src/p44utils/serialcomm.hpp \
+  src/p44utils/modbus.cpp \
+  src/p44utils/modbus.hpp \
+  src/p44utils/utils.cpp \
+  src/p44utils/utils.hpp \
+  src/p44utils/p44utils_common.hpp \
+  src/p44mbutil_main.cpp
