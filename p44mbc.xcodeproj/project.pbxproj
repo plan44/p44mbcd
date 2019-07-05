@@ -247,19 +247,19 @@
 		ED41FAB91918046300E0DCED /* crc32.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = crc32.hpp; sourceTree = "<group>"; };
 		ED43FCF822CBFD5E00ED57F3 /* modbus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = modbus.hpp; sourceTree = "<group>"; };
 		ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modbus.cpp; sourceTree = "<group>"; };
-		ED43FD6B22CC00BA00ED57F3 /* modbus-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-private.h"; path = "src/modbus-private.h"; sourceTree = "<group>"; };
+		ED43FD6B22CC00BA00ED57F3 /* modbus-private.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-private.h"; path = "src/modbus-private.h"; sourceTree = "<group>"; tabWidth = 4; };
 		ED43FD6C22CC00BA00ED57F3 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
-		ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "modbus-data.c"; path = "src/modbus-data.c"; sourceTree = "<group>"; };
-		ED43FD6E22CC00BA00ED57F3 /* modbus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = modbus.c; path = src/modbus.c; sourceTree = "<group>"; };
-		ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "modbus-tcp.c"; path = "src/modbus-tcp.c"; sourceTree = "<group>"; };
-		ED43FD7022CC00BA00ED57F3 /* modbus-rtu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu.h"; path = "src/modbus-rtu.h"; sourceTree = "<group>"; };
-		ED43FD7122CC00BA00ED57F3 /* modbus-version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-version.h"; path = "src/modbus-version.h"; sourceTree = "<group>"; };
+		ED43FD6D22CC00BA00ED57F3 /* modbus-data.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-data.c"; path = "src/modbus-data.c"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD6E22CC00BA00ED57F3 /* modbus.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = modbus.c; path = src/modbus.c; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
+		ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-tcp.c"; path = "src/modbus-tcp.c"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD7022CC00BA00ED57F3 /* modbus-rtu.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu.h"; path = "src/modbus-rtu.h"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD7122CC00BA00ED57F3 /* modbus-version.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-version.h"; path = "src/modbus-version.h"; sourceTree = "<group>"; tabWidth = 4; };
 		ED43FD7222CC00BA00ED57F3 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile.am; path = src/Makefile.am; sourceTree = "<group>"; };
 		ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; name = "modbus-rtu.c"; path = "src/modbus-rtu.c"; sourceTree = "<group>"; tabWidth = 4; };
-		ED43FD7522CC00BA00ED57F3 /* modbus-tcp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp.h"; path = "src/modbus-tcp.h"; sourceTree = "<group>"; };
-		ED43FD7822CC00BA00ED57F3 /* modbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; };
-		ED43FD7922CC00BA00ED57F3 /* modbus-tcp-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; };
-		ED43FD7B22CC00BA00ED57F3 /* modbus-rtu-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; };
+		ED43FD7522CC00BA00ED57F3 /* modbus-tcp.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp.h"; path = "src/modbus-tcp.h"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD7822CC00BA00ED57F3 /* modbus.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
+		ED43FD7922CC00BA00ED57F3 /* modbus-tcp-private.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; tabWidth = 4; };
+		ED43FD7B22CC00BA00ED57F3 /* modbus-rtu-private.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; tabWidth = 4; };
 		ED5372F61DFCAD3C0066FF5A /* sqlite3pp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3pp.cpp; sourceTree = "<group>"; };
 		ED5372F71DFCAD3C0066FF5A /* sqlite3pp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite3pp.h; sourceTree = "<group>"; };
 		ED5372F81DFCAD3C0066FF5A /* sqlite3ppext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3ppext.cpp; sourceTree = "<group>"; };
@@ -592,6 +592,8 @@
 			isa = PBXGroup;
 			children = (
 				ED5372E11DFCAD3C0066FF5A /* thirdparty */,
+				ED74563E1731B813001C9565 /* mainloop.cpp */,
+				ED74563F1731B813001C9565 /* mainloop.hpp */,
 				ED0E441C1732FE4F00C4C283 /* application.cpp */,
 				ED0E441D1732FE4F00C4C283 /* application.hpp */,
 				EDC1166C177EDDDF00F27115 /* consolekey.cpp */,
@@ -628,8 +630,6 @@
 				ED6D7BEF1716EAA6005DED18 /* logger.hpp */,
 				EDDE42C117F41A36005B97A0 /* macaddress.cpp */,
 				EDDE42C017F41A36005B97A0 /* macaddress.hpp */,
-				ED74563E1731B813001C9565 /* mainloop.cpp */,
-				ED74563F1731B813001C9565 /* mainloop.hpp */,
 				EDB284421732965700EAE5DE /* operationqueue.cpp */,
 				EDB284431732965700EAE5DE /* operationqueue.hpp */,
 				ED81337717C6C765003982CC /* p44obj.cpp */,

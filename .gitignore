@@ -32,3 +32,4 @@ p44mbcd
 .pkgdir/
 config.rpath
 ipkg-*/
+p44mbutil
