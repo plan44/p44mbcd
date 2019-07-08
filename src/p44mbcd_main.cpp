@@ -36,7 +36,7 @@
 #include "lv_examples/lv_apps/demo/demo.h"
 
 
-#define DEFAULT_MODBUS_RTU_PARAMS "9600,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
+#define DEFAULT_MODBUS_RTU_PARAMS "115200,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
 #define DEFAULT_MODBUS_IP_PORT 1502
 
 #define ENABLE_IRQTEST 1
@@ -78,7 +78,7 @@ class P44mbcd : public CmdLineApp
   bool showCursor = false;
 
   // modbus
-  ModbusMaster modBus;
+  ModbusSlave modBus;
 
   // app
   MLTicket appTicket;
@@ -104,6 +104,7 @@ public:
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
       { 0  , "slave",           true,  "slave;use this slave by default" },
+      { 'd', "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 0  , "mousecursor",     false, "show mouse cursor" },
       { 0  , "testmode",        false, "FCU test mode" },
       #if ENABLE_IRQTEST
@@ -323,19 +324,50 @@ public:
     int slave = 1;
     getIntOption("slave", slave);
     modBus.setSlaveAddress(slave);
-    #if DEBUG
-    modBus.setDebug(true);
-    #endif
+    modBus.setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
+    modBus.setDebug(getOption("debugmodbus"));
+    modBus.setRegisterModel(
+      0, 0, // coils
+      0, 0, // input bits
+      101, 129-101+1, // registers
+      0, 0 // input registers
+    );
+    modBus.setValueAccessHandler(boost::bind(&P44mbcd::modbusValueAccessHandler, this, _1, _2, _3, _4));
+    err = modBus.connect();
+    if (!Error::isOK(err)) {
+      terminateAppWith(err->withPrefix("Failed to start modbus slave server: "));
+      return;
+    }
     // start littlevGL
     initLvgl();
-    // start app
-    if (!isTerminated())
-      initApp();
+//    // start app
+//    if (!isTerminated())
+//      initApp();
   }
 
 
 
+  ErrorPtr modbusValueAccessHandler(int aAddress, bool aBit, bool aInput, bool aWrite)
+  {
+    uint16_t val = modBus.getValue(aAddress, aBit, aInput);
+    LOG(LOG_NOTICE,
+      "%s%s %d accessed for %s, value = %d (0x%04X)",
+      aInput ? "Readonly " : "",
+      aBit ? "Bit" : "Register",
+      aAddress,
+      aWrite ? "write" : "read",
+      val, val
+    );
+    if (aAddress==128) {
+      return TextError::err("Special register 128 not yet implemented");
+    }
+    return ErrorPtr();
+  }
+
+
   // MARK: - app logic
+
+  #if OLDTESTCODEENABLED
 
   uint16_t reg104 = 0;
   uint16_t reg202 = 0;
@@ -452,6 +484,7 @@ public:
     }
   }
 
+  #endif
 
 
   // MARK: - littlevGL
@@ -461,7 +494,9 @@ public:
   static void demoButtonPressed(int aButtonId)
   {
     P44mbcd *p44mbcd = dynamic_cast<P44mbcd *>(Application::sharedApplication());
+    #if OLDTESTCODEENABLED
     p44mbcd->buttonPressed(aButtonId);
+    #endif
   }
 
 

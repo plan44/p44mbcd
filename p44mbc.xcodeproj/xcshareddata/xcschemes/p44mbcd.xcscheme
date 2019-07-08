@@ -73,11 +73,15 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--connection localhost:1234"
-            isEnabled = "NO">
+            argument = "--connection 127.0.0.1:8765"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--connection /dev/tty.usbserial-A403OIP2:115200,8,N,1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--debugmodbus"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

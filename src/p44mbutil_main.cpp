@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-#define DEFAULT_MODBUS_RTU_PARAMS "9600,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
+#define DEFAULT_MODBUS_RTU_PARAMS "115200,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
 #define DEFAULT_MODBUS_IP_PORT 1502
 
 #define ENABLE_IRQTEST 1
