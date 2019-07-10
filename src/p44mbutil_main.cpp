@@ -41,15 +41,18 @@ public:
     const char *usageText =
       "Usage: %1$s [options] <command> [<commandarg>...]\n"
       "Commands:\n"
-      "  readreg <regno> [<count>]  : read from modbus register(s)\n"
-      "  writereg <regno> <value>   : write value to modbus register\n"
-      "  readinfo                   : read slave info\n";
+      "  readreg <regno> [<count>]             : read from modbus register(s)\n"
+      "  writereg <regno> <value>              : write value to modbus register\n"
+      "  readinfo                              : read slave info\n"
+      "  scan                                  : scan for slaves on the bus by querying slave info\n"
+      "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n";
     const CmdLineOptionDescriptor options[] = {
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
+      { 'd', "stdmodbusfiles",  false, "disable p44 file handling, just use standard modbus file record access" },
       { 'd', "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
-      { 's', "slave",           true,  "slave;slave to address (0 for broadcast)" },
+      { 's', "slave",           true,  "slave;slave to address (default=1)" },
       CMDLINE_APPLICATION_LOGOPTIONS,
       CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
@@ -82,11 +85,8 @@ public:
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
     }
-    int slave;
-    if (!getIntOption("slave", slave)) {
-      terminateAppWith(TextError::err("must specify slave address"));
-      return;
-    }
+    int slave = 1;
+    getIntOption("slave", slave);
     modBus.setSlaveAddress(slave);
     modBus.setDebug(getOption("debugmodbus"));
     // now execute commands
@@ -145,9 +145,61 @@ public:
       bool runIndicator;
       ErrorPtr err = modBus.readSlaveInfo(id, runIndicator);
       if (Error::isOK(err)) {
-        printf("Run indicator = %s, Slave ID = '%s'\n", runIndicator ? "ON" : "OFF", id.c_str());
+        printf("Slave ID = '%s', Run indicator = %s\n", id.c_str(), runIndicator ? "ON" : "OFF");
       }
       return err;
+    }
+    else if (cmd=="scan") {
+      printf("Scanning for modbus slave devices...\n");
+      ModbusMaster::SlaveAddrList slaves;
+      modBus.findSlaves(slaves, "");
+      for (ModbusMaster::SlaveAddrList::iterator pos=slaves.begin(); pos!=slaves.end(); ++pos) {
+        modBus.setSlaveAddress(*pos);
+        string id;
+        bool runIndicator;
+        ErrorPtr err = modBus.readSlaveInfo(id, runIndicator);
+        if (Error::isOK(err)) {
+          printf("- Slave %3d : ID = '%s', Run indicator = %s\n", *pos, id.c_str(), runIndicator ? "ON" : "OFF");
+        }
+        else {
+          printf("- Slave %3d : error: %s\n", *pos, err->text());
+        }
+      }
+      printf("Scan complete...\n");
+      return ErrorPtr();
+    }
+    else if (cmd=="sendfile") {
+      string path;
+      if (!getStringArgument(1, path)) return TextError::err("missing file path");
+      int fileNo;
+      if (!getIntArgument(2, fileNo) || fileNo<1 || fileNo>0xFFFF) return TextError::err("missing or invalid file number");
+      ModbusMaster::SlaveAddrList slaves;
+      if (numArguments()>3) {
+        // parse destination: ALL, idmatch or several slave addresses
+        string dest;
+        int argidx = 3;
+        while(getStringArgument(argidx, dest)) {
+          int saddr;
+          if (scanf(dest.c_str(), "%d", &saddr)==1) {
+            slaves.push_back(modBus.getSlaveAddress());
+          }
+          else if (argidx>3) {
+            return TextError::err("invalid list of slave addresses");
+          }
+          else {
+            // argidx==2 can also be "ALL" or a id string match
+            if (dest=="ALL") dest.clear(); // no id match requirement
+            modBus.findSlaves(slaves, dest);
+            break;
+          }
+          argidx++;
+        }
+      }
+      else {
+        // only the standard slave
+        slaves.push_back(modBus.getSlaveAddress());
+      }
+      return modBus.broadcastFile(slaves, path, fileNo, !getOption("stdmodbusfiles"));
     }
     return TextError::err("unknown command '%s'", cmd.c_str());
   }
