@@ -113,7 +113,7 @@ public:
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
-      CMDLINE_APPLICATION_LOGOPTIONS,
+      DAEMON_APPLICATION_LOGOPTIONS,
       CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
     };
@@ -446,7 +446,7 @@ public:
     }
     else {
       // error
-      demo_setNewText(err->description().c_str());
+      demo_setNewText(err->text());
     }
     // again
     MainLoop::currentMainLoop().retriggerTimer(aTimer, APP_TASK_PERIOD);
