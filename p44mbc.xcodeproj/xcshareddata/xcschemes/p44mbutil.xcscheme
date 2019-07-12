@@ -65,14 +65,18 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--debugmodbus"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--slave 1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "sendfile /Users/luz/Desktop/16GB\ Stick\ mit\ Schreibschutz\,\ digikey.rtf 100"
+            argument = "sendfile /Users/luz/Desktop/16GB\ Stick\ mit\ Schreibschutz\,\ digikey.rtf 1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "sendfile /Users/luz/Desktop/fwimg_transfer_test 1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -81,7 +85,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 5"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 6"

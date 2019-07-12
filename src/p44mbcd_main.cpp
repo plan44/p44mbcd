@@ -104,7 +104,7 @@ public:
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
       { 0  , "slave",           true,  "slave;use this slave by default" },
-      { 'd', "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
+      { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 0  , "mousecursor",     false, "show mouse cursor" },
       { 0  , "testmode",        false, "FCU test mode" },
       #if ENABLE_IRQTEST
@@ -113,6 +113,7 @@ public:
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
+      CMDLINE_APPLICATION_PATHOPTIONS,
       DAEMON_APPLICATION_LOGOPTIONS,
       CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
@@ -317,7 +318,7 @@ public:
     int txDelayUs = Never;
     getIntOption("rs485txdelay", txDelayUs);
     ErrorPtr err = modBus.setConnectionSpecification(mbconn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS, txen.c_str(), txDelayUs);
-    if (!Error::isOK(err)) {
+    if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
     }
@@ -326,6 +327,7 @@ public:
     modBus.setSlaveAddress(slave);
     modBus.setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
     modBus.setDebug(getOption("debugmodbus"));
+    // - registers
     modBus.setRegisterModel(
       0, 0, // coils
       0, 0, // input bits
@@ -333,8 +335,19 @@ public:
       0, 0 // input registers
     );
     modBus.setValueAccessHandler(boost::bind(&P44mbcd::modbusValueAccessHandler, this, _1, _2, _3, _4));
+    // - files
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      1, // firmware
+      9, // max segs
+      1, // single file
+      true, // p44 header
+      "fwimg",
+      false, // R/W
+      dataPath() // write to temp, then copy to data path
+    )));
+    // connect
     err = modBus.connect();
-    if (!Error::isOK(err)) {
+    if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Failed to start modbus slave server: "));
       return;
     }

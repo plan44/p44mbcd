@@ -50,9 +50,10 @@ public:
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
-      { 'd', "stdmodbusfiles",  false, "disable p44 file handling, just use standard modbus file record access" },
-      { 'd', "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
+      { 0  , "stdmodbusfiles",  false, "disable p44 file handling, just use standard modbus file record access" },
+      { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 's', "slave",           true,  "slave;slave to address (default=1)" },
+      CMDLINE_APPLICATION_PATHOPTIONS,
       CMDLINE_APPLICATION_LOGOPTIONS,
       CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
@@ -81,7 +82,7 @@ public:
     int txDelayUs = Never;
     getIntOption("rs485txdelay", txDelayUs);
     ErrorPtr err = modBus.setConnectionSpecification(mbconn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS, txen.c_str(), txDelayUs);
-    if (!Error::isOK(err)) {
+    if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
     }
@@ -90,7 +91,8 @@ public:
     modBus.setSlaveAddress(slave);
     modBus.setDebug(getOption("debugmodbus"));
     // now execute commands
-    terminateAppWith(executeCommands());
+    err = executeCommands();
+    terminateAppWith(err);
   }
 
 
@@ -180,8 +182,8 @@ public:
         int argidx = 3;
         while(getStringArgument(argidx, dest)) {
           int saddr;
-          if (scanf(dest.c_str(), "%d", &saddr)==1) {
-            slaves.push_back(modBus.getSlaveAddress());
+          if (sscanf(dest.c_str(), "%d", &saddr)==1) {
+            slaves.push_back(saddr);
           }
           else if (argidx>3) {
             return TextError::err("invalid list of slave addresses");
