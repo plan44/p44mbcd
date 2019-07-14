@@ -72,7 +72,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "sendfile /Users/luz/Desktop/16GB\ Stick\ mit\ Schreibschutz\,\ digikey.rtf 1"
+            argument = "sendfile /Users/luz/Desktop/16GBStick_test.rtf 1"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
@@ -80,16 +80,20 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "getfile /Users/luz/Desktop/algo_copy 1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "readreg 101 2"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 5"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 6"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 7"

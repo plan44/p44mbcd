@@ -45,7 +45,8 @@ public:
       "  writereg <regno> <value>              : write value to modbus register\n"
       "  readinfo                              : read slave info\n"
       "  scan                                  : scan for slaves on the bus by querying slave info\n"
-      "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n";
+      "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n"
+      "  getfile <path> <fileno>               : get file from slave\n";
     const CmdLineOptionDescriptor options[] = {
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
@@ -196,12 +197,20 @@ public:
           }
           argidx++;
         }
+        if (slaves.size()<1) return TextError::err("no slave to send file to");
+        return modBus.broadcastFile(slaves, path, fileNo, !getOption("stdmodbusfiles"));
       }
       else {
-        // only the standard slave
-        slaves.push_back(modBus.getSlaveAddress());
+        // use standard, non-broadcast transfer
+        return modBus.sendFile(path, fileNo, !getOption("stdmodbusfiles"));
       }
-      return modBus.broadcastFile(slaves, path, fileNo, !getOption("stdmodbusfiles"));
+    }
+    else if (cmd=="getfile") {
+      string path;
+      if (!getStringArgument(1, path)) return TextError::err("missing file path");
+      int fileNo;
+      if (!getIntArgument(2, fileNo) || fileNo<1 || fileNo>0xFFFF) return TextError::err("missing or invalid file number");
+      return modBus.receiveFile(path, fileNo, !getOption("stdmodbusfiles"));
     }
     return TextError::err("unknown command '%s'", cmd.c_str());
   }
