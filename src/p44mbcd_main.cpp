@@ -343,8 +343,17 @@ public:
       true, // p44 header
       "fwimg",
       false, // R/W
+      tempPath("final_") // write to temp, then copy to data path
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      200, // firmware
+      1, // max segs
+      100, // 100 files allowed
+      true, // p44 header
+      "image%03d.png",
+      false, // R/W
       dataPath() // write to temp, then copy to data path
-    )));
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
     // connect
     err = modBus.connect();
     if (Error::notOK(err)) {
@@ -358,6 +367,27 @@ public:
 //      initApp();
   }
 
+
+  void modbusFileReceivedHandler(uint16_t aFileNo, const string aFinalPath, const string aTempPath)
+  {
+    if (!aTempPath.empty()) {
+      MainLoop::currentMainLoop().fork_and_system(
+        boost::bind(&P44mbcd::modbusFileStored, this, aFileNo, aFinalPath, _1),
+        string_format("cp %s %s", aTempPath.c_str(), aFinalPath.c_str()).c_str()
+      );
+    }
+  }
+
+
+  void modbusFileStored(uint16_t aFileNo, const string aFinalPath, ErrorPtr aError)
+  {
+    if (Error::notOK(aError)) {
+      LOG(LOG_ERR, "Error copying fileNo %d to %s: %s", aFileNo, aFinalPath.c_str(), aError->text());
+      return;
+    }
+    LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
+    // TODO: now act depending on what file we've got
+  }
 
 
   ErrorPtr modbusValueAccessHandler(int aAddress, bool aBit, bool aInput, bool aWrite)
