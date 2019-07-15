@@ -158,17 +158,24 @@ public:
     else if (cmd=="scan") {
       printf("Scanning for modbus slave devices...\n");
       ModbusMaster::SlaveAddrList slaves;
-      modBus.findSlaves(slaves, "");
-      for (ModbusMaster::SlaveAddrList::iterator pos=slaves.begin(); pos!=slaves.end(); ++pos) {
-        modBus.setSlaveAddress(*pos);
+      int first = 1;
+      int last = 10;
+      getIntArgument(1, first);
+      getIntArgument(2, last);
+      if (first<1 || last>255 || first>last) return TextError::err("invalid scan range (1..255 allowed)");
+      for (int sa = first; sa<=last; sa++) {
+        modBus.setSlaveAddress(sa);
         string id;
         bool runIndicator;
         ErrorPtr err = modBus.readSlaveInfo(id, runIndicator);
         if (Error::isOK(err)) {
-          printf("- Slave %3d : ID = '%s', Run indicator = %s\n", *pos, id.c_str(), runIndicator ? "ON" : "OFF");
+          printf("+ Slave %3d : ID = '%s', Run indicator = %s\n", sa, id.c_str(), runIndicator ? "ON" : "OFF");
+        }
+        else if (Error::isError(err, ModBusError::domain(), ETIMEDOUT)) {
+          printf("- Slave %3d : no answer\n", sa);
         }
         else {
-          printf("- Slave %3d : error: %s\n", *pos, err->text());
+          printf("! Slave %3d : error: %s\n", sa, err->text());
         }
       }
       printf("Scan complete...\n");

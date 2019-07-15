@@ -57,19 +57,27 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--connection /dev/tty.usbserial-A403OIP2:115200,8,N,1"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--connection 127.0.0.1:8765"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--debugmodbus"
+            argument = "--connection 127.0.0.1:8765"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--debugmodbus"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--slave 1"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "scan 1 10"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "readinfo"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "sendfile /Users/luz/Desktop/16GBStick_test.rtf 1"
@@ -77,6 +85,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "sendfile /Users/luz/Desktop/fwimg_transfer_test 1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "sendfile /Users/luz/Desktop/pfiffner.png 201"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -93,7 +105,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 6"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 7"
