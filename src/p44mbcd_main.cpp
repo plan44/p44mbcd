@@ -11,6 +11,7 @@
 #include "macaddress.hpp"
 #include "modbus.hpp"
 #include "utils.hpp"
+#include "jsonobject.hpp"
 
 #if ENABLE_UBUS
   #include "ubus.hpp"
@@ -39,7 +40,10 @@
 #define DEFAULT_MODBUS_RTU_PARAMS "115200,8,N,1" // [baud rate][,[bits][,[parity][,[stopbits][,[H]]]]]
 #define DEFAULT_MODBUS_IP_PORT 1502
 
-#define ENABLE_IRQTEST 1
+#define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
+
+
+#define ENABLE_IRQTEST 0
 
 using namespace p44;
 
@@ -160,7 +164,7 @@ public:
 
   // MARK: - ubus API
 
-  #if ENABLE_UBUS
+  #if ENABLE_UBUS || 1
 
   #define MAX_REG 64
 
@@ -171,8 +175,6 @@ public:
     u->addMethod("log", logapi_policy);
     u->addMethod("api", p44mbcapi_policy);
     u->addMethod("quit");
-    u->addMethod("buttonup");
-    u->addMethod("buttondown");
     ubusApiServer->registerObject(u);
   }
 
@@ -191,14 +193,6 @@ public:
           SETDELTATIME(o->boolValue());
         }
       }
-      aUbusRequest->sendResponse(JsonObjectPtr());
-    }
-    else if (aMethod=="buttonup") {
-      buttonPressed(1);
-      aUbusRequest->sendResponse(JsonObjectPtr());
-    }
-    else if (aMethod=="buttondown") {
-      buttonPressed(2);
       aUbusRequest->sendResponse(JsonObjectPtr());
     }
     else if (aMethod=="quit") {
@@ -223,55 +217,45 @@ public:
           else if (cmd=="read_registers") {
             int reg = -1;
             int numReg = 1;
-            int slave = -1;
-            if (aJsonRequest->get("slave", o)) slave = o->int32Value();
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
             if (aJsonRequest->get("count", o)) numReg = o->int32Value();
-            if (reg<0 || numReg<1 || numReg>=MAX_REG || slave<0) {
-              err = TextError::err("invalid reg=%d, count=%d, slave=%d combination", reg, numReg, slave);
+            if (reg<0 || numReg<1 || numReg>=MAX_REG) {
+              err = TextError::err("invalid reg=%d, count=%d combination", reg, numReg);
             }
             else {
               uint16_t tab_reg[MAX_REG];
-              modBus.setSlaveAddress(slave);
-              err = modBus.readRegisters(reg, numReg, tab_reg);
-              if (Error::isOK(err)) {
-                result = JsonObject::newArray();
-                for (int i=0; i<numReg; i++) {
-                  result->arrayAppend(JsonObject::newInt32(tab_reg[i]));
-                }
+              for (int i=0; i<numReg; i++) {
+                result->arrayAppend(JsonObject::newInt32(modBus.getReg(reg+i, false)));
               }
             }
           }
           else if (cmd=="write_registers") {
             int reg = -1;
-            int slave = -1;
-            if (aJsonRequest->get("slave", o)) slave = o->int32Value();
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
             int numReg = 0;
             uint16_t tab_reg[MAX_REG];
-            if (aJsonRequest->get("values", o)) {
-              if (o->isType(json_type_array)) {
-                // multiple
-                for(int i=0; i<o->arrayLength(); i++) {
-                  tab_reg[i] = o->arrayGet(i)->int32Value();
-                  numReg++;
+            if (reg<0) {
+              err = TextError::err("invalid reg=%d");
+            }
+            else {
+              if (aJsonRequest->get("values", o)) {
+                if (o->isType(json_type_array)) {
+                  // multiple
+                  for(int i=0; i<o->arrayLength(); i++) {
+                    modBus.setReg(reg+i, false, o->arrayGet(i)->int32Value());
+                  }
+                }
+                else {
+                  // single
+                  modBus.setReg(reg+i, false, o->int32Value());
                 }
               }
               else {
-                // single
-                numReg = 1;
-                tab_reg[0] = o->int32Value();
+                err = TextError::err("missing 'values'");
               }
             }
-            if (reg<0 || numReg<1 || numReg>=MAX_REG || slave<0) {
-              err = TextError::err("invalid reg=%d, values=[%d], slave=%d combination", reg, numReg, slave);
-            }
-            else {
-              modBus.setSlaveAddress(slave);
-              err = modBus.writeRegisters(reg, numReg, tab_reg);
-              if (Error::isOK(err)) {
-                result = JsonObject::newBool(true);
-              }
+            if (Error::isOK(err)) {
+              result = JsonObject::newBool(true);
             }
           }
           else {
@@ -327,7 +311,7 @@ public:
     modBus.setSlaveAddress(slave);
     modBus.setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
     modBus.setDebug(getOption("debugmodbus"));
-    // - registers
+    // registers
     modBus.setRegisterModel(
       0, 0, // coils
       0, 0, // input bits
@@ -335,7 +319,8 @@ public:
       0, 0 // input registers
     );
     modBus.setValueAccessHandler(boost::bind(&P44mbcd::modbusValueAccessHandler, this, _1, _2, _3, _4));
-    // - files
+    // Files
+    // - firmware
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
       1, // firmware
       9, // max segs
@@ -344,7 +329,27 @@ public:
       "fwimg",
       false, // R/W
       tempPath("final_") // write to temp, then copy to data path
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFWReceivedHandler, this, _1, _2, _3));
+    // - log
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      90, // log
+      9, // max segs
+      1, // single file
+      true, // p44 header
+      "/var/log/p44mbcd/current",
+      true // read only
+    )));
+    // - json config
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      100, // log
+      1, // max segs
+      1, // single file
+      true, // p44 header
+      "uiconfig.json",
+      false, // R/W
+      dataPath()+"/" // write to temp, then copy to data path
+    )));
+    // - UI images
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
       200, // firmware
       1, // max segs
@@ -352,7 +357,7 @@ public:
       true, // p44 header
       "image%03d.png",
       false, // R/W
-      dataPath() // write to temp, then copy to data path
+      dataPath()+"/" // write to temp, then copy to data path
     )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
     // connect
     err = modBus.connect();
@@ -370,6 +375,7 @@ public:
 
   void modbusFileReceivedHandler(uint16_t aFileNo, const string aFinalPath, const string aTempPath)
   {
+    // config or image file received, copy it to datadir
     if (!aTempPath.empty()) {
       MainLoop::currentMainLoop().fork_and_system(
         boost::bind(&P44mbcd::modbusFileStored, this, aFileNo, aFinalPath, _1),
@@ -387,6 +393,29 @@ public:
     }
     LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
     // TODO: now act depending on what file we've got
+  }
+
+
+  void modbusFWReceivedHandler(uint16_t aFileNo, const string aFinalPath, const string aTempPath)
+  {
+    // firmware received, just move/ename it
+    if (!aTempPath.empty()) {
+      MainLoop::currentMainLoop().fork_and_system(
+        boost::bind(&P44mbcd::modbusFWStored, this, aFileNo, aFinalPath, _1),
+        string_format("mv %s %s", aTempPath.c_str(), aFinalPath.c_str()).c_str()
+      );
+    }
+  }
+
+
+  void modbusFWStored(uint16_t aFileNo, const string aFinalPath, ErrorPtr aError)
+  {
+    if (Error::notOK(aError)) {
+      LOG(LOG_ERR, "Error moving fileNo %d to %s: %s", aFileNo, aFinalPath.c_str(), aError->text());
+      return;
+    }
+    LOG(LOG_NOTICE, "triggering firmware update");
+    terminateApp(P44_EXIT_FIRMWAREUPGRADE);
   }
 
 
