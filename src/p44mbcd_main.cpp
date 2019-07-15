@@ -107,6 +107,7 @@ public:
       { 0  , "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
+      { 0  , "bytetime",        true,  "time;custom time per byte in nS" },
       { 0  , "slave",           true,  "slave;use this slave by default" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 0  , "mousecursor",     false, "show mouse cursor" },
@@ -164,7 +165,7 @@ public:
 
   // MARK: - ubus API
 
-  #if ENABLE_UBUS || 1
+  #if ENABLE_UBUS
 
   #define MAX_REG 64
 
@@ -247,7 +248,7 @@ public:
                 }
                 else {
                   // single
-                  modBus.setReg(reg+i, false, o->int32Value());
+                  modBus.setReg(reg, false, o->int32Value());
                 }
               }
               else {
@@ -301,7 +302,9 @@ public:
     getStringOption("rs485txenable", txen);
     int txDelayUs = Never;
     getIntOption("rs485txdelay", txDelayUs);
-    ErrorPtr err = modBus.setConnectionSpecification(mbconn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS, txen.c_str(), txDelayUs);
+    int byteTimeNs = 0;
+    getIntOption("bytetime", byteTimeNs);
+    ErrorPtr err = modBus.setConnectionSpecification(mbconn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS, txen.c_str(), txDelayUs, byteTimeNs);
     if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
@@ -351,7 +354,7 @@ public:
     )));
     // - UI images
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      200, // firmware
+      200, // images
       1, // max segs
       100, // 100 files allowed
       true, // p44 header
