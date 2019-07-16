@@ -80,6 +80,10 @@ class P44mbcd : public CmdLineApp
   MLTicket lvglTicket; ///< the display tasks timer
   MLMicroSeconds lastLvglTick; ///< last tick
   bool showCursor = false;
+  #define DISPLAY_BUFFER_LINES 10
+  #define DISPLAY_BUFFER_SIZE (LV_HOR_RES_MAX * DISPLAY_BUFFER_LINES)
+  lv_disp_buf_t disp_buf; ///< the display buffer descriptors
+  lv_color_t buf[DISPLAY_BUFFER_SIZE]; ///< buffer
 
   // modbus
   ModbusSlave modBus;
@@ -568,48 +572,49 @@ public:
 
   static void demoButtonPressed(int aButtonId)
   {
-    P44mbcd *p44mbcd = dynamic_cast<P44mbcd *>(Application::sharedApplication());
     #if OLDTESTCODEENABLED
+    P44mbcd *p44mbcd = dynamic_cast<P44mbcd *>(Application::sharedApplication());
     p44mbcd->buttonPressed(aButtonId);
     #endif
   }
-
 
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
     showCursor = getOption("mousecursor");
-    // - init library
+    // init library
     lv_init();
-    #if defined(__APPLE__)
-    // - init display driver
-    monitor_init();
+    // init disply buffer
+    lv_disp_buf_init(&disp_buf, buf, NULL, DISPLAY_BUFFER_SIZE);
+    // init the display driver
     lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
-    disp_drv.disp_flush = monitor_flush;
-    disp_drv.disp_fill = monitor_fill;
-    disp_drv.disp_map = monitor_map;
+    disp_drv.hor_res = LV_HOR_RES_MAX;
+    disp_drv.ver_res = LV_VER_RES_MAX;
+    disp_drv.buffer = &disp_buf;
+    #if defined(__APPLE__)
+    // - use SDL2 monitor
+    monitor_init();
+    disp_drv.flush_cb = monitor_flush;
+    #else
+    // - use fbdev framebuffer device
+    fbdev_init();
+    disp_drv.flush_cb = fbdev_flush;
+    #endif
     dispdev = lv_disp_drv_register(&disp_drv);
-    // - init input driver
-    mouse_init();
+    // init input driver
     lv_indev_drv_t pointer_indev_drv;
     lv_indev_drv_init(&pointer_indev_drv);
     pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
-    pointer_indev_drv.read = mouse_read;
-    pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
+    #if defined(__APPLE__)
+    // - use mouse
+    mouse_init();
+    pointer_indev_drv.read_cb = mouse_read;
     #else
-    // - init display driver
-    fbdev_init();
-    lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);
-    disp_drv.disp_flush = fbdev_flush;      /*It flushes the internal graphical buffer to the frame buffer*/
-    dispdev = lv_disp_drv_register(&disp_drv);
     // - init input driver
     evdev_init();
-    lv_indev_drv_t pointer_indev_drv;
-    lv_indev_drv_init(&pointer_indev_drv);
-    pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
-    pointer_indev_drv.read = evdev_read;
+    pointer_indev_drv.read_cb = evdev_read;
+    #endif
     pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
     if (showCursor) {
       #if SHOW_MOUSE_CURSOR
@@ -625,7 +630,6 @@ public:
       lv_indev_set_cursor(pointer_indev, cursor);
       #endif
     }
-    #endif
     // - create demo
     demo_create();
     demo_setNewText("Ready");
@@ -641,14 +645,13 @@ public:
   {
     if (lastLvglTick==Never) lastLvglTick=aNow;
     uint32_t ms = (uint32_t)((aNow-lastLvglTick)/1000);
-    lv_tick_inc(ms);
     lv_task_handler();
     lastLvglTick = aNow;
-    MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
     #if defined(__APPLE__)
     // also need to update SDL2
     monitor_sdl_refr_core();
     #endif
+    MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
   }
 
 

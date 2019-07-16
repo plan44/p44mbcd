@@ -23,8 +23,8 @@
  *  STATIC PROTOTYPES
  **********************/
 static void write_create(lv_obj_t * parent);
-static lv_res_t keyboard_open_close(lv_obj_t * ta);
-static lv_res_t keyboard_hide_action(lv_obj_t * keyboard);
+static void textarea_event(lv_obj_t * text_area, lv_event_t event);
+static void keyboard_hide_action(lv_obj_t * keyboard);
 static void kb_hide_anim_end(lv_obj_t * keyboard);
 static void list_create(lv_obj_t * parent);
 static void chart_create(lv_obj_t * parent);
@@ -90,13 +90,13 @@ void demo_create(void)
 
     static lv_style_t style_tv_btn_bg;
     lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
-    style_tv_btn_bg.body.main_color = LV_COLOR_HEX(0x487fb7);
-    style_tv_btn_bg.body.grad_color = LV_COLOR_HEX(0x487fb7);
-    style_tv_btn_bg.body.padding.ver = 0;
+    style_tv_btn_bg.body.main_color = lv_color_hex(0x487fb7);
+    style_tv_btn_bg.body.grad_color = lv_color_hex(0x487fb7);
+    style_tv_btn_bg.body.padding.top = 0;
+    style_tv_btn_bg.body.padding.bottom = 0;
 
     static lv_style_t style_tv_btn_rel;
     lv_style_copy(&style_tv_btn_rel, &lv_style_btn_rel);
-    style_tv_btn_rel.body.empty = 1;
     style_tv_btn_rel.body.border.width = 0;
 
     static lv_style_t style_tv_btn_pr;
@@ -165,30 +165,32 @@ static void write_create(lv_obj_t * parent)
     lv_style_copy(&style_ta, &lv_style_pretty);
     style_ta.body.opa = LV_OPA_30;
     style_ta.body.radius = 0;
-    style_ta.text.color = LV_COLOR_HEX3(0x222);
+    style_ta.text.color = lv_color_hex3(0x222);
 
     ta = lv_ta_create(parent, NULL);
     lv_obj_set_size(ta, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) / 2);
     lv_ta_set_style(ta, LV_TA_STYLE_BG, &style_ta);
     lv_ta_set_text(ta, "");
-    lv_page_set_rel_action(ta, keyboard_open_close);
+
+    lv_obj_set_event_cb(ta, textarea_event);
 
     lv_style_copy(&style_kb, &lv_style_plain);
     style_kb.body.opa = LV_OPA_70;
-    style_kb.body.main_color = LV_COLOR_HEX3(0x333);
-    style_kb.body.grad_color = LV_COLOR_HEX3(0x333);
-    style_kb.body.padding.hor = 0;
-    style_kb.body.padding.ver = 0;
+    style_kb.body.main_color = lv_color_hex3(0x333);
+    style_kb.body.grad_color = lv_color_hex3(0x333);
+    style_kb.body.padding.top = 0;
+    style_kb.body.padding.bottom = 0;
+    style_kb.body.padding.left = 0;
+    style_kb.body.padding.right = 0;
     style_kb.body.padding.inner = 0;
 
     lv_style_copy(&style_kb_rel, &lv_style_plain);
-    style_kb_rel.body.empty = 1;
     style_kb_rel.body.radius = 0;
     style_kb_rel.body.border.width = 1;
     style_kb_rel.body.border.color = LV_COLOR_SILVER;
     style_kb_rel.body.border.opa = LV_OPA_50;
-    style_kb_rel.body.main_color = LV_COLOR_HEX3(0x333);    /*Recommended if LV_VDB_SIZE == 0 and bpp > 1 fonts are used*/
-    style_kb_rel.body.grad_color = LV_COLOR_HEX3(0x333);
+    style_kb_rel.body.main_color = lv_color_hex3(0x333);    /*Recommended if LV_VDB_SIZE == 0 and bpp > 1 fonts are used*/
+    style_kb_rel.body.grad_color = lv_color_hex3(0x333);
     style_kb_rel.text.color = LV_COLOR_WHITE;
 
     lv_style_copy(&style_kb_pr, &lv_style_plain);
@@ -199,32 +201,34 @@ static void write_create(lv_obj_t * parent)
     style_kb_pr.body.border.width = 1;
     style_kb_pr.body.border.color = LV_COLOR_SILVER;
 
-    keyboard_open_close(ta);
+    textarea_event(ta, LV_EVENT_RELEASED);
 }
 
-static lv_res_t keyboard_open_close(lv_obj_t * text_area)
+static void textarea_event(lv_obj_t * text_area, lv_event_t event)
 {
     (void) text_area;    /*Unused*/
 
-    lv_obj_t * parent = lv_obj_get_parent(lv_obj_get_parent(ta));   /*Test area is on the scrollable part of the page but we need the page itself*/
+    if (event==LV_EVENT_RELEASED) {
+        lv_obj_t * parent = lv_obj_get_parent(lv_obj_get_parent(ta));   /*Test area is on the scrollable part of the page but we need the page itself*/
 
-    if(kb) {
-        return keyboard_hide_action(kb);
-    } else {
-        kb = lv_kb_create(parent, NULL);
-        lv_obj_set_size(kb, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) / 2);
-        lv_obj_align(kb, ta, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-        lv_kb_set_ta(kb, ta);
-        lv_kb_set_style(kb, LV_KB_STYLE_BG, &style_kb);
-        lv_kb_set_style(kb, LV_KB_STYLE_BTN_REL, &style_kb_rel);
-        lv_kb_set_style(kb, LV_KB_STYLE_BTN_PR, &style_kb_pr);
-        lv_kb_set_hide_action(kb, keyboard_hide_action);
-        lv_kb_set_ok_action(kb, keyboard_hide_action);
+        if(kb) {
+            keyboard_hide_action(kb);
+        } else {
+            kb = lv_kb_create(parent, NULL);
+            lv_obj_set_size(kb, lv_page_get_scrl_width(parent), lv_obj_get_height(parent) / 2);
+            lv_obj_align(kb, ta, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+            lv_kb_set_ta(kb, ta);
+            lv_kb_set_style(kb, LV_KB_STYLE_BG, &style_kb);
+            lv_kb_set_style(kb, LV_KB_STYLE_BTN_REL, &style_kb_rel);
+            lv_kb_set_style(kb, LV_KB_STYLE_BTN_PR, &style_kb_pr);
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//            lv_kb_set_hide_action(kb, keyboard_hide_action);
+//            lv_kb_set_ok_action(kb, keyboard_hide_action);
 
-#if USE_LV_ANIMATION
-        lv_obj_animate(kb, LV_ANIM_FLOAT_BOTTOM | LV_ANIM_IN, 300, 0, NULL);
-#endif
-        return LV_RES_OK;
+        #if USE_LV_ANIMATION
+            lv_obj_animate(kb, LV_ANIM_FLOAT_BOTTOM | LV_ANIM_IN, 300, 0, NULL);
+        #endif
+        }
     }
 }
 
@@ -233,18 +237,16 @@ static lv_res_t keyboard_open_close(lv_obj_t * text_area)
  * @param keyboard pointer to the keyboard
  * @return
  */
-static lv_res_t keyboard_hide_action(lv_obj_t * keyboard)
+static void keyboard_hide_action(lv_obj_t * keyboard)
 {
     (void) keyboard;    /*Unused*/
 
 #if USE_LV_ANIMATION
     lv_obj_animate(kb, LV_ANIM_FLOAT_BOTTOM | LV_ANIM_OUT, 300, 0, kb_hide_anim_end);
     kb = NULL;
-    return LV_RES_OK;
 #else
     lv_obj_del(kb);
     kb = NULL;
-    return LV_RES_INV;
 #endif
 }
 
@@ -253,7 +255,7 @@ static void list_create(lv_obj_t * parent)
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
-    lv_page_set_scrl_fit(parent, false, false);
+    lv_page_set_scrl_fit(parent, LV_FIT_NONE);
     lv_page_set_scrl_height(parent, lv_obj_get_height(parent));
     lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
 
@@ -261,7 +263,7 @@ static void list_create(lv_obj_t * parent)
     static lv_style_t style_btn_rel;
     static lv_style_t style_btn_pr;
     lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_HEX3(0x333);
+    style_btn_rel.body.main_color = lv_color_hex3(0x333);
     style_btn_rel.body.grad_color = LV_COLOR_BLACK;
     style_btn_rel.body.border.color = LV_COLOR_SILVER;
     style_btn_rel.body.border.width = 1;
@@ -281,19 +283,21 @@ static void list_create(lv_obj_t * parent)
     lv_list_set_style(list, LV_LIST_STYLE_BTN_PR, &style_btn_pr);
     lv_obj_align(list, NULL, LV_ALIGN_IN_TOP_MID, 0, LV_DPI / 4);
 
-    lv_list_add(list, SYMBOL_FILE, "New", list_btn_action);
-    lv_list_add(list, SYMBOL_DIRECTORY, "Open", list_btn_action);
-    lv_list_add(list, SYMBOL_TRASH, "Delete", list_btn_action);
-    lv_list_add(list, SYMBOL_EDIT, "Edit", list_btn_action);
-    lv_list_add(list, SYMBOL_SAVE, "Save", list_btn_action);
-    lv_list_add(list, SYMBOL_WIFI, "WiFi", list_btn_action);
-    lv_list_add(list, SYMBOL_GPS, "GPS", list_btn_action);
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//    lv_list_add(list, SYMBOL_FILE, "New", list_btn_action);
+//    lv_list_add(list, SYMBOL_DIRECTORY, "Open", list_btn_action);
+//    lv_list_add(list, SYMBOL_TRASH, "Delete", list_btn_action);
+//    lv_list_add(list, SYMBOL_EDIT, "Edit", list_btn_action);
+//    lv_list_add(list, SYMBOL_SAVE, "Save", list_btn_action);
+//    lv_list_add(list, SYMBOL_WIFI, "WiFi", list_btn_action);
+//    lv_list_add(list, SYMBOL_GPS, "GPS", list_btn_action);
 
     lv_obj_t * mbox = lv_mbox_create(parent, NULL);
     lv_mbox_set_text(mbox, "Click a button to copy its text to the Text area ");
     lv_obj_set_width(mbox, LV_HOR_RES - LV_DPI);
-    static const char * mbox_btns[] = {"Got it", ""};
-    lv_mbox_add_btns(mbox, mbox_btns, NULL);    /*The default action is close*/
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//    static const char * mbox_btns[] = {"Got it", ""};
+//    lv_mbox_add_btns(mbox, mbox_btns, NULL);    /*The default action is close*/
     lv_obj_align(mbox, parent, LV_ALIGN_IN_TOP_MID, 0, LV_DPI / 2);
 }
 
@@ -307,7 +311,7 @@ static void chart_create(lv_obj_t * parent)
     lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
     lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
 
-    lv_page_set_scrl_fit(parent, false, false);
+    lv_page_set_scrl_fit(parent, LV_FIT_NONE);
     lv_page_set_scrl_height(parent, lv_obj_get_height(parent));
     lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
 
@@ -321,7 +325,8 @@ static void chart_create(lv_obj_t * parent)
     lv_obj_set_size(chart, 2 * lv_obj_get_width(parent) / 3, lv_obj_get_height(parent) / 2);
     lv_obj_align(chart, NULL,  LV_ALIGN_IN_TOP_MID, 0, LV_DPI / 4);
     lv_chart_set_type(chart, LV_CHART_TYPE_COLUMN);
-    lv_chart_set_style(chart, &style_chart);
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//    lv_chart_set_style(chart, &style_chart);
     lv_chart_set_series_opa(chart, LV_OPA_70);
     lv_chart_series_t * ser1;
     ser1 = lv_chart_add_series(chart, LV_COLOR_RED);
@@ -347,8 +352,10 @@ static void chart_create(lv_obj_t * parent)
     style_bar.body.radius = LV_RADIUS_CIRCLE;
     style_bar.body.border.color = LV_COLOR_WHITE;
     style_bar.body.opa = LV_OPA_60;
-    style_bar.body.padding.hor = 0;
-    style_bar.body.padding.ver = LV_DPI / 10;
+    style_bar.body.padding.left = 0;
+    style_bar.body.padding.right = 0;
+    style_bar.body.padding.top = LV_DPI / 10;
+    style_bar.body.padding.bottom = LV_DPI / 10;
 
     lv_style_copy(&style_indic, &lv_style_pretty);
     style_indic.body.grad_color =  LV_COLOR_MAROON;
@@ -356,8 +363,10 @@ static void chart_create(lv_obj_t * parent)
     style_indic.body.radius = LV_RADIUS_CIRCLE;
     style_indic.body.shadow.width = LV_DPI / 10;
     style_indic.body.shadow.color = LV_COLOR_RED;
-    style_indic.body.padding.hor = LV_DPI / 30;
-    style_indic.body.padding.ver = LV_DPI / 30;
+    style_indic.body.padding.left = LV_DPI / 30;
+    style_indic.body.padding.right = LV_DPI / 30;
+    style_indic.body.padding.top = LV_DPI / 30;
+    style_indic.body.padding.bottom = LV_DPI / 30;
 
     lv_style_copy(&style_knob, &lv_style_pretty);
     style_knob.body.radius = LV_RADIUS_CIRCLE;
@@ -370,9 +379,11 @@ static void chart_create(lv_obj_t * parent)
     lv_slider_set_style(slider, LV_SLIDER_STYLE_KNOB, &style_knob);
     lv_obj_set_size(slider, lv_obj_get_width(chart), LV_DPI / 3);
     lv_obj_align(slider, chart, LV_ALIGN_OUT_BOTTOM_MID, 0, (LV_VER_RES - chart->coords.y2 - lv_obj_get_height(slider)) / 2); /*Align to below the chart*/
-    lv_slider_set_action(slider, slider_action);
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//    lv_slider_set_action(slider, slider_action);
     lv_slider_set_range(slider, 10, 1000);
-    lv_slider_set_value(slider, 700);
+// TODO: v5.3 - how to do this in 6.0? -> see new demo?
+//    lv_slider_set_value(slider, 700);
     slider_action(slider);          /*Simulate a user value set the refresh the chart*/
 }
 
@@ -393,25 +404,27 @@ void demo_setNewText(const char *aText)
 
 static int count = 0;
 
-static lv_res_t btn_click_action(lv_obj_t * btn)
+static void btn_event_handler(lv_obj_t * btn, lv_event_t event)
 {
-  uint8_t id = lv_obj_get_free_num(btn);
-  char buf[32];
+    if (event==LV_EVENT_RELEASED) {
+        uint8_t id = (uint8_t)lv_obj_get_user_data(btn);
+        char buf[32];
 
-  printf("Button %d is released\n", id);
+        printf("Button %d is released\n", id);
 
-  if (p44BtnCallBack) {
-    // custom
-    p44BtnCallBack(id);
-    return LV_RES_OK; /*Return OK if the button is not deleted*/
-  }
-  else {
-    if (id==1) count++;
-    else if (id==2) count--;
-    snprintf(buf, 32, "%d", count);
-    lv_label_set_text(dispLabel, buf);
-    return LV_RES_OK; /*Return OK if the button is not deleted*/
-  }
+        if (p44BtnCallBack) {
+            // custom
+            p44BtnCallBack(id);
+            return;
+        }
+        else {
+            if (id==1) count++;
+            else if (id==2) count--;
+            snprintf(buf, 32, "%d", count);
+            lv_label_set_text(dispLabel, buf);
+            return;
+        }
+    }
 }
 
 
@@ -429,19 +442,19 @@ static void p44mbc_create(lv_obj_t * parent)
   lv_obj_t *lbl; // temp
 
   plusButton = lv_btn_create(parent, NULL);
-  lv_cont_set_fit(plusButton, true, true); /*Enable resizing horizontally and vertically*/
-  lv_obj_set_free_num(plusButton, 1);   /*Set a unique number for the button*/
-  lv_btn_set_action(plusButton, LV_BTN_ACTION_CLICK, btn_click_action);
+  lv_cont_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT); /*Enable resizing horizontally and vertically*/
+  lv_obj_set_user_data(plusButton, (void *)1);   /*Set a unique number for the button*/
+  lv_obj_set_event_cb(plusButton, btn_event_handler);
   lbl = lv_label_create(plusButton, NULL);
-  lv_btn_set_fit(plusButton, false, true);
+  lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
   lv_label_set_text(lbl, "+ Plus +");
   lv_obj_set_width(plusButton, lv_obj_get_width(parent)-20); // expand to full width
   lv_obj_align(plusButton, NULL, LV_ALIGN_IN_TOP_MID, 0, 10);
 
   minusButton = lv_btn_create(parent, plusButton); // mostly same
-  lv_obj_set_free_num(minusButton, 2);   /*Set a unique number for the button*/
+  lv_obj_set_user_data(minusButton, (void *)2);   /*Set a unique number for the button*/
   lbl = lv_label_create(minusButton, NULL);
-  lv_btn_set_fit(minusButton, false, true);
+  lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
   lv_label_set_text(lbl, "- Minus -");
   lv_obj_set_width(minusButton, lv_obj_get_width(parent)-20); // expand to full width
   lv_obj_align(minusButton, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -10);
@@ -449,13 +462,13 @@ static void p44mbc_create(lv_obj_t * parent)
   dispLabel = lv_label_create(parent, NULL);
   static lv_style_t dispLabelStyle;
   lv_style_copy(&dispLabelStyle, &lv_style_plain);
-  dispLabelStyle.text.font = &lv_font_dejavu_30;
+  dispLabelStyle.text.font = &lv_font_roboto_28;
   lv_obj_set_style(dispLabel, &dispLabelStyle);
   lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_CROP);
   lv_label_set_recolor(dispLabel, true);
   lv_label_set_align(dispLabel, LV_LABEL_ALIGN_CENTER);
   lv_label_set_text(dispLabel, "-");
-  lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_ROLL);
+  lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_SROLL_CIRC);
   lv_obj_set_width(dispLabel, lv_obj_get_width(parent)); // expand to full width
   lv_obj_set_height(dispLabel, 70);
   lv_obj_align(dispLabel, NULL, LV_ALIGN_CENTER, 0, 0);

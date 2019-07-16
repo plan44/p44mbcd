@@ -61,9 +61,7 @@
 		ED8A99AE2020D6540069EBF6 /* libssl.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */; };
 		ED9D3A752276F0A5009B43A8 /* lv_indev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39A52276F0A4009B43A8 /* lv_indev.c */; };
 		ED9D3A762276F0A5009B43A8 /* lv_refr.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39A82276F0A4009B43A8 /* lv_refr.c */; };
-		ED9D3A772276F0A5009B43A8 /* lv_vdb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39A92276F0A4009B43A8 /* lv_vdb.c */; };
 		ED9D3A782276F0A5009B43A8 /* lv_style.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39AA2276F0A4009B43A8 /* lv_style.c */; };
-		ED9D3A792276F0A5009B43A8 /* lv_lang.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39AC2276F0A4009B43A8 /* lv_lang.c */; };
 		ED9D3A7A2276F0A5009B43A8 /* lv_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39AD2276F0A4009B43A8 /* lv_obj.c */; };
 		ED9D3A7B2276F0A5009B43A8 /* lv_group.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39AF2276F0A4009B43A8 /* lv_group.c */; };
 		ED9D3A7C2276F0A5009B43A8 /* lv_txt.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39B52276F0A4009B43A8 /* lv_txt.c */; };
@@ -74,16 +72,11 @@
 		ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39C22276F0A4009B43A8 /* lv_ll.c */; };
 		ED9D3A822276F0A5009B43A8 /* lv_log.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39C32276F0A4009B43A8 /* lv_log.c */; };
 		ED9D3A832276F0A5009B43A8 /* lv_area.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39C42276F0A4009B43A8 /* lv_area.c */; };
-		ED9D3A842276F0A5009B43A8 /* lv_ufs.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39C52276F0A4009B43A8 /* lv_ufs.c */; };
 		ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39C82276F0A4009B43A8 /* lv_templ.c */; };
 		ED9D3A862276F0A5009B43A8 /* lv_circ.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39CA2276F0A4009B43A8 /* lv_circ.c */; };
 		ED9D3A872276F0A5009B43A8 /* lv_math.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39CB2276F0A4009B43A8 /* lv_math.c */; };
 		ED9D3A882276F0A5009B43A8 /* lv_anim.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39CC2276F0A4009B43A8 /* lv_anim.c */; };
-		ED9D3A892276F0A5009B43A8 /* lv_font.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39CD2276F0A4009B43A8 /* lv_font.c */; };
 		ED9D3A8A2276F0A5009B43A8 /* lv_gc.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39CE2276F0A4009B43A8 /* lv_gc.c */; };
-		ED9D3A8B2276F0A5009B43A8 /* lv_port_indev_templ.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39D62276F0A4009B43A8 /* lv_port_indev_templ.c */; };
-		ED9D3A8C2276F0A5009B43A8 /* lv_port_disp_templ.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39D92276F0A4009B43A8 /* lv_port_disp_templ.c */; };
-		ED9D3A8D2276F0A5009B43A8 /* lv_port_fs_templ.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39DB2276F0A4009B43A8 /* lv_port_fs_templ.c */; };
 		ED9D3A8E2276F0A5009B43A8 /* lv_theme.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39E52276F0A4009B43A8 /* lv_theme.c */; };
 		ED9D3A8F2276F0A5009B43A8 /* lv_theme_alien.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39E72276F0A4009B43A8 /* lv_theme_alien.c */; };
 		ED9D3A902276F0A5009B43A8 /* lv_theme_nemo.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39EA2276F0A4009B43A8 /* lv_theme_nemo.c */; };
@@ -93,33 +86,13 @@
 		ED9D3A942276F0A5009B43A8 /* lv_theme_default.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39EE2276F0A4009B43A8 /* lv_theme_default.c */; };
 		ED9D3A952276F0A5009B43A8 /* lv_theme_mono.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39F02276F0A4009B43A8 /* lv_theme_mono.c */; };
 		ED9D3A962276F0A5009B43A8 /* lv_theme_night.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39F32276F0A4009B43A8 /* lv_theme_night.c */; };
-		ED9D3A972276F0A5009B43A8 /* lv_font_dejavu_10_cyrillic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39FD2276F0A4009B43A8 /* lv_font_dejavu_10_cyrillic.c */; };
-		ED9D3A982276F0A5009B43A8 /* lv_font_dejavu_40_cyrillic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39FE2276F0A4009B43A8 /* lv_font_dejavu_40_cyrillic.c */; };
-		ED9D3A992276F0A5009B43A8 /* lv_font_monospace_8.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39FF2276F0A4009B43A8 /* lv_font_monospace_8.c */; };
-		ED9D3A9A2276F0A5009B43A8 /* lv_font_dejavu_10_latin_sup.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A002276F0A4009B43A8 /* lv_font_dejavu_10_latin_sup.c */; };
-		ED9D3A9B2276F0A5009B43A8 /* lv_font_dejavu_20.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A012276F0A4009B43A8 /* lv_font_dejavu_20.c */; };
-		ED9D3A9C2276F0A5009B43A8 /* lv_font_symbol_30.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A032276F0A4009B43A8 /* lv_font_symbol_30.c */; };
-		ED9D3A9D2276F0A5009B43A8 /* lv_font_dejavu_30.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A042276F0A4009B43A8 /* lv_font_dejavu_30.c */; };
-		ED9D3A9E2276F0A5009B43A8 /* lv_font_symbol_20.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A052276F0A4009B43A8 /* lv_font_symbol_20.c */; };
-		ED9D3A9F2276F0A5009B43A8 /* lv_font_dejavu_20_cyrillic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A062276F0A4009B43A8 /* lv_font_dejavu_20_cyrillic.c */; };
-		ED9D3AA02276F0A5009B43A8 /* lv_font_symbol_10.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A072276F0A4009B43A8 /* lv_font_symbol_10.c */; };
-		ED9D3AA12276F0A5009B43A8 /* lv_font_dejavu_40.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A082276F0A4009B43A8 /* lv_font_dejavu_40.c */; };
-		ED9D3AA22276F0A5009B43A8 /* lv_font_symbol_40.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A092276F0A4009B43A8 /* lv_font_symbol_40.c */; };
-		ED9D3AA32276F0A5009B43A8 /* lv_font_dejavu_10.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0A2276F0A4009B43A8 /* lv_font_dejavu_10.c */; };
-		ED9D3AA42276F0A5009B43A8 /* lv_font_dejavu_30_latin_sup.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0B2276F0A4009B43A8 /* lv_font_dejavu_30_latin_sup.c */; };
-		ED9D3AA52276F0A5009B43A8 /* lv_font_dejavu_40_latin_sup.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0C2276F0A4009B43A8 /* lv_font_dejavu_40_latin_sup.c */; };
-		ED9D3AA62276F0A5009B43A8 /* lv_font_builtin.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0D2276F0A4009B43A8 /* lv_font_builtin.c */; };
-		ED9D3AA72276F0A5009B43A8 /* lv_font_dejavu_30_cyrillic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0E2276F0A4009B43A8 /* lv_font_dejavu_30_cyrillic.c */; };
-		ED9D3AA82276F0A5009B43A8 /* lv_font_dejavu_20_latin_sup.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A0F2276F0A4009B43A8 /* lv_font_dejavu_20_latin_sup.c */; };
 		ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A1A2276F0A4009B43A8 /* lv_hal_tick.c */; };
 		ED9D3AAA2276F0A5009B43A8 /* lv_hal_indev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A1B2276F0A4009B43A8 /* lv_hal_indev.c */; };
 		ED9D3AAB2276F0A5009B43A8 /* lv_hal_disp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A1C2276F0A4009B43A8 /* lv_hal_disp.c */; };
 		ED9D3AAC2276F0A5009B43A8 /* lv_draw_line.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A1E2276F0A4009B43A8 /* lv_draw_line.c */; };
 		ED9D3AAD2276F0A5009B43A8 /* lv_draw_triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A1F2276F0A4009B43A8 /* lv_draw_triangle.c */; };
-		ED9D3AAE2276F0A5009B43A8 /* lv_draw_vbasic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A202276F0A4009B43A8 /* lv_draw_vbasic.c */; };
 		ED9D3AAF2276F0A5009B43A8 /* lv_draw_arc.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A222276F0A4009B43A8 /* lv_draw_arc.c */; };
 		ED9D3AB02276F0A5009B43A8 /* lv_draw_rect.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A232276F0A4009B43A8 /* lv_draw_rect.c */; };
-		ED9D3AB12276F0A5009B43A8 /* lv_draw_rbasic.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A242276F0A4009B43A8 /* lv_draw_rbasic.c */; };
 		ED9D3AB22276F0A5009B43A8 /* lv_draw_img.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A252276F0A4009B43A8 /* lv_draw_img.c */; };
 		ED9D3AB32276F0A5009B43A8 /* lv_draw_label.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A2E2276F0A4009B43A8 /* lv_draw_label.c */; };
 		ED9D3AB42276F0A5009B43A8 /* lv_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3A2F2276F0A4009B43A8 /* lv_draw.c */; };
@@ -165,7 +138,6 @@
 		ED9D3B062276F0C4009B43A8 /* fbdev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF42276F0C3009B43A8 /* fbdev.c */; };
 		ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AFC2276F0C3009B43A8 /* win_drv.c */; };
 		ED9D3C7222775E12009B43A8 /* img_bubble_pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */; };
-		ED9D3C7322775E12009B43A8 /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6F22775E11009B43A8 /* demo.c */; };
 		ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB284481733B59500EAE5DE /* serialcomm.cpp */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
@@ -174,6 +146,19 @@
 		EDDEE88A17FC6ED400A65599 /* i2c.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED36999C178DA01D00376405 /* i2c.cpp */; };
 		EDDEE88B17FC6EDE00A65599 /* consolekey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC1166C177EDDDF00F27115 /* consolekey.cpp */; };
 		EDF1AF261D0D98D000302F77 /* spi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDF1AF241D0D98D000302F77 /* spi.cpp */; };
+		EDF356B722DDC71A00C4110C /* lv_disp.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356B622DDC71A00C4110C /* lv_disp.c */; };
+		EDF356BE22DDC78300C4110C /* lv_draw_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356B822DDC78300C4110C /* lv_draw_basic.c */; };
+		EDF356BF22DDC78300C4110C /* lv_img_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356BA22DDC78300C4110C /* lv_img_decoder.c */; };
+		EDF356C022DDC78300C4110C /* lv_img_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356BC22DDC78300C4110C /* lv_img_cache.c */; };
+		EDF356CC22DDC99D00C4110C /* lv_font_roboto_22.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356C222DDC99D00C4110C /* lv_font_roboto_22.c */; };
+		EDF356CD22DDC99D00C4110C /* lv_font.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356C322DDC99D00C4110C /* lv_font.c */; };
+		EDF356CE22DDC99D00C4110C /* lv_font_roboto_12.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356C622DDC99D00C4110C /* lv_font_roboto_12.c */; };
+		EDF356CF22DDC99D00C4110C /* lv_font_roboto_28.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356C722DDC99D00C4110C /* lv_font_roboto_28.c */; };
+		EDF356D022DDC99D00C4110C /* lv_font_roboto_16.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356C822DDC99D00C4110C /* lv_font_roboto_16.c */; };
+		EDF356D122DDC99D00C4110C /* lv_font_unscii_8.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356CA22DDC99D00C4110C /* lv_font_unscii_8.c */; };
+		EDF356D222DDC99D00C4110C /* lv_font_fmt_txt.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356CB22DDC99D00C4110C /* lv_font_fmt_txt.c */; };
+		EDF356D622DDCAC700C4110C /* lv_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356D422DDCAC700C4110C /* lv_utils.c */; };
+		EDF356DB22DDD56300C4110C /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6F22775E11009B43A8 /* demo.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -299,43 +284,35 @@
 		ED8A99A62020D17B0069EBF6 /* md5.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = md5.inl; sourceTree = "<group>"; };
 		ED8A99A72020D17B0069EBF6 /* sha1.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sha1.inl; sourceTree = "<group>"; };
 		ED8A99A92020D2070069EBF6 /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configure.ac; sourceTree = "<group>"; };
-		ED8A99AA2020D2070069EBF6 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		ED8A99AA2020D2070069EBF6 /* Makefile.am */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; path = Makefile.am; sourceTree = "<group>"; };
 		ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.1.0.0.dylib; path = ../../../../../../../../../usr/local/Cellar/openssl/1.0.2k/lib/libcrypto.1.0.0.dylib; sourceTree = "<group>"; };
 		ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.1.0.0.dylib; path = ../../../../../../../../../usr/local/Cellar/openssl/1.0.2k/lib/libssl.1.0.0.dylib; sourceTree = "<group>"; };
 		ED93DFF21D256BD400D6AF0A /* p44utils_common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = p44utils_common.hpp; sourceTree = "<group>"; };
 		ED9D39A42276F0A4009B43A8 /* lv_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_group.h; sourceTree = "<group>"; };
 		ED9D39A52276F0A4009B43A8 /* lv_indev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_indev.c; sourceTree = "<group>"; };
 		ED9D39A62276F0A4009B43A8 /* lv_obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_obj.h; sourceTree = "<group>"; };
-		ED9D39A72276F0A4009B43A8 /* lv_lang.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_lang.h; sourceTree = "<group>"; };
 		ED9D39A82276F0A4009B43A8 /* lv_refr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_refr.c; sourceTree = "<group>"; };
-		ED9D39A92276F0A4009B43A8 /* lv_vdb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_vdb.c; sourceTree = "<group>"; };
 		ED9D39AA2276F0A4009B43A8 /* lv_style.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_style.c; sourceTree = "<group>"; };
 		ED9D39AB2276F0A4009B43A8 /* lv_core.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_core.mk; sourceTree = "<group>"; };
-		ED9D39AC2276F0A4009B43A8 /* lv_lang.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_lang.c; sourceTree = "<group>"; };
 		ED9D39AD2276F0A4009B43A8 /* lv_obj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_obj.c; sourceTree = "<group>"; };
 		ED9D39AE2276F0A4009B43A8 /* lv_indev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_indev.h; sourceTree = "<group>"; };
 		ED9D39AF2276F0A4009B43A8 /* lv_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_group.c; sourceTree = "<group>"; };
 		ED9D39B02276F0A4009B43A8 /* lv_style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_style.h; sourceTree = "<group>"; };
-		ED9D39B12276F0A4009B43A8 /* lv_vdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_vdb.h; sourceTree = "<group>"; };
 		ED9D39B22276F0A4009B43A8 /* lv_refr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_refr.h; sourceTree = "<group>"; };
 		ED9D39B42276F0A4009B43A8 /* lv_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_templ.h; sourceTree = "<group>"; };
 		ED9D39B52276F0A4009B43A8 /* lv_txt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_txt.c; sourceTree = "<group>"; };
-		ED9D39B62276F0A4009B43A8 /* lv_ufs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_ufs.h; sourceTree = "<group>"; };
 		ED9D39B72276F0A4009B43A8 /* lv_task.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_task.c; sourceTree = "<group>"; };
 		ED9D39B82276F0A4009B43A8 /* lv_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_math.h; sourceTree = "<group>"; };
-		ED9D39B92276F0A4009B43A8 /* lv_symbol_def.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_symbol_def.h; sourceTree = "<group>"; };
 		ED9D39BA2276F0A4009B43A8 /* lv_anim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_anim.h; sourceTree = "<group>"; };
 		ED9D39BB2276F0A4009B43A8 /* lv_misc.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_misc.mk; sourceTree = "<group>"; };
 		ED9D39BC2276F0A4009B43A8 /* lv_circ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_circ.h; sourceTree = "<group>"; };
 		ED9D39BD2276F0A4009B43A8 /* lv_mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_mem.c; sourceTree = "<group>"; };
 		ED9D39BE2276F0A4009B43A8 /* lv_fs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_fs.c; sourceTree = "<group>"; };
 		ED9D39BF2276F0A4009B43A8 /* lv_gc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_gc.h; sourceTree = "<group>"; };
-		ED9D39C02276F0A4009B43A8 /* lv_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_font.h; sourceTree = "<group>"; };
 		ED9D39C12276F0A4009B43A8 /* lv_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_color.c; sourceTree = "<group>"; };
 		ED9D39C22276F0A4009B43A8 /* lv_ll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_ll.c; sourceTree = "<group>"; };
 		ED9D39C32276F0A4009B43A8 /* lv_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_log.c; sourceTree = "<group>"; };
 		ED9D39C42276F0A4009B43A8 /* lv_area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_area.c; sourceTree = "<group>"; };
-		ED9D39C52276F0A4009B43A8 /* lv_ufs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_ufs.c; sourceTree = "<group>"; };
 		ED9D39C62276F0A4009B43A8 /* lv_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_task.h; sourceTree = "<group>"; };
 		ED9D39C72276F0A4009B43A8 /* lv_txt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_txt.h; sourceTree = "<group>"; };
 		ED9D39C82276F0A4009B43A8 /* lv_templ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_templ.c; sourceTree = "<group>"; };
@@ -343,25 +320,12 @@
 		ED9D39CA2276F0A4009B43A8 /* lv_circ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_circ.c; sourceTree = "<group>"; };
 		ED9D39CB2276F0A4009B43A8 /* lv_math.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_math.c; sourceTree = "<group>"; };
 		ED9D39CC2276F0A4009B43A8 /* lv_anim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_anim.c; sourceTree = "<group>"; };
-		ED9D39CD2276F0A4009B43A8 /* lv_font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font.c; sourceTree = "<group>"; };
 		ED9D39CE2276F0A4009B43A8 /* lv_gc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_gc.c; sourceTree = "<group>"; };
 		ED9D39CF2276F0A4009B43A8 /* lv_fs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_fs.h; sourceTree = "<group>"; };
 		ED9D39D02276F0A4009B43A8 /* lv_area.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_area.h; sourceTree = "<group>"; };
 		ED9D39D12276F0A4009B43A8 /* lv_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_log.h; sourceTree = "<group>"; };
 		ED9D39D22276F0A4009B43A8 /* lv_ll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_ll.h; sourceTree = "<group>"; };
 		ED9D39D32276F0A4009B43A8 /* lv_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_color.h; sourceTree = "<group>"; };
-		ED9D39D42276F0A4009B43A8 /* lv_conf_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_conf_templ.h; sourceTree = "<group>"; };
-		ED9D39D62276F0A4009B43A8 /* lv_port_indev_templ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_port_indev_templ.c; sourceTree = "<group>"; };
-		ED9D39D72276F0A4009B43A8 /* lv_port_disp_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_port_disp_templ.h; sourceTree = "<group>"; };
-		ED9D39D82276F0A4009B43A8 /* lv_port_fs_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_port_fs_templ.h; sourceTree = "<group>"; };
-		ED9D39D92276F0A4009B43A8 /* lv_port_disp_templ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_port_disp_templ.c; sourceTree = "<group>"; };
-		ED9D39DA2276F0A4009B43A8 /* lv_port_indev_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_port_indev_templ.h; sourceTree = "<group>"; };
-		ED9D39DB2276F0A4009B43A8 /* lv_port_fs_templ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_port_fs_templ.c; sourceTree = "<group>"; };
-		ED9D39DD2276F0A4009B43A8 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CODE_OF_CONDUCT.md; sourceTree = "<group>"; };
-		ED9D39DE2276F0A4009B43A8 /* astyle_c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = astyle_c; sourceTree = "<group>"; };
-		ED9D39DF2276F0A4009B43A8 /* CONTRIBUTING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
-		ED9D39E02276F0A4009B43A8 /* astyle_h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = astyle_h; sourceTree = "<group>"; };
-		ED9D39E12276F0A4009B43A8 /* lv_conf_checker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_conf_checker.h; sourceTree = "<group>"; };
 		ED9D39E32276F0A4009B43A8 /* lv_theme_mono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_theme_mono.h; sourceTree = "<group>"; };
 		ED9D39E42276F0A4009B43A8 /* lv_theme_default.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_theme_default.h; sourceTree = "<group>"; };
 		ED9D39E52276F0A4009B43A8 /* lv_theme.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_theme.c; sourceTree = "<group>"; };
@@ -381,33 +345,9 @@
 		ED9D39F32276F0A4009B43A8 /* lv_theme_night.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_theme_night.c; sourceTree = "<group>"; };
 		ED9D39F42276F0A4009B43A8 /* lv_theme_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_theme_templ.h; sourceTree = "<group>"; };
 		ED9D39F52276F0A4009B43A8 /* lv_theme_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_theme_material.h; sourceTree = "<group>"; };
-		ED9D39F62276F0A4009B43A8 /* LICENCE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENCE.txt; sourceTree = "<group>"; };
 		ED9D39F72276F0A4009B43A8 /* .gitmodules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitmodules; sourceTree = "<group>"; };
-		ED9D39F82276F0A4009B43A8 /* lv_conf_checker.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = lv_conf_checker.py; sourceTree = "<group>"; };
-		ED9D39F92276F0A4009B43A8 /* .editorconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .editorconfig; sourceTree = "<group>"; };
 		ED9D39FA2276F0A4009B43A8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		ED9D39FB2276F0A4009B43A8 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		ED9D39FD2276F0A4009B43A8 /* lv_font_dejavu_10_cyrillic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_10_cyrillic.c; sourceTree = "<group>"; };
-		ED9D39FE2276F0A4009B43A8 /* lv_font_dejavu_40_cyrillic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_40_cyrillic.c; sourceTree = "<group>"; };
-		ED9D39FF2276F0A4009B43A8 /* lv_font_monospace_8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_monospace_8.c; sourceTree = "<group>"; };
-		ED9D3A002276F0A4009B43A8 /* lv_font_dejavu_10_latin_sup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_10_latin_sup.c; sourceTree = "<group>"; };
-		ED9D3A012276F0A4009B43A8 /* lv_font_dejavu_20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_20.c; sourceTree = "<group>"; };
-		ED9D3A022276F0A4009B43A8 /* lv_font_builtin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_font_builtin.h; sourceTree = "<group>"; };
-		ED9D3A032276F0A4009B43A8 /* lv_font_symbol_30.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_symbol_30.c; sourceTree = "<group>"; };
-		ED9D3A042276F0A4009B43A8 /* lv_font_dejavu_30.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_30.c; sourceTree = "<group>"; };
-		ED9D3A052276F0A4009B43A8 /* lv_font_symbol_20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_symbol_20.c; sourceTree = "<group>"; };
-		ED9D3A062276F0A4009B43A8 /* lv_font_dejavu_20_cyrillic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_20_cyrillic.c; sourceTree = "<group>"; };
-		ED9D3A072276F0A4009B43A8 /* lv_font_symbol_10.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_symbol_10.c; sourceTree = "<group>"; };
-		ED9D3A082276F0A4009B43A8 /* lv_font_dejavu_40.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_40.c; sourceTree = "<group>"; };
-		ED9D3A092276F0A4009B43A8 /* lv_font_symbol_40.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_symbol_40.c; sourceTree = "<group>"; };
-		ED9D3A0A2276F0A4009B43A8 /* lv_font_dejavu_10.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_10.c; sourceTree = "<group>"; };
-		ED9D3A0B2276F0A4009B43A8 /* lv_font_dejavu_30_latin_sup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_30_latin_sup.c; sourceTree = "<group>"; };
-		ED9D3A0C2276F0A4009B43A8 /* lv_font_dejavu_40_latin_sup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_40_latin_sup.c; sourceTree = "<group>"; };
-		ED9D3A0D2276F0A4009B43A8 /* lv_font_builtin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_builtin.c; sourceTree = "<group>"; };
-		ED9D3A0E2276F0A4009B43A8 /* lv_font_dejavu_30_cyrillic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_30_cyrillic.c; sourceTree = "<group>"; };
-		ED9D3A0F2276F0A4009B43A8 /* lv_font_dejavu_20_latin_sup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_dejavu_20_latin_sup.c; sourceTree = "<group>"; };
-		ED9D3A102276F0A4009B43A8 /* lv_fonts.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_fonts.mk; sourceTree = "<group>"; };
-		ED9D3A122276F0A4009B43A8 /* stale.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stale.yml; sourceTree = "<group>"; };
 		ED9D3A132276F0A4009B43A8 /* lvgl.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lvgl.mk; sourceTree = "<group>"; };
 		ED9D3A152276F0A4009B43A8 /* lv_hal.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_hal.mk; sourceTree = "<group>"; };
 		ED9D3A162276F0A4009B43A8 /* lv_hal_tick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_hal_tick.h; sourceTree = "<group>"; };
@@ -419,24 +359,19 @@
 		ED9D3A1C2276F0A4009B43A8 /* lv_hal_disp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_hal_disp.c; sourceTree = "<group>"; };
 		ED9D3A1E2276F0A4009B43A8 /* lv_draw_line.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_line.c; sourceTree = "<group>"; };
 		ED9D3A1F2276F0A4009B43A8 /* lv_draw_triangle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_triangle.c; sourceTree = "<group>"; };
-		ED9D3A202276F0A4009B43A8 /* lv_draw_vbasic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_vbasic.c; sourceTree = "<group>"; };
 		ED9D3A212276F0A4009B43A8 /* lv_draw_label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_label.h; sourceTree = "<group>"; };
 		ED9D3A222276F0A4009B43A8 /* lv_draw_arc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_arc.c; sourceTree = "<group>"; };
 		ED9D3A232276F0A4009B43A8 /* lv_draw_rect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_rect.c; sourceTree = "<group>"; };
-		ED9D3A242276F0A4009B43A8 /* lv_draw_rbasic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_rbasic.c; sourceTree = "<group>"; };
 		ED9D3A252276F0A4009B43A8 /* lv_draw_img.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_img.c; sourceTree = "<group>"; };
 		ED9D3A262276F0A4009B43A8 /* lv_draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw.h; sourceTree = "<group>"; };
 		ED9D3A272276F0A4009B43A8 /* lv_draw_triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_triangle.h; sourceTree = "<group>"; };
 		ED9D3A282276F0A4009B43A8 /* lv_draw_line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_line.h; sourceTree = "<group>"; };
-		ED9D3A292276F0A4009B43A8 /* lv_draw_vbasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_vbasic.h; sourceTree = "<group>"; };
 		ED9D3A2A2276F0A4009B43A8 /* lv_draw.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_draw.mk; sourceTree = "<group>"; };
-		ED9D3A2B2276F0A4009B43A8 /* lv_draw_rbasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_rbasic.h; sourceTree = "<group>"; };
 		ED9D3A2C2276F0A4009B43A8 /* lv_draw_rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_rect.h; sourceTree = "<group>"; };
 		ED9D3A2D2276F0A4009B43A8 /* lv_draw_arc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_arc.h; sourceTree = "<group>"; };
 		ED9D3A2E2276F0A4009B43A8 /* lv_draw_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_label.c; sourceTree = "<group>"; };
 		ED9D3A2F2276F0A4009B43A8 /* lv_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw.c; sourceTree = "<group>"; };
 		ED9D3A302276F0A4009B43A8 /* lv_draw_img.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_img.h; sourceTree = "<group>"; };
-		ED9D3A312276F0A4009B43A8 /* lv_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_version.h; sourceTree = "<group>"; };
 		ED9D3A322276F0A4009B43A8 /* lvgl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lvgl.h; sourceTree = "<group>"; };
 		ED9D3A342276F0A4009B43A8 /* lv_slider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_slider.h; sourceTree = "<group>"; };
 		ED9D3A352276F0A4009B43A8 /* lv_img.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_img.h; sourceTree = "<group>"; };
@@ -517,7 +452,7 @@
 		ED9D3AE42276F0C3009B43A8 /* XPT2046.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPT2046.h; sourceTree = "<group>"; };
 		ED9D3AE52276F0C3009B43A8 /* keyboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = keyboard.c; sourceTree = "<group>"; };
 		ED9D3AE62276F0C3009B43A8 /* FT5406EE8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FT5406EE8.h; sourceTree = "<group>"; };
-		ED9D3AE72276F0C3009B43A8 /* evdev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = evdev.c; sourceTree = "<group>"; };
+		ED9D3AE72276F0C3009B43A8 /* evdev.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = evdev.c; sourceTree = "<group>"; tabWidth = 4; };
 		ED9D3AE82276F0C3009B43A8 /* mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mouse.h; sourceTree = "<group>"; };
 		ED9D3AE92276F0C3009B43A8 /* mousewheel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mousewheel.c; sourceTree = "<group>"; };
 		ED9D3AEA2276F0C3009B43A8 /* keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyboard.h; sourceTree = "<group>"; };
@@ -544,7 +479,7 @@
 		ED9D3C6C22775E11009B43A8 /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
 		ED9D3C6D22775E11009B43A8 /* bubble_pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubble_pattern.png; sourceTree = "<group>"; };
 		ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = img_bubble_pattern.c; sourceTree = "<group>"; };
-		ED9D3C6F22775E11009B43A8 /* demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = demo.c; sourceTree = "<group>"; };
+		ED9D3C6F22775E11009B43A8 /* demo.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = demo.c; sourceTree = "<group>"; tabWidth = 4; };
 		ED9D3C7022775E11009B43A8 /* lv_ex_conf_templ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_ex_conf_templ.h; sourceTree = "<group>"; };
 		ED9D3C7122775E11009B43A8 /* lv_examples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_examples.h; sourceTree = "<group>"; };
 		EDB1892F17D4B7330088B6A5 /* ssdpsearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ssdpsearch.cpp; sourceTree = "<group>"; };
@@ -565,6 +500,32 @@
 		EDDE42C117F41A36005B97A0 /* macaddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = macaddress.cpp; sourceTree = "<group>"; };
 		EDF1AF241D0D98D000302F77 /* spi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spi.cpp; sourceTree = "<group>"; };
 		EDF1AF251D0D98D000302F77 /* spi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spi.hpp; sourceTree = "<group>"; };
+		EDF356B522DDC71A00C4110C /* lv_disp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_disp.h; sourceTree = "<group>"; };
+		EDF356B622DDC71A00C4110C /* lv_disp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_disp.c; sourceTree = "<group>"; };
+		EDF356B822DDC78300C4110C /* lv_draw_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_draw_basic.c; sourceTree = "<group>"; };
+		EDF356B922DDC78300C4110C /* lv_img_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_img_cache.h; sourceTree = "<group>"; };
+		EDF356BA22DDC78300C4110C /* lv_img_decoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_img_decoder.c; sourceTree = "<group>"; };
+		EDF356BB22DDC78300C4110C /* lv_img_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_img_decoder.h; sourceTree = "<group>"; };
+		EDF356BC22DDC78300C4110C /* lv_img_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_img_cache.c; sourceTree = "<group>"; };
+		EDF356BD22DDC78300C4110C /* lv_draw_basic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_draw_basic.h; sourceTree = "<group>"; };
+		EDF356C122DDC99D00C4110C /* lv_font_fmt_txt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_font_fmt_txt.h; sourceTree = "<group>"; };
+		EDF356C222DDC99D00C4110C /* lv_font_roboto_22.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_roboto_22.c; sourceTree = "<group>"; };
+		EDF356C322DDC99D00C4110C /* lv_font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font.c; sourceTree = "<group>"; };
+		EDF356C422DDC99D00C4110C /* lv_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_font.h; sourceTree = "<group>"; };
+		EDF356C522DDC99D00C4110C /* lv_font.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lv_font.mk; sourceTree = "<group>"; };
+		EDF356C622DDC99D00C4110C /* lv_font_roboto_12.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_roboto_12.c; sourceTree = "<group>"; };
+		EDF356C722DDC99D00C4110C /* lv_font_roboto_28.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_roboto_28.c; sourceTree = "<group>"; };
+		EDF356C822DDC99D00C4110C /* lv_font_roboto_16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_roboto_16.c; sourceTree = "<group>"; };
+		EDF356C922DDC99D00C4110C /* lv_symbol_def.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_symbol_def.h; sourceTree = "<group>"; };
+		EDF356CA22DDC99D00C4110C /* lv_font_unscii_8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_unscii_8.c; sourceTree = "<group>"; };
+		EDF356CB22DDC99D00C4110C /* lv_font_fmt_txt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_font_fmt_txt.c; sourceTree = "<group>"; };
+		EDF356D322DDCAC700C4110C /* lv_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_utils.h; sourceTree = "<group>"; };
+		EDF356D422DDCAC700C4110C /* lv_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_utils.c; sourceTree = "<group>"; };
+		EDF356D522DDCAC700C4110C /* lv_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_types.h; sourceTree = "<group>"; };
+		EDF356D722DDCDBD00C4110C /* lv_conf_checker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_conf_checker.h; sourceTree = "<group>"; };
+		EDF356D822DDCDBD00C4110C /* lv_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_version.h; sourceTree = "<group>"; };
+		EDF356D922DDCE0000C4110C /* LICENCE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE.txt; sourceTree = "<group>"; };
+		EDF356DA22DDCE0000C4110C /* lv_conf_template.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lv_conf_template.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -770,24 +731,11 @@
 		ED9D39A22276F0A4009B43A8 /* lvgl */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D39F92276F0A4009B43A8 /* .editorconfig */,
-				ED9D3A112276F0A4009B43A8 /* .github */,
+				EDF356B422DDC57C00C4110C /* src */,
 				ED9D39FB2276F0A4009B43A8 /* .gitignore */,
 				ED9D39F72276F0A4009B43A8 /* .gitmodules */,
-				ED9D39DC2276F0A4009B43A8 /* docs */,
-				ED9D39F62276F0A4009B43A8 /* LICENCE.txt */,
-				ED9D39E12276F0A4009B43A8 /* lv_conf_checker.h */,
-				ED9D39F82276F0A4009B43A8 /* lv_conf_checker.py */,
-				ED9D39D42276F0A4009B43A8 /* lv_conf_templ.h */,
-				ED9D39A32276F0A4009B43A8 /* lv_core */,
-				ED9D3A1D2276F0A4009B43A8 /* lv_draw */,
-				ED9D39FC2276F0A4009B43A8 /* lv_fonts */,
-				ED9D3A142276F0A4009B43A8 /* lv_hal */,
-				ED9D39B32276F0A4009B43A8 /* lv_misc */,
-				ED9D3A332276F0A4009B43A8 /* lv_objx */,
-				ED9D39D52276F0A4009B43A8 /* lv_porting */,
-				ED9D39E22276F0A4009B43A8 /* lv_themes */,
-				ED9D3A312276F0A4009B43A8 /* lv_version.h */,
+				EDF356D922DDCE0000C4110C /* LICENCE.txt */,
+				EDF356DA22DDCE0000C4110C /* lv_conf_template.h */,
 				ED9D3A322276F0A4009B43A8 /* lvgl.h */,
 				ED9D3A132276F0A4009B43A8 /* lvgl.mk */,
 				ED9D39FA2276F0A4009B43A8 /* README.md */,
@@ -800,20 +748,18 @@
 			isa = PBXGroup;
 			children = (
 				ED9D39AB2276F0A4009B43A8 /* lv_core.mk */,
+				EDF356B622DDC71A00C4110C /* lv_disp.c */,
+				EDF356B522DDC71A00C4110C /* lv_disp.h */,
 				ED9D39AF2276F0A4009B43A8 /* lv_group.c */,
 				ED9D39A42276F0A4009B43A8 /* lv_group.h */,
 				ED9D39A52276F0A4009B43A8 /* lv_indev.c */,
 				ED9D39AE2276F0A4009B43A8 /* lv_indev.h */,
-				ED9D39AC2276F0A4009B43A8 /* lv_lang.c */,
-				ED9D39A72276F0A4009B43A8 /* lv_lang.h */,
 				ED9D39AD2276F0A4009B43A8 /* lv_obj.c */,
 				ED9D39A62276F0A4009B43A8 /* lv_obj.h */,
 				ED9D39A82276F0A4009B43A8 /* lv_refr.c */,
 				ED9D39B22276F0A4009B43A8 /* lv_refr.h */,
 				ED9D39AA2276F0A4009B43A8 /* lv_style.c */,
 				ED9D39B02276F0A4009B43A8 /* lv_style.h */,
-				ED9D39A92276F0A4009B43A8 /* lv_vdb.c */,
-				ED9D39B12276F0A4009B43A8 /* lv_vdb.h */,
 			);
 			path = lv_core;
 			sourceTree = "<group>";
@@ -821,125 +767,82 @@
 		ED9D39B32276F0A4009B43A8 /* lv_misc */ = {
 			isa = PBXGroup;
 			children = (
+				ED9D39CC2276F0A4009B43A8 /* lv_anim.c */,
+				ED9D39BA2276F0A4009B43A8 /* lv_anim.h */,
+				ED9D39C42276F0A4009B43A8 /* lv_area.c */,
+				ED9D39D02276F0A4009B43A8 /* lv_area.h */,
+				ED9D39CA2276F0A4009B43A8 /* lv_circ.c */,
+				ED9D39BC2276F0A4009B43A8 /* lv_circ.h */,
+				ED9D39C12276F0A4009B43A8 /* lv_color.c */,
+				ED9D39D32276F0A4009B43A8 /* lv_color.h */,
+				ED9D39BE2276F0A4009B43A8 /* lv_fs.c */,
+				ED9D39CF2276F0A4009B43A8 /* lv_fs.h */,
+				ED9D39CE2276F0A4009B43A8 /* lv_gc.c */,
+				ED9D39BF2276F0A4009B43A8 /* lv_gc.h */,
+				ED9D39C22276F0A4009B43A8 /* lv_ll.c */,
+				ED9D39D22276F0A4009B43A8 /* lv_ll.h */,
+				ED9D39C32276F0A4009B43A8 /* lv_log.c */,
+				ED9D39D12276F0A4009B43A8 /* lv_log.h */,
+				ED9D39CB2276F0A4009B43A8 /* lv_math.c */,
+				ED9D39B82276F0A4009B43A8 /* lv_math.h */,
+				ED9D39BD2276F0A4009B43A8 /* lv_mem.c */,
+				ED9D39C92276F0A4009B43A8 /* lv_mem.h */,
+				ED9D39BB2276F0A4009B43A8 /* lv_misc.mk */,
+				ED9D39B72276F0A4009B43A8 /* lv_task.c */,
+				ED9D39C62276F0A4009B43A8 /* lv_task.h */,
+				ED9D39C82276F0A4009B43A8 /* lv_templ.c */,
 				ED9D39B42276F0A4009B43A8 /* lv_templ.h */,
 				ED9D39B52276F0A4009B43A8 /* lv_txt.c */,
-				ED9D39B62276F0A4009B43A8 /* lv_ufs.h */,
-				ED9D39B72276F0A4009B43A8 /* lv_task.c */,
-				ED9D39B82276F0A4009B43A8 /* lv_math.h */,
-				ED9D39B92276F0A4009B43A8 /* lv_symbol_def.h */,
-				ED9D39BA2276F0A4009B43A8 /* lv_anim.h */,
-				ED9D39BB2276F0A4009B43A8 /* lv_misc.mk */,
-				ED9D39BC2276F0A4009B43A8 /* lv_circ.h */,
-				ED9D39BD2276F0A4009B43A8 /* lv_mem.c */,
-				ED9D39BE2276F0A4009B43A8 /* lv_fs.c */,
-				ED9D39BF2276F0A4009B43A8 /* lv_gc.h */,
-				ED9D39C02276F0A4009B43A8 /* lv_font.h */,
-				ED9D39C12276F0A4009B43A8 /* lv_color.c */,
-				ED9D39C22276F0A4009B43A8 /* lv_ll.c */,
-				ED9D39C32276F0A4009B43A8 /* lv_log.c */,
-				ED9D39C42276F0A4009B43A8 /* lv_area.c */,
-				ED9D39C52276F0A4009B43A8 /* lv_ufs.c */,
-				ED9D39C62276F0A4009B43A8 /* lv_task.h */,
 				ED9D39C72276F0A4009B43A8 /* lv_txt.h */,
-				ED9D39C82276F0A4009B43A8 /* lv_templ.c */,
-				ED9D39C92276F0A4009B43A8 /* lv_mem.h */,
-				ED9D39CA2276F0A4009B43A8 /* lv_circ.c */,
-				ED9D39CB2276F0A4009B43A8 /* lv_math.c */,
-				ED9D39CC2276F0A4009B43A8 /* lv_anim.c */,
-				ED9D39CD2276F0A4009B43A8 /* lv_font.c */,
-				ED9D39CE2276F0A4009B43A8 /* lv_gc.c */,
-				ED9D39CF2276F0A4009B43A8 /* lv_fs.h */,
-				ED9D39D02276F0A4009B43A8 /* lv_area.h */,
-				ED9D39D12276F0A4009B43A8 /* lv_log.h */,
-				ED9D39D22276F0A4009B43A8 /* lv_ll.h */,
-				ED9D39D32276F0A4009B43A8 /* lv_color.h */,
+				EDF356D522DDCAC700C4110C /* lv_types.h */,
+				EDF356D422DDCAC700C4110C /* lv_utils.c */,
+				EDF356D322DDCAC700C4110C /* lv_utils.h */,
 			);
 			path = lv_misc;
-			sourceTree = "<group>";
-		};
-		ED9D39D52276F0A4009B43A8 /* lv_porting */ = {
-			isa = PBXGroup;
-			children = (
-				ED9D39D62276F0A4009B43A8 /* lv_port_indev_templ.c */,
-				ED9D39D72276F0A4009B43A8 /* lv_port_disp_templ.h */,
-				ED9D39D82276F0A4009B43A8 /* lv_port_fs_templ.h */,
-				ED9D39D92276F0A4009B43A8 /* lv_port_disp_templ.c */,
-				ED9D39DA2276F0A4009B43A8 /* lv_port_indev_templ.h */,
-				ED9D39DB2276F0A4009B43A8 /* lv_port_fs_templ.c */,
-			);
-			path = lv_porting;
-			sourceTree = "<group>";
-		};
-		ED9D39DC2276F0A4009B43A8 /* docs */ = {
-			isa = PBXGroup;
-			children = (
-				ED9D39DD2276F0A4009B43A8 /* CODE_OF_CONDUCT.md */,
-				ED9D39DE2276F0A4009B43A8 /* astyle_c */,
-				ED9D39DF2276F0A4009B43A8 /* CONTRIBUTING.md */,
-				ED9D39E02276F0A4009B43A8 /* astyle_h */,
-			);
-			path = docs;
 			sourceTree = "<group>";
 		};
 		ED9D39E22276F0A4009B43A8 /* lv_themes */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D39E32276F0A4009B43A8 /* lv_theme_mono.h */,
-				ED9D39E42276F0A4009B43A8 /* lv_theme_default.h */,
-				ED9D39E52276F0A4009B43A8 /* lv_theme.c */,
-				ED9D39E62276F0A4009B43A8 /* lv_theme_zen.h */,
 				ED9D39E72276F0A4009B43A8 /* lv_theme_alien.c */,
-				ED9D39E82276F0A4009B43A8 /* lv_themes.mk */,
-				ED9D39E92276F0A4009B43A8 /* lv_theme_night.h */,
-				ED9D39EA2276F0A4009B43A8 /* lv_theme_nemo.c */,
-				ED9D39EB2276F0A4009B43A8 /* lv_theme_templ.c */,
-				ED9D39EC2276F0A4009B43A8 /* lv_theme_material.c */,
-				ED9D39ED2276F0A4009B43A8 /* lv_theme_zen.c */,
-				ED9D39EE2276F0A4009B43A8 /* lv_theme_default.c */,
-				ED9D39EF2276F0A4009B43A8 /* lv_theme.h */,
-				ED9D39F02276F0A4009B43A8 /* lv_theme_mono.c */,
 				ED9D39F12276F0A4009B43A8 /* lv_theme_alien.h */,
+				ED9D39EE2276F0A4009B43A8 /* lv_theme_default.c */,
+				ED9D39E42276F0A4009B43A8 /* lv_theme_default.h */,
+				ED9D39EC2276F0A4009B43A8 /* lv_theme_material.c */,
+				ED9D39F52276F0A4009B43A8 /* lv_theme_material.h */,
+				ED9D39F02276F0A4009B43A8 /* lv_theme_mono.c */,
+				ED9D39E32276F0A4009B43A8 /* lv_theme_mono.h */,
+				ED9D39EA2276F0A4009B43A8 /* lv_theme_nemo.c */,
 				ED9D39F22276F0A4009B43A8 /* lv_theme_nemo.h */,
 				ED9D39F32276F0A4009B43A8 /* lv_theme_night.c */,
+				ED9D39E92276F0A4009B43A8 /* lv_theme_night.h */,
+				ED9D39EB2276F0A4009B43A8 /* lv_theme_templ.c */,
 				ED9D39F42276F0A4009B43A8 /* lv_theme_templ.h */,
-				ED9D39F52276F0A4009B43A8 /* lv_theme_material.h */,
+				ED9D39ED2276F0A4009B43A8 /* lv_theme_zen.c */,
+				ED9D39E62276F0A4009B43A8 /* lv_theme_zen.h */,
+				ED9D39E52276F0A4009B43A8 /* lv_theme.c */,
+				ED9D39EF2276F0A4009B43A8 /* lv_theme.h */,
+				ED9D39E82276F0A4009B43A8 /* lv_themes.mk */,
 			);
 			path = lv_themes;
 			sourceTree = "<group>";
 		};
-		ED9D39FC2276F0A4009B43A8 /* lv_fonts */ = {
+		ED9D39FC2276F0A4009B43A8 /* lv_font */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D39FD2276F0A4009B43A8 /* lv_font_dejavu_10_cyrillic.c */,
-				ED9D39FE2276F0A4009B43A8 /* lv_font_dejavu_40_cyrillic.c */,
-				ED9D39FF2276F0A4009B43A8 /* lv_font_monospace_8.c */,
-				ED9D3A002276F0A4009B43A8 /* lv_font_dejavu_10_latin_sup.c */,
-				ED9D3A012276F0A4009B43A8 /* lv_font_dejavu_20.c */,
-				ED9D3A022276F0A4009B43A8 /* lv_font_builtin.h */,
-				ED9D3A032276F0A4009B43A8 /* lv_font_symbol_30.c */,
-				ED9D3A042276F0A4009B43A8 /* lv_font_dejavu_30.c */,
-				ED9D3A052276F0A4009B43A8 /* lv_font_symbol_20.c */,
-				ED9D3A062276F0A4009B43A8 /* lv_font_dejavu_20_cyrillic.c */,
-				ED9D3A072276F0A4009B43A8 /* lv_font_symbol_10.c */,
-				ED9D3A082276F0A4009B43A8 /* lv_font_dejavu_40.c */,
-				ED9D3A092276F0A4009B43A8 /* lv_font_symbol_40.c */,
-				ED9D3A0A2276F0A4009B43A8 /* lv_font_dejavu_10.c */,
-				ED9D3A0B2276F0A4009B43A8 /* lv_font_dejavu_30_latin_sup.c */,
-				ED9D3A0C2276F0A4009B43A8 /* lv_font_dejavu_40_latin_sup.c */,
-				ED9D3A0D2276F0A4009B43A8 /* lv_font_builtin.c */,
-				ED9D3A0E2276F0A4009B43A8 /* lv_font_dejavu_30_cyrillic.c */,
-				ED9D3A0F2276F0A4009B43A8 /* lv_font_dejavu_20_latin_sup.c */,
-				ED9D3A102276F0A4009B43A8 /* lv_fonts.mk */,
+				EDF356CB22DDC99D00C4110C /* lv_font_fmt_txt.c */,
+				EDF356C122DDC99D00C4110C /* lv_font_fmt_txt.h */,
+				EDF356C622DDC99D00C4110C /* lv_font_roboto_12.c */,
+				EDF356C822DDC99D00C4110C /* lv_font_roboto_16.c */,
+				EDF356C222DDC99D00C4110C /* lv_font_roboto_22.c */,
+				EDF356C722DDC99D00C4110C /* lv_font_roboto_28.c */,
+				EDF356CA22DDC99D00C4110C /* lv_font_unscii_8.c */,
+				EDF356C322DDC99D00C4110C /* lv_font.c */,
+				EDF356C422DDC99D00C4110C /* lv_font.h */,
+				EDF356C522DDC99D00C4110C /* lv_font.mk */,
+				EDF356C922DDC99D00C4110C /* lv_symbol_def.h */,
 			);
-			path = lv_fonts;
-			sourceTree = "<group>";
-		};
-		ED9D3A112276F0A4009B43A8 /* .github */ = {
-			isa = PBXGroup;
-			children = (
-				ED9D3A122276F0A4009B43A8 /* stale.yml */,
-			);
-			path = .github;
+			path = lv_font;
 			sourceTree = "<group>";
 		};
 		ED9D3A142276F0A4009B43A8 /* lv_hal */ = {
@@ -960,25 +863,27 @@
 		ED9D3A1D2276F0A4009B43A8 /* lv_draw */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D3A1E2276F0A4009B43A8 /* lv_draw_line.c */,
-				ED9D3A1F2276F0A4009B43A8 /* lv_draw_triangle.c */,
-				ED9D3A202276F0A4009B43A8 /* lv_draw_vbasic.c */,
-				ED9D3A212276F0A4009B43A8 /* lv_draw_label.h */,
 				ED9D3A222276F0A4009B43A8 /* lv_draw_arc.c */,
-				ED9D3A232276F0A4009B43A8 /* lv_draw_rect.c */,
-				ED9D3A242276F0A4009B43A8 /* lv_draw_rbasic.c */,
-				ED9D3A252276F0A4009B43A8 /* lv_draw_img.c */,
-				ED9D3A262276F0A4009B43A8 /* lv_draw.h */,
-				ED9D3A272276F0A4009B43A8 /* lv_draw_triangle.h */,
-				ED9D3A282276F0A4009B43A8 /* lv_draw_line.h */,
-				ED9D3A292276F0A4009B43A8 /* lv_draw_vbasic.h */,
-				ED9D3A2A2276F0A4009B43A8 /* lv_draw.mk */,
-				ED9D3A2B2276F0A4009B43A8 /* lv_draw_rbasic.h */,
-				ED9D3A2C2276F0A4009B43A8 /* lv_draw_rect.h */,
 				ED9D3A2D2276F0A4009B43A8 /* lv_draw_arc.h */,
-				ED9D3A2E2276F0A4009B43A8 /* lv_draw_label.c */,
-				ED9D3A2F2276F0A4009B43A8 /* lv_draw.c */,
+				EDF356B822DDC78300C4110C /* lv_draw_basic.c */,
+				EDF356BD22DDC78300C4110C /* lv_draw_basic.h */,
+				ED9D3A252276F0A4009B43A8 /* lv_draw_img.c */,
 				ED9D3A302276F0A4009B43A8 /* lv_draw_img.h */,
+				ED9D3A2E2276F0A4009B43A8 /* lv_draw_label.c */,
+				ED9D3A212276F0A4009B43A8 /* lv_draw_label.h */,
+				ED9D3A1E2276F0A4009B43A8 /* lv_draw_line.c */,
+				ED9D3A282276F0A4009B43A8 /* lv_draw_line.h */,
+				ED9D3A232276F0A4009B43A8 /* lv_draw_rect.c */,
+				ED9D3A2C2276F0A4009B43A8 /* lv_draw_rect.h */,
+				ED9D3A1F2276F0A4009B43A8 /* lv_draw_triangle.c */,
+				ED9D3A272276F0A4009B43A8 /* lv_draw_triangle.h */,
+				ED9D3A2F2276F0A4009B43A8 /* lv_draw.c */,
+				ED9D3A262276F0A4009B43A8 /* lv_draw.h */,
+				ED9D3A2A2276F0A4009B43A8 /* lv_draw.mk */,
+				EDF356BC22DDC78300C4110C /* lv_img_cache.c */,
+				EDF356B922DDC78300C4110C /* lv_img_cache.h */,
+				EDF356BA22DDC78300C4110C /* lv_img_decoder.c */,
+				EDF356BB22DDC78300C4110C /* lv_img_decoder.h */,
 			);
 			path = lv_draw;
 			sourceTree = "<group>";
@@ -986,71 +891,71 @@
 		ED9D3A332276F0A4009B43A8 /* lv_objx */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D3A342276F0A4009B43A8 /* lv_slider.h */,
-				ED9D3A352276F0A4009B43A8 /* lv_img.h */,
-				ED9D3A362276F0A4009B43A8 /* lv_gauge.c */,
-				ED9D3A372276F0A4009B43A8 /* lv_imgbtn.h */,
-				ED9D3A382276F0A4009B43A8 /* lv_win.c */,
-				ED9D3A392276F0A4009B43A8 /* lv_list.h */,
-				ED9D3A3A2276F0A4009B43A8 /* lv_preload.h */,
-				ED9D3A3B2276F0A4009B43A8 /* lv_cb.c */,
-				ED9D3A3C2276F0A4009B43A8 /* lv_page.c */,
-				ED9D3A3D2276F0A4009B43A8 /* lv_label.c */,
-				ED9D3A3E2276F0A4009B43A8 /* lv_kb.h */,
-				ED9D3A3F2276F0A4009B43A8 /* lv_table.h */,
-				ED9D3A402276F0A4009B43A8 /* lv_roller.c */,
-				ED9D3A412276F0A4009B43A8 /* lv_arc.h */,
-				ED9D3A422276F0A4009B43A8 /* lv_bar.h */,
-				ED9D3A432276F0A4009B43A8 /* lv_ta.c */,
-				ED9D3A442276F0A4009B43A8 /* lv_lmeter.c */,
-				ED9D3A452276F0A4009B43A8 /* lv_btn.c */,
-				ED9D3A462276F0A4009B43A8 /* lv_btnm.c */,
-				ED9D3A472276F0A4009B43A8 /* lv_canvas.h */,
-				ED9D3A482276F0A4009B43A8 /* lv_spinbox.c */,
-				ED9D3A492276F0A4009B43A8 /* lv_objx_templ.h */,
-				ED9D3A4A2276F0A4009B43A8 /* lv_calendar.h */,
-				ED9D3A4B2276F0A4009B43A8 /* lv_chart.c */,
-				ED9D3A4C2276F0A4009B43A8 /* lv_tabview.h */,
-				ED9D3A4D2276F0A4009B43A8 /* lv_objx.mk */,
-				ED9D3A4E2276F0A4009B43A8 /* lv_line.h */,
-				ED9D3A4F2276F0A4009B43A8 /* lv_cont.c */,
-				ED9D3A502276F0A4009B43A8 /* lv_ddlist.c */,
-				ED9D3A512276F0A4009B43A8 /* lv_sw.h */,
-				ED9D3A522276F0A4009B43A8 /* lv_tileview.c */,
-				ED9D3A532276F0A4009B43A8 /* lv_mbox.h */,
-				ED9D3A542276F0A4009B43A8 /* lv_led.c */,
-				ED9D3A552276F0A4009B43A8 /* lv_label.h */,
-				ED9D3A562276F0A4009B43A8 /* lv_kb.c */,
-				ED9D3A572276F0A4009B43A8 /* lv_cb.h */,
-				ED9D3A582276F0A4009B43A8 /* lv_page.h */,
-				ED9D3A592276F0A4009B43A8 /* lv_preload.c */,
-				ED9D3A5A2276F0A4009B43A8 /* lv_list.c */,
-				ED9D3A5B2276F0A4009B43A8 /* lv_gauge.h */,
-				ED9D3A5C2276F0A4009B43A8 /* lv_img.c */,
-				ED9D3A5D2276F0A4009B43A8 /* lv_win.h */,
-				ED9D3A5E2276F0A4009B43A8 /* lv_imgbtn.c */,
-				ED9D3A5F2276F0A4009B43A8 /* lv_slider.c */,
-				ED9D3A602276F0A4009B43A8 /* lv_lmeter.h */,
-				ED9D3A612276F0A4009B43A8 /* lv_btn.h */,
-				ED9D3A622276F0A4009B43A8 /* lv_ta.h */,
-				ED9D3A632276F0A4009B43A8 /* lv_bar.c */,
-				ED9D3A642276F0A4009B43A8 /* lv_roller.h */,
-				ED9D3A652276F0A4009B43A8 /* lv_table.c */,
 				ED9D3A662276F0A4009B43A8 /* lv_arc.c */,
-				ED9D3A672276F0A4009B43A8 /* lv_line.c */,
-				ED9D3A682276F0A4009B43A8 /* lv_tabview.c */,
-				ED9D3A692276F0A4009B43A8 /* lv_chart.h */,
-				ED9D3A6A2276F0A4009B43A8 /* lv_spinbox.h */,
-				ED9D3A6B2276F0A4009B43A8 /* lv_canvas.c */,
+				ED9D3A412276F0A4009B43A8 /* lv_arc.h */,
+				ED9D3A632276F0A4009B43A8 /* lv_bar.c */,
+				ED9D3A422276F0A4009B43A8 /* lv_bar.h */,
+				ED9D3A452276F0A4009B43A8 /* lv_btn.c */,
+				ED9D3A612276F0A4009B43A8 /* lv_btn.h */,
+				ED9D3A462276F0A4009B43A8 /* lv_btnm.c */,
 				ED9D3A6C2276F0A4009B43A8 /* lv_btnm.h */,
 				ED9D3A6D2276F0A4009B43A8 /* lv_calendar.c */,
-				ED9D3A6E2276F0A4009B43A8 /* lv_objx_templ.c */,
-				ED9D3A6F2276F0A4009B43A8 /* lv_mbox.c */,
-				ED9D3A702276F0A4009B43A8 /* lv_led.h */,
-				ED9D3A712276F0A4009B43A8 /* lv_tileview.h */,
-				ED9D3A722276F0A4009B43A8 /* lv_ddlist.h */,
-				ED9D3A732276F0A4009B43A8 /* lv_sw.c */,
+				ED9D3A4A2276F0A4009B43A8 /* lv_calendar.h */,
+				ED9D3A6B2276F0A4009B43A8 /* lv_canvas.c */,
+				ED9D3A472276F0A4009B43A8 /* lv_canvas.h */,
+				ED9D3A3B2276F0A4009B43A8 /* lv_cb.c */,
+				ED9D3A572276F0A4009B43A8 /* lv_cb.h */,
+				ED9D3A4B2276F0A4009B43A8 /* lv_chart.c */,
+				ED9D3A692276F0A4009B43A8 /* lv_chart.h */,
+				ED9D3A4F2276F0A4009B43A8 /* lv_cont.c */,
 				ED9D3A742276F0A4009B43A8 /* lv_cont.h */,
+				ED9D3A502276F0A4009B43A8 /* lv_ddlist.c */,
+				ED9D3A722276F0A4009B43A8 /* lv_ddlist.h */,
+				ED9D3A362276F0A4009B43A8 /* lv_gauge.c */,
+				ED9D3A5B2276F0A4009B43A8 /* lv_gauge.h */,
+				ED9D3A5C2276F0A4009B43A8 /* lv_img.c */,
+				ED9D3A352276F0A4009B43A8 /* lv_img.h */,
+				ED9D3A5E2276F0A4009B43A8 /* lv_imgbtn.c */,
+				ED9D3A372276F0A4009B43A8 /* lv_imgbtn.h */,
+				ED9D3A562276F0A4009B43A8 /* lv_kb.c */,
+				ED9D3A3E2276F0A4009B43A8 /* lv_kb.h */,
+				ED9D3A3D2276F0A4009B43A8 /* lv_label.c */,
+				ED9D3A552276F0A4009B43A8 /* lv_label.h */,
+				ED9D3A542276F0A4009B43A8 /* lv_led.c */,
+				ED9D3A702276F0A4009B43A8 /* lv_led.h */,
+				ED9D3A672276F0A4009B43A8 /* lv_line.c */,
+				ED9D3A4E2276F0A4009B43A8 /* lv_line.h */,
+				ED9D3A5A2276F0A4009B43A8 /* lv_list.c */,
+				ED9D3A392276F0A4009B43A8 /* lv_list.h */,
+				ED9D3A442276F0A4009B43A8 /* lv_lmeter.c */,
+				ED9D3A602276F0A4009B43A8 /* lv_lmeter.h */,
+				ED9D3A6F2276F0A4009B43A8 /* lv_mbox.c */,
+				ED9D3A532276F0A4009B43A8 /* lv_mbox.h */,
+				ED9D3A6E2276F0A4009B43A8 /* lv_objx_templ.c */,
+				ED9D3A492276F0A4009B43A8 /* lv_objx_templ.h */,
+				ED9D3A4D2276F0A4009B43A8 /* lv_objx.mk */,
+				ED9D3A3C2276F0A4009B43A8 /* lv_page.c */,
+				ED9D3A582276F0A4009B43A8 /* lv_page.h */,
+				ED9D3A592276F0A4009B43A8 /* lv_preload.c */,
+				ED9D3A3A2276F0A4009B43A8 /* lv_preload.h */,
+				ED9D3A402276F0A4009B43A8 /* lv_roller.c */,
+				ED9D3A642276F0A4009B43A8 /* lv_roller.h */,
+				ED9D3A5F2276F0A4009B43A8 /* lv_slider.c */,
+				ED9D3A342276F0A4009B43A8 /* lv_slider.h */,
+				ED9D3A482276F0A4009B43A8 /* lv_spinbox.c */,
+				ED9D3A6A2276F0A4009B43A8 /* lv_spinbox.h */,
+				ED9D3A732276F0A4009B43A8 /* lv_sw.c */,
+				ED9D3A512276F0A4009B43A8 /* lv_sw.h */,
+				ED9D3A432276F0A4009B43A8 /* lv_ta.c */,
+				ED9D3A622276F0A4009B43A8 /* lv_ta.h */,
+				ED9D3A652276F0A4009B43A8 /* lv_table.c */,
+				ED9D3A3F2276F0A4009B43A8 /* lv_table.h */,
+				ED9D3A682276F0A4009B43A8 /* lv_tabview.c */,
+				ED9D3A4C2276F0A4009B43A8 /* lv_tabview.h */,
+				ED9D3A522276F0A4009B43A8 /* lv_tileview.c */,
+				ED9D3A712276F0A4009B43A8 /* lv_tileview.h */,
+				ED9D3A382276F0A4009B43A8 /* lv_win.c */,
+				ED9D3A5D2276F0A4009B43A8 /* lv_win.h */,
 			);
 			path = lv_objx;
 			sourceTree = "<group>";
@@ -1115,17 +1020,17 @@
 		ED9D3AF02276F0C3009B43A8 /* display */ = {
 			isa = PBXGroup;
 			children = (
-				ED9D3AF12276F0C3009B43A8 /* monitor.c */,
-				ED9D3AF22276F0C3009B43A8 /* ST7565.c */,
-				ED9D3AF32276F0C3009B43A8 /* R61581.h */,
-				ED9D3AF42276F0C3009B43A8 /* fbdev.c */,
-				ED9D3AF52276F0C3009B43A8 /* SSD1963.h */,
-				ED9D3AF62276F0C3009B43A8 /* ST7565.h */,
-				ED9D3AF72276F0C3009B43A8 /* monitor.h */,
-				ED9D3AF82276F0C3009B43A8 /* fbdev.h */,
-				ED9D3AF92276F0C3009B43A8 /* R61581.c */,
 				ED9D3AFA2276F0C3009B43A8 /* display.mk */,
+				ED9D3AF42276F0C3009B43A8 /* fbdev.c */,
+				ED9D3AF82276F0C3009B43A8 /* fbdev.h */,
+				ED9D3AF12276F0C3009B43A8 /* monitor.c */,
+				ED9D3AF72276F0C3009B43A8 /* monitor.h */,
+				ED9D3AF92276F0C3009B43A8 /* R61581.c */,
+				ED9D3AF32276F0C3009B43A8 /* R61581.h */,
 				ED9D3AFB2276F0C3009B43A8 /* SSD1963.c */,
+				ED9D3AF52276F0C3009B43A8 /* SSD1963.h */,
+				ED9D3AF22276F0C3009B43A8 /* ST7565.c */,
+				ED9D3AF62276F0C3009B43A8 /* ST7565.h */,
 			);
 			path = display;
 			sourceTree = "<group>";
@@ -1158,6 +1063,22 @@
 				ED9D3C6F22775E11009B43A8 /* demo.c */,
 			);
 			path = demo;
+			sourceTree = "<group>";
+		};
+		EDF356B422DDC57C00C4110C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				EDF356D722DDCDBD00C4110C /* lv_conf_checker.h */,
+				EDF356D822DDCDBD00C4110C /* lv_version.h */,
+				ED9D39A32276F0A4009B43A8 /* lv_core */,
+				ED9D3A1D2276F0A4009B43A8 /* lv_draw */,
+				ED9D39FC2276F0A4009B43A8 /* lv_font */,
+				ED9D3A142276F0A4009B43A8 /* lv_hal */,
+				ED9D39B32276F0A4009B43A8 /* lv_misc */,
+				ED9D3A332276F0A4009B43A8 /* lv_objx */,
+				ED9D39E22276F0A4009B43A8 /* lv_themes */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1232,12 +1153,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ED9D3C7322775E12009B43A8 /* demo.c in Sources */,
 				ED9D3B062276F0C4009B43A8 /* fbdev.c in Sources */,
 				ED9D3A882276F0A5009B43A8 /* lv_anim.c in Sources */,
+				EDF356D622DDCAC700C4110C /* lv_utils.c in Sources */,
 				ED9D3AC22276F0A5009B43A8 /* lv_ddlist.c in Sources */,
 				EDDEE88A17FC6ED400A65599 /* i2c.cpp in Sources */,
-				ED9D3A842276F0A5009B43A8 /* lv_ufs.c in Sources */,
 				ED9D3A762276F0A5009B43A8 /* lv_refr.c in Sources */,
 				ED25C42D17EC8382005B115F /* jsonwebclient.cpp in Sources */,
 				ED43FCFA22CBFD5F00ED57F3 /* modbus.cpp in Sources */,
@@ -1245,13 +1165,10 @@
 				ED9D3A802276F0A5009B43A8 /* lv_color.c in Sources */,
 				ED43FD7D22CC154900ED57F3 /* modbus-rtu.c in Sources */,
 				ED9D3ACC2276F0A5009B43A8 /* lv_table.c in Sources */,
-				ED9D3A8B2276F0A5009B43A8 /* lv_port_indev_templ.c in Sources */,
 				ED9D3A902276F0A5009B43A8 /* lv_theme_nemo.c in Sources */,
 				ED9D3ACB2276F0A5009B43A8 /* lv_bar.c in Sources */,
-				ED9D3A982276F0A5009B43A8 /* lv_font_dejavu_40_cyrillic.c in Sources */,
 				ED9D3A8A2276F0A5009B43A8 /* lv_gc.c in Sources */,
 				ED9D3AAA2276F0A5009B43A8 /* lv_hal_indev.c in Sources */,
-				ED9D3AA42276F0A5009B43A8 /* lv_font_dejavu_30_latin_sup.c in Sources */,
 				ED9D3AAC2276F0A5009B43A8 /* lv_draw_line.c in Sources */,
 				ED9D3AB42276F0A5009B43A8 /* lv_draw.c in Sources */,
 				ED9D3A7B2276F0A5009B43A8 /* lv_group.c in Sources */,
@@ -1261,55 +1178,46 @@
 				ED9D3ACE2276F0A5009B43A8 /* lv_line.c in Sources */,
 				ED9D3AC72276F0A5009B43A8 /* lv_list.c in Sources */,
 				ED9D3A7F2276F0A5009B43A8 /* lv_fs.c in Sources */,
+				EDF356BF22DDC78300C4110C /* lv_img_decoder.c in Sources */,
 				ED9D3A832276F0A5009B43A8 /* lv_area.c in Sources */,
 				ED9D3B002276F0C4009B43A8 /* mousewheel.c in Sources */,
+				EDF356D022DDC99D00C4110C /* lv_font_roboto_16.c in Sources */,
 				ED25C42917EC59D1005B115F /* jsonobject.cpp in Sources */,
-				ED9D3A772276F0A5009B43A8 /* lv_vdb.c in Sources */,
+				EDF356BE22DDC78300C4110C /* lv_draw_basic.c in Sources */,
 				ED9D3A7A2276F0A5009B43A8 /* lv_obj.c in Sources */,
-				ED9D3AA12276F0A5009B43A8 /* lv_font_dejavu_40.c in Sources */,
-				ED9D3A9E2276F0A5009B43A8 /* lv_font_symbol_20.c in Sources */,
+				EDF356CC22DDC99D00C4110C /* lv_font_roboto_22.c in Sources */,
 				ED9D3AB62276F0A5009B43A8 /* lv_win.c in Sources */,
-				ED9D3A992276F0A5009B43A8 /* lv_font_monospace_8.c in Sources */,
 				ED9D3AC12276F0A5009B43A8 /* lv_cont.c in Sources */,
 				ED9D3AD12276F0A5009B43A8 /* lv_calendar.c in Sources */,
 				ED9D3ACD2276F0A5009B43A8 /* lv_arc.c in Sources */,
-				ED9D3AA52276F0A5009B43A8 /* lv_font_dejavu_40_latin_sup.c in Sources */,
 				ED9D3C7222775E12009B43A8 /* img_bubble_pattern.c in Sources */,
 				ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */,
 				ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */,
 				ED9D3ABB2276F0A5009B43A8 /* lv_ta.c in Sources */,
 				ED9D3A822276F0A5009B43A8 /* lv_log.c in Sources */,
-				ED9D3A892276F0A5009B43A8 /* lv_font.c in Sources */,
 				ED25C42717EC59D1005B115F /* socketcomm.cpp in Sources */,
-				ED9D3AA02276F0A5009B43A8 /* lv_font_symbol_10.c in Sources */,
 				ED9D3A942276F0A5009B43A8 /* lv_theme_default.c in Sources */,
 				ED43FD7E22CC154900ED57F3 /* modbus-tcp.c in Sources */,
-				ED9D3A8D2276F0A5009B43A8 /* lv_port_fs_templ.c in Sources */,
 				ED9D3ABC2276F0A5009B43A8 /* lv_lmeter.c in Sources */,
 				ED25C42317EC59D1005B115F /* mainloop.cpp in Sources */,
 				ED9D3A7E2276F0A5009B43A8 /* lv_mem.c in Sources */,
-				ED9D3A8C2276F0A5009B43A8 /* lv_port_disp_templ.c in Sources */,
-				ED9D3A9F2276F0A5009B43A8 /* lv_font_dejavu_20_cyrillic.c in Sources */,
 				EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */,
 				ED9D3B022276F0C4009B43A8 /* AD_touch.c in Sources */,
 				ED25C42517EC59D1005B115F /* httpcomm.cpp in Sources */,
 				ED9D3AFF2276F0C4009B43A8 /* evdev.c in Sources */,
-				ED9D3A9B2276F0A5009B43A8 /* lv_font_dejavu_20.c in Sources */,
+				EDF356CE22DDC99D00C4110C /* lv_font_roboto_12.c in Sources */,
 				ED9D3AB72276F0A5009B43A8 /* lv_cb.c in Sources */,
 				ED9D3AAD2276F0A5009B43A8 /* lv_draw_triangle.c in Sources */,
 				ED25C42017EC59D1005B115F /* utils.cpp in Sources */,
 				ED9D3ABE2276F0A5009B43A8 /* lv_btnm.c in Sources */,
 				ED25C42117EC59D1005B115F /* p44obj.cpp in Sources */,
-				ED9D3A972276F0A5009B43A8 /* lv_font_dejavu_10_cyrillic.c in Sources */,
 				ED9D3A8E2276F0A5009B43A8 /* lv_theme.c in Sources */,
 				ED9D3AAF2276F0A5009B43A8 /* lv_draw_arc.c in Sources */,
 				ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */,
 				ED9D3AC02276F0A5009B43A8 /* lv_chart.c in Sources */,
-				ED9D3A9C2276F0A5009B43A8 /* lv_font_symbol_30.c in Sources */,
 				ED9D3A7D2276F0A5009B43A8 /* lv_task.c in Sources */,
 				ED9D3AD02276F0A5009B43A8 /* lv_canvas.c in Sources */,
 				EDDEE88B17FC6EDE00A65599 /* consolekey.cpp in Sources */,
-				ED9D3AAE2276F0A5009B43A8 /* lv_draw_vbasic.c in Sources */,
 				EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */,
 				ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */,
 				ED9D3A7C2276F0A5009B43A8 /* lv_txt.c in Sources */,
@@ -1323,7 +1231,6 @@
 				ED9D3ABD2276F0A5009B43A8 /* lv_btn.c in Sources */,
 				ED9D3AB82276F0A5009B43A8 /* lv_page.c in Sources */,
 				ED9D3A782276F0A5009B43A8 /* lv_style.c in Sources */,
-				ED9D3AA72276F0A5009B43A8 /* lv_font_dejavu_30_cyrillic.c in Sources */,
 				EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */,
 				ED9D3AD22276F0A5009B43A8 /* lv_objx_templ.c in Sources */,
 				ED9D3A912276F0A5009B43A8 /* lv_theme_templ.c in Sources */,
@@ -1331,41 +1238,40 @@
 				ED9D3B032276F0C4009B43A8 /* FT5406EE8.c in Sources */,
 				ED25C41F17EC59D1005B115F /* logger.cpp in Sources */,
 				ED9D3AB32276F0A5009B43A8 /* lv_draw_label.c in Sources */,
-				ED9D3A9A2276F0A5009B43A8 /* lv_font_dejavu_10_latin_sup.c in Sources */,
 				ED9D3AB22276F0A5009B43A8 /* lv_draw_img.c in Sources */,
 				ED2461AB189BBB3000464D42 /* fnv.cpp in Sources */,
 				ED9D3A962276F0A5009B43A8 /* lv_theme_night.c in Sources */,
-				ED9D3AA22276F0A5009B43A8 /* lv_font_symbol_40.c in Sources */,
+				EDF356CF22DDC99D00C4110C /* lv_font_roboto_28.c in Sources */,
+				EDF356C022DDC78300C4110C /* lv_img_cache.c in Sources */,
 				ED25C42617EC59D1005B115F /* fdcomm.cpp in Sources */,
 				ED43FD7C22CC154900ED57F3 /* modbus-data.c in Sources */,
 				ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */,
+				EDF356CD22DDC99D00C4110C /* lv_font.c in Sources */,
 				ED9D3AB52276F0A5009B43A8 /* lv_gauge.c in Sources */,
 				ED9D3AC62276F0A5009B43A8 /* lv_preload.c in Sources */,
+				EDF356D122DDC99D00C4110C /* lv_font_unscii_8.c in Sources */,
+				EDF356D222DDC99D00C4110C /* lv_font_fmt_txt.c in Sources */,
+				EDF356DB22DDD56300C4110C /* demo.c in Sources */,
 				ED9D3ACF2276F0A5009B43A8 /* lv_tabview.c in Sources */,
 				ED9D3A952276F0A5009B43A8 /* lv_theme_mono.c in Sources */,
-				ED9D3AB12276F0A5009B43A8 /* lv_draw_rbasic.c in Sources */,
 				ED9D3AC82276F0A5009B43A8 /* lv_img.c in Sources */,
 				ED9D3AC52276F0A5009B43A8 /* lv_kb.c in Sources */,
 				ED9D3AD42276F0A5009B43A8 /* lv_sw.c in Sources */,
-				ED9D3A792276F0A5009B43A8 /* lv_lang.c in Sources */,
 				ED9D3A922276F0A5009B43A8 /* lv_theme_material.c in Sources */,
 				ED9D3A752276F0A5009B43A8 /* lv_indev.c in Sources */,
 				EDF1AF261D0D98D000302F77 /* spi.cpp in Sources */,
 				ED9D3AC92276F0A5009B43A8 /* lv_imgbtn.c in Sources */,
 				ED9D3AFD2276F0C4009B43A8 /* mouse.c in Sources */,
-				ED9D3AA62276F0A5009B43A8 /* lv_font_builtin.c in Sources */,
 				EDDEE88917FC6BEE00A65599 /* digitalio.cpp in Sources */,
-				ED9D3AA32276F0A5009B43A8 /* lv_font_dejavu_10.c in Sources */,
+				EDF356B722DDC71A00C4110C /* lv_disp.c in Sources */,
 				ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */,
 				ED25C42417EC59D1005B115F /* application.cpp in Sources */,
 				ED9D3A932276F0A5009B43A8 /* lv_theme_zen.c in Sources */,
 				ED3F75302273012E00E9A249 /* ubus.cpp in Sources */,
 				ED9D3ACA2276F0A5009B43A8 /* lv_slider.c in Sources */,
-				ED9D3A9D2276F0A5009B43A8 /* lv_font_dejavu_30.c in Sources */,
 				ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */,
 				ED9D3AC42276F0A5009B43A8 /* lv_led.c in Sources */,
 				ED25C42217EC59D1005B115F /* error.cpp in Sources */,
-				ED9D3AA82276F0A5009B43A8 /* lv_font_dejavu_20_latin_sup.c in Sources */,
 				ED9D3AFE2276F0C4009B43A8 /* keyboard.c in Sources */,
 				ED9D3A862276F0A5009B43A8 /* lv_circ.c in Sources */,
 				ED9D3AAB2276F0A5009B43A8 /* lv_hal_disp.c in Sources */,
