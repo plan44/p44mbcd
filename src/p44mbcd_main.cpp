@@ -535,7 +535,7 @@ public:
     // - create demo
     demo_create();
     demo_setNewText("Ready");
-    demo_setButtonCallback(demoButtonPressed);
+//    demo_setButtonCallback(demoButtonPressed);
   }
 
 

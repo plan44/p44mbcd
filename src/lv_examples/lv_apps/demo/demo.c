@@ -402,15 +402,11 @@ void demo_setNewText(const char *aText)
 
 
 
-static int count = 0;
-
 static void btn_event_handler(lv_obj_t * btn, lv_event_t event)
 {
     if (event==LV_EVENT_RELEASED) {
         uint8_t id = (uint8_t)lv_obj_get_user_data(btn);
         char buf[32];
-
-        printf("Button %d is released\n", id);
 
         if (p44BtnCallBack) {
             // custom
@@ -418,9 +414,7 @@ static void btn_event_handler(lv_obj_t * btn, lv_event_t event)
             return;
         }
         else {
-            if (id==1) count++;
-            else if (id==2) count--;
-            snprintf(buf, 32, "%d", count);
+            snprintf(buf, 32, "Button %d", id);
             lv_label_set_text(dispLabel, buf);
             return;
         }
