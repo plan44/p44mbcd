@@ -19,19 +19,7 @@
 
 #include <stdio.h>
 
-#include "lvgl/lvgl.h"
-
-#if defined(__APPLE__)
-  // test&debugging build on MacOS, using SDL2 for graphics
-  // - little vGL
-  #include "lv_drivers/display/monitor.h"
-  #include "lv_drivers/indev/mouse.h"
-#else
-  // target platform build
-  // - little vGL
-  #include "lv_drivers/display/fbdev.h"
-  #include "lv_drivers/indev/evdev.h"
-#endif
+#include "lvgl.hpp"
 
 // FIXME: remove later
 #include "lv_examples/lv_apps/demo/demo.h"
@@ -42,8 +30,8 @@
 
 #define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
 
-
-#define ENABLE_IRQTEST 0
+// Warning: MOUSE_CURSOR_SUPPORT==1 does not work in LittlevGL v6.0 per 2019-07-17
+#define MOUSE_CURSOR_SUPPORT 0
 
 using namespace p44;
 
@@ -69,21 +57,6 @@ class P44mbcd : public CmdLineApp
   #if ENABLE_UBUS
   UbusServerPtr ubusApiServer; ///< ubus API for openwrt web interface
   #endif
-  #if ENABLE_IRQTEST
-  DigitalIoPtr irqTestPin;
-  #endif
-
-  // littlevGL
-  lv_disp_t *dispdev; ///< the display device
-  lv_indev_t *pointer_indev; ///< the input device for pointer (touch, mouse)
-  lv_indev_t *keyboard_indev; ///< the input device for keyboard
-  MLTicket lvglTicket; ///< the display tasks timer
-  MLMicroSeconds lastLvglTick; ///< last tick
-  bool showCursor = false;
-  #define DISPLAY_BUFFER_LINES 10
-  #define DISPLAY_BUFFER_SIZE (LV_HOR_RES_MAX * DISPLAY_BUFFER_LINES)
-  lv_disp_buf_t disp_buf; ///< the display buffer descriptors
-  lv_color_t buf[DISPLAY_BUFFER_SIZE]; ///< buffer
 
   // modbus
   ModbusSlave modBus;
@@ -94,11 +67,7 @@ class P44mbcd : public CmdLineApp
 
 public:
 
-  P44mbcd() :
-    dispdev(NULL),
-    pointer_indev(NULL),
-    keyboard_indev(NULL),
-    lastLvglTick(Never)
+  P44mbcd()
   {
     modBus.isMemberVariable();
   }
@@ -114,11 +83,10 @@ public:
       { 0  , "bytetime",        true,  "time;custom time per byte in nS" },
       { 0  , "slave",           true,  "slave;use this slave by default" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
+      #if MOUSE_CURSOR_SUPPORT
       { 0  , "mousecursor",     false, "show mouse cursor" },
-      { 0  , "testmode",        false, "FCU test mode" },
-      #if ENABLE_IRQTEST
-      { 0  , "irqtest",         true,  "pinspec;IRQ input test" },
       #endif
+      { 0  , "testmode",        false, "FCU test mode" },
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
@@ -146,26 +114,10 @@ public:
     }
     #endif
 
-    #if ENABLE_IRQTEST
-    string spec;
-    if (getStringOption("irqtest", spec)) {
-      irqTestPin = DigitalIoPtr(new DigitalIo(spec.c_str(), false, false));
-      irqTestPin->setInputChangedHandler(boost::bind(&P44mbcd::irqTestHandler, this, _1), 0, Infinite);
-    }
-    #endif
-
-
     // app now ready to run
     return run();
   }
 
-
-  #if ENABLE_IRQTEST
-  void irqTestHandler(bool aNewState)
-  {
-    LOG(LOG_NOTICE, "New state is %d", aNewState);
-  }
-  #endif
 
   // MARK: - ubus API
 
@@ -568,9 +520,6 @@ public:
 
   // MARK: - littlevGL
 
-  // Warning: SHOW_MOUSE_CURSOR==1 does not work in LittlevGL v6.0 per 2019-07-17
-  #define SHOW_MOUSE_CURSOR 0
-
   static void demoButtonPressed(int aButtonId)
   {
     #if OLDTESTCODEENABLED
@@ -582,79 +531,12 @@ public:
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
-    showCursor = getOption("mousecursor");
-    // init library
-    lv_init();
-    // init disply buffer
-    lv_disp_buf_init(&disp_buf, buf, NULL, DISPLAY_BUFFER_SIZE);
-    // init the display driver
-    lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = LV_HOR_RES_MAX;
-    disp_drv.ver_res = LV_VER_RES_MAX;
-    disp_drv.buffer = &disp_buf;
-    #if defined(__APPLE__)
-    // - use SDL2 monitor
-    monitor_init();
-    disp_drv.flush_cb = monitor_flush;
-    #else
-    // - use fbdev framebuffer device
-    fbdev_init();
-    disp_drv.flush_cb = fbdev_flush;
-    #endif
-    dispdev = lv_disp_drv_register(&disp_drv);
-    // init input driver
-    lv_indev_drv_t pointer_indev_drv;
-    lv_indev_drv_init(&pointer_indev_drv);
-    pointer_indev_drv.type = LV_INDEV_TYPE_POINTER;
-    #if defined(__APPLE__)
-    // - use mouse
-    mouse_init();
-    pointer_indev_drv.read_cb = mouse_read;
-    #else
-    // - init input driver
-    evdev_init();
-    pointer_indev_drv.read_cb = evdev_read;
-    #endif
-    pointer_indev = lv_indev_drv_register(&pointer_indev_drv);  /*Register the driver in LittlevGL*/
-    if (showCursor) {
-      #if SHOW_MOUSE_CURSOR
-      lv_obj_t *cursor;
-      cursor = lv_obj_create(lv_scr_act(), NULL);
-      lv_obj_set_size(cursor, 24, 24);
-      static lv_style_t style_round;
-      lv_style_copy(&style_round, &lv_style_plain);
-      style_round.body.radius = LV_RADIUS_CIRCLE;
-      style_round.body.main_color = LV_COLOR_RED;
-      style_round.body.opa = LV_OPA_COVER;
-      lv_obj_set_style(cursor, &style_round);
-      lv_indev_set_cursor(pointer_indev, cursor);
-      #endif
-    }
+    LvGL::lvgl().init(getOption("mousecursor"));
     // - create demo
     demo_create();
     demo_setNewText("Ready");
     demo_setButtonCallback(demoButtonPressed);
-    // - schedule updates
-    lvglTicket.executeOnce(boost::bind(&P44mbcd::lvglTask, this, _1, _2));
   }
-
-
-  #define LVGL_TICK_PERIOD (5*MilliSecond)
-
-  void lvglTask(MLTimer &aTimer, MLMicroSeconds aNow)
-  {
-    if (lastLvglTick==Never) lastLvglTick=aNow;
-    uint32_t ms = (uint32_t)((aNow-lastLvglTick)/1000);
-    lv_task_handler();
-    lastLvglTick = aNow;
-    #if defined(__APPLE__)
-    // also need to update SDL2
-    monitor_sdl_refr_core();
-    #endif
-    MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
-  }
-
 
 
 };

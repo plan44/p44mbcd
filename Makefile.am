@@ -252,6 +252,8 @@ p44mbcd_SOURCES = \
   src/p44utils/thirdparty/civetweb/hostcheck.inl \
   src/p44utils/thirdparty/civetweb/openssl_hostname_validation.inl \
   src/p44utils/p44utils_common.hpp \
+  src/lvgl.cpp \
+  src/lvgl.hpp \
   src/p44mbcd_main.cpp
 
 

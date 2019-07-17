@@ -55,6 +55,7 @@
 		ED5A05BC22CE26BF0047D746 /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED0E441C1732FE4F00C4C283 /* application.cpp */; };
 		ED5A05C322CE26BF0047D746 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026D03171E94D700AD5FD6 /* error.cpp */; };
 		ED5A05D422CE28B90047D746 /* p44mbutil_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */; };
+		ED61E20422DF75A9004849D2 /* lvgl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED61E20222DF75A9004849D2 /* lvgl.cpp */; };
 		ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */; };
 		ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED8A99A12020D17A0069EBF6 /* civetweb.c */; };
 		ED8A99AD2020D6540069EBF6 /* libcrypto.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */; };
@@ -267,6 +268,8 @@
 		ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = p44mbutil_main.cpp; sourceTree = "<group>"; };
 		ED5B2933174124D300334C71 /* sqlite3persistence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3persistence.cpp; sourceTree = "<group>"; };
 		ED5B2934174124D400334C71 /* sqlite3persistence.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = sqlite3persistence.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED61E20222DF75A9004849D2 /* lvgl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lvgl.cpp; sourceTree = "<group>"; };
+		ED61E20322DF75A9004849D2 /* lvgl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lvgl.hpp; sourceTree = "<group>"; };
 		ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = p44mbcd_main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEE1716EAA6005DED18 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = logger.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEF1716EAA6005DED18 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = logger.hpp; sourceTree = "<group>"; };
@@ -724,6 +727,8 @@
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
 				ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */,
 				ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */,
+				ED61E20222DF75A9004849D2 /* lvgl.cpp */,
+				ED61E20322DF75A9004849D2 /* lvgl.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -1272,6 +1277,7 @@
 				ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */,
 				ED9D3AC42276F0A5009B43A8 /* lv_led.c in Sources */,
 				ED25C42217EC59D1005B115F /* error.cpp in Sources */,
+				ED61E20422DF75A9004849D2 /* lvgl.cpp in Sources */,
 				ED9D3AFE2276F0C4009B43A8 /* keyboard.c in Sources */,
 				ED9D3A862276F0A5009B43A8 /* lv_circ.c in Sources */,
 				ED9D3AAB2276F0A5009B43A8 /* lv_hal_disp.c in Sources */,
