@@ -568,7 +568,8 @@ public:
 
   // MARK: - littlevGL
 
-  #define SHOW_MOUSE_CURSOR 1
+  // Warning: SHOW_MOUSE_CURSOR==1 does not work in LittlevGL v6.0 per 2019-07-17
+  #define SHOW_MOUSE_CURSOR 0
 
   static void demoButtonPressed(int aButtonId)
   {
