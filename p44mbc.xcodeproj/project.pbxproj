@@ -722,13 +722,13 @@
 		ED6D7BE71716B6B1005DED18 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				ED61E20222DF75A9004849D2 /* lvgl.cpp */,
+				ED61E20322DF75A9004849D2 /* lvgl.hpp */,
 				ED9D3C662276F294009B43A8 /* lv_conf.h */,
 				ED9D3C672276F2F9009B43A8 /* lv_drv_conf.h */,
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
 				ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */,
 				ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */,
-				ED61E20222DF75A9004849D2 /* lvgl.cpp */,
-				ED61E20322DF75A9004849D2 /* lvgl.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";

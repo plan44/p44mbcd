@@ -62,6 +62,22 @@ LvGL& LvGL::lvgl()
 }
 
 
+#if LV_USE_LOG
+
+extern "C" void lvgl_log_cb(lv_log_level_t level, const char *file, uint32_t line, const char *dsc)
+{
+  int logLevel = LOG_WARNING;
+  switch (level) {
+    case LV_LOG_LEVEL_TRACE: logLevel = LOG_DEBUG; break; // A lot of logs to give detailed information
+    case LV_LOG_LEVEL_INFO: logLevel = LOG_INFO; break; // Log important events
+    case LV_LOG_LEVEL_WARN: logLevel = LOG_WARNING; break; // Log if something unwanted happened but didn't caused problem
+    case LV_LOG_LEVEL_ERROR: logLevel = LOG_ERR; break; // Only critical issue, when the system may fail
+  }
+  LOG(logLevel, "lvgl %s:%d - %s", file, line, dsc);
+}
+
+#endif // LV_USE_LOG
+
 
 #define DISPLAY_BUFFER_LINES 10
 #define DISPLAY_BUFFER_SIZE (LV_HOR_RES_MAX * DISPLAY_BUFFER_LINES)
@@ -71,6 +87,9 @@ void LvGL::init(bool aShowCursor)
   showCursor = aShowCursor;
   // init library
   lv_init();
+  #if LV_USE_LOG
+  lv_log_register_print_cb(lvgl_log_cb);
+  #endif
   // init disply buffer
   buf1 = new lv_color_t[DISPLAY_BUFFER_SIZE];
   lv_disp_buf_init(&disp_buf, buf1, NULL, DISPLAY_BUFFER_SIZE);
@@ -139,6 +158,9 @@ void LvGL::lvglTask(MLTimer &aTimer, MLMicroSeconds aNow)
   #endif
   MainLoop::currentMainLoop().retriggerTimer(aTimer, LVGL_TICK_PERIOD);
 }
+
+
+
 
 
 #endif // ENABLE_LVGL
