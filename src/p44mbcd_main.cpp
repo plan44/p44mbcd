@@ -30,9 +30,6 @@
 
 #define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
 
-// Warning: MOUSE_CURSOR_SUPPORT==1 does not work in LittlevGL v6.0 per 2019-07-17
-#define MOUSE_CURSOR_SUPPORT 0
-
 using namespace p44;
 
 
@@ -55,6 +52,7 @@ class P44mbcd : public CmdLineApp
   typedef CmdLineApp inherited;
 
   #if ENABLE_UBUS
+  // ubus API
   UbusServerPtr ubusApiServer; ///< ubus API for openwrt web interface
   #endif
 
@@ -63,7 +61,6 @@ class P44mbcd : public CmdLineApp
 
   // app
   MLTicket appTicket;
-  bool testmode;
 
 public:
 
@@ -86,7 +83,6 @@ public:
       #if MOUSE_CURSOR_SUPPORT
       { 0  , "mousecursor",     false, "show mouse cursor" },
       #endif
-      { 0  , "testmode",        false, "FCU test mode" },
       #if ENABLE_UBUS
       { 0  , "ubusapi",         false, "enable ubus API" },
       #endif
@@ -117,6 +113,7 @@ public:
     // app now ready to run
     return run();
   }
+
 
 
   // MARK: - ubus API
@@ -394,128 +391,6 @@ public:
     }
     return ErrorPtr();
   }
-
-
-  // MARK: - app logic
-
-  #if OLDTESTCODEENABLED
-
-  uint16_t reg104 = 0;
-  uint16_t reg202 = 0;
-
-  uint16_t reg137 = -1;
-
-  static const char *reg104Texts(int aReg)
-  {
-    switch (aReg) {
-      case 0 : return "AUS";
-      case 1 : return "Auto";
-      case 2 : return "Heizen";
-      case 3 : return "Kühlen";
-      case 4 : return "Ventilation";
-      default : return "<unbekannt>";
-    }
-  }
-
-  static const char *reg202Texts(int aReg)
-  {
-    switch (aReg) {
-      case 0 : return "AUS";
-      case 1 : return "Manuell 1";
-      case 2 : return "Manuell 2";
-      case 3 : return "Manuell 3";
-      case 4 : return "Auto 1";
-      case 5 : return "Auto 2";
-      case 6 : return "Auto 3";
-      default : return "<unbekannt>";
-    }
-  }
-
-
-  void initApp()
-  {
-    testmode = getOption("testmode");
-    // get status
-    modBus.readRegister(104, reg104);
-    modBus.readRegister(202, reg202);
-    // start in normal mode
-    reg137 = 0;
-    modBus.writeRegister(137, reg137);
-    // repeatedly
-    appTicket.executeOnce(boost::bind(&P44mbcd::appTask, this, _1, _2));
-  }
-
-
-  #define APP_TASK_PERIOD (2*Second)
-
-  void appTask(MLTimer &aTimer, MLMicroSeconds aNow)
-  {
-    ErrorPtr err = modBus.readRegister(104, reg104);
-    if (Error::isOK(err)) {
-      if (testmode) {
-        if (reg104==1 || reg104==2) {
-          // heating
-          if (reg137!=1) {
-            reg137 = 1; // heating test
-            modBus.writeRegister(137, reg137);
-          }
-        }
-        else if (reg104==3 || reg104==4) {
-          // cooling
-          if (reg137!=2) {
-            reg137 = 2; // cooling test
-            modBus.writeRegister(137, reg137);
-          }
-        }
-        else if (reg104==0) {
-          reg137 = 0; // off
-          modBus.writeRegister(137, reg137);
-        }
-      }
-      modBus.readRegister(202, reg202);
-      update_display();
-    }
-    else {
-      // error
-      demo_setNewText(err->text());
-    }
-    // again
-    MainLoop::currentMainLoop().retriggerTimer(aTimer, APP_TASK_PERIOD);
-  }
-
-
-  void update_display()
-  {
-    string s = string_format(
-      "Mode: %s [%d]\nFan: %s [%d]",
-      reg104Texts(reg104), reg104,
-      reg202Texts(reg202), reg202
-    );
-    demo_setNewText(s.c_str());
-  }
-
-
-  void buttonPressed(int aButtonId)
-  {
-    // id 1 = plus
-    // id 2 = minus
-    if (aButtonId==1) {
-      if (reg104<4) {
-        reg104++;
-      }
-      modBus.writeRegister(104, reg104);
-      update_display();
-    }
-    if (aButtonId==2) {
-      if (reg104>0) {
-        reg104--;
-      }
-      modBus.writeRegister(104, reg104);
-      update_display();
-    }
-  }
-
-  #endif
 
 
   // MARK: - littlevGL

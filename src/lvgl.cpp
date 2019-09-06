@@ -356,6 +356,7 @@ void LvGL::init(bool aShowCursor)
     style_round.body.main_color = LV_COLOR_RED;
     style_round.body.opa = LV_OPA_COVER;
     lv_obj_set_style(cursor, &style_round);
+    lv_obj_set_click(cursor, false); // important, or all clicks get caught by the cursor itself!
     lv_indev_set_cursor(pointer_indev, cursor);
   }
   #endif // MOUSE_CURSOR_SUPPORT

@@ -65,10 +65,6 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--testmode"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "--slave 1"
             isEnabled = "YES">
          </CommandLineArgument>

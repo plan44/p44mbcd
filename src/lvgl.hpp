@@ -46,7 +46,9 @@
   #include "lv_drivers/indev/evdev.h"
 #endif
 
-
+#ifndef MOUSE_CURSOR_SUPPORT
+  #define MOUSE_CURSOR_SUPPORT 1
+#endif
 
 using namespace std;
 
