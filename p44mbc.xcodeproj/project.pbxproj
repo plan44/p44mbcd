@@ -142,7 +142,6 @@
 		EDB5B3F623226DBE00A0C84D /* analogio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3ED23226DBB00A0C84D /* analogio.cpp */; };
 		EDB5B3F723226DBE00A0C84D /* expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EE23226DBB00A0C84D /* expressions.cpp */; };
 		EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3F023226DBC00A0C84D /* pwm.cpp */; };
-		EDB5B3FC2322BF0100A0C84D /* testimg.c in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3FB2322BF0000A0C84D /* testimg.c */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
 		EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
@@ -1296,7 +1295,6 @@
 				ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */,
 				ED25C42417EC59D1005B115F /* application.cpp in Sources */,
 				ED9D3A932276F0A5009B43A8 /* lv_theme_zen.c in Sources */,
-				EDB5B3FC2322BF0100A0C84D /* testimg.c in Sources */,
 				ED3F75302273012E00E9A249 /* ubus.cpp in Sources */,
 				ED9D3ACA2276F0A5009B43A8 /* lv_slider.c in Sources */,
 				ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */,

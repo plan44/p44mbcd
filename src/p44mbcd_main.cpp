@@ -53,11 +53,6 @@ static lv_obj_t* plusButton = NULL;
 static lv_obj_t* minusButton = NULL;
 static lv_obj_t* dispLabel = NULL;
 
-extern "C" {
-  extern const lv_img_dsc_t img_bubble_pattern;
-}
-
-
 class P44mbcd : public CmdLineApp
 {
   typedef CmdLineApp inherited;
@@ -427,7 +422,6 @@ public:
     lv_obj_t * wp = lv_img_create(lv_scr_act(), NULL);
 
     lv_img_set_src(wp, dataPath("testimg.png").c_str());
-    //lv_img_set_src(wp, &img_bubble_pattern);
 
     lv_obj_set_width(wp, LV_HOR_RES * 4);
     lv_obj_set_protect(wp, LV_PROTECT_POS);
