@@ -33,7 +33,6 @@
 		ED5A054722CE26BF0047D746 /* modbus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED43FCF922CBFD5E00ED57F3 /* modbus.cpp */; };
 		ED5A054A22CE26BF0047D746 /* modbus-rtu.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD7422CC00BA00ED57F3 /* modbus-rtu.c */; };
 		ED5A055E22CE26BF0047D746 /* jsonobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5576131750B15E00CCC4DD /* jsonobject.cpp */; };
-		ED5A056922CE26BF0047D746 /* img_bubble_pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */; };
 		ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */; };
 		ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED74563E1731B813001C9565 /* mainloop.cpp */; };
 		ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
@@ -138,12 +137,12 @@
 		ED9D3B032276F0C4009B43A8 /* FT5406EE8.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AEE2276F0C3009B43A8 /* FT5406EE8.c */; };
 		ED9D3B062276F0C4009B43A8 /* fbdev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF42276F0C3009B43A8 /* fbdev.c */; };
 		ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AFC2276F0C3009B43A8 /* win_drv.c */; };
-		ED9D3C7222775E12009B43A8 /* img_bubble_pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */; };
 		ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB284481733B59500EAE5DE /* serialcomm.cpp */; };
 		EDB5B3F523226DBE00A0C84D /* timeutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EC23226DBA00A0C84D /* timeutils.cpp */; };
 		EDB5B3F623226DBE00A0C84D /* analogio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3ED23226DBB00A0C84D /* analogio.cpp */; };
 		EDB5B3F723226DBE00A0C84D /* expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EE23226DBB00A0C84D /* expressions.cpp */; };
 		EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3F023226DBC00A0C84D /* pwm.cpp */; };
+		EDB5B3FC2322BF0100A0C84D /* testimg.c in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3FB2322BF0000A0C84D /* testimg.c */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
 		EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
@@ -163,7 +162,6 @@
 		EDF356D122DDC99D00C4110C /* lv_font_unscii_8.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356CA22DDC99D00C4110C /* lv_font_unscii_8.c */; };
 		EDF356D222DDC99D00C4110C /* lv_font_fmt_txt.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356CB22DDC99D00C4110C /* lv_font_fmt_txt.c */; };
 		EDF356D622DDCAC700C4110C /* lv_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356D422DDCAC700C4110C /* lv_utils.c */; };
-		EDF356DB22DDD56300C4110C /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3C6F22775E11009B43A8 /* demo.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -506,6 +504,7 @@
 		EDB5B3F223226DBD00A0C84D /* pwm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pwm.hpp; sourceTree = "<group>"; };
 		EDB5B3F323226DBD00A0C84D /* analogio.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = analogio.hpp; sourceTree = "<group>"; };
 		EDB5B3F423226DBD00A0C84D /* expressions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expressions.hpp; sourceTree = "<group>"; };
+		EDB5B3FB2322BF0000A0C84D /* testimg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = testimg.c; sourceTree = "<group>"; };
 		EDB5BC1917B50E79004DB38D /* fdcomm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fdcomm.cpp; sourceTree = "<group>"; };
 		EDB5BC1A17B50E79004DB38D /* fdcomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = fdcomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		EDC1166C177EDDDF00F27115 /* consolekey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = consolekey.cpp; sourceTree = "<group>"; };
@@ -1084,6 +1083,7 @@
 		ED9D3C6B22775E11009B43A8 /* demo */ = {
 			isa = PBXGroup;
 			children = (
+				EDB5B3FB2322BF0000A0C84D /* testimg.c */,
 				ED9D3C6C22775E11009B43A8 /* demo.h */,
 				ED9D3C6D22775E11009B43A8 /* bubble_pattern.png */,
 				ED9D3C6E22775E11009B43A8 /* img_bubble_pattern.c */,
@@ -1217,7 +1217,6 @@
 				ED9D3AC12276F0A5009B43A8 /* lv_cont.c in Sources */,
 				ED9D3AD12276F0A5009B43A8 /* lv_calendar.c in Sources */,
 				ED9D3ACD2276F0A5009B43A8 /* lv_arc.c in Sources */,
-				ED9D3C7222775E12009B43A8 /* img_bubble_pattern.c in Sources */,
 				ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */,
 				ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */,
 				ED9D3ABB2276F0A5009B43A8 /* lv_ta.c in Sources */,
@@ -1281,7 +1280,6 @@
 				ED9D3AC62276F0A5009B43A8 /* lv_preload.c in Sources */,
 				EDF356D122DDC99D00C4110C /* lv_font_unscii_8.c in Sources */,
 				EDF356D222DDC99D00C4110C /* lv_font_fmt_txt.c in Sources */,
-				EDF356DB22DDD56300C4110C /* demo.c in Sources */,
 				ED9D3ACF2276F0A5009B43A8 /* lv_tabview.c in Sources */,
 				ED9D3A952276F0A5009B43A8 /* lv_theme_mono.c in Sources */,
 				ED9D3AC82276F0A5009B43A8 /* lv_img.c in Sources */,
@@ -1298,6 +1296,7 @@
 				ED43FD7F22CC154900ED57F3 /* modbus.c in Sources */,
 				ED25C42417EC59D1005B115F /* application.cpp in Sources */,
 				ED9D3A932276F0A5009B43A8 /* lv_theme_zen.c in Sources */,
+				EDB5B3FC2322BF0100A0C84D /* testimg.c in Sources */,
 				ED3F75302273012E00E9A249 /* ubus.cpp in Sources */,
 				ED9D3ACA2276F0A5009B43A8 /* lv_slider.c in Sources */,
 				ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */,
@@ -1318,7 +1317,6 @@
 				ED5A054722CE26BF0047D746 /* modbus.cpp in Sources */,
 				ED5A054A22CE26BF0047D746 /* modbus-rtu.c in Sources */,
 				ED5A055E22CE26BF0047D746 /* jsonobject.cpp in Sources */,
-				ED5A056922CE26BF0047D746 /* img_bubble_pattern.c in Sources */,
 				ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */,
 				ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */,
 				ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */,
@@ -1381,6 +1379,10 @@
 					"$(inherited)",
 					/usr/local/opt/openssl/lib,
 				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-lpng",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1418,6 +1420,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/opt/openssl/lib,
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-lpng",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

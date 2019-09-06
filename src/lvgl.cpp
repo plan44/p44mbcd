@@ -32,8 +32,8 @@
 
 #include "application.hpp"
 
-#if NOT_WIP
-#include <png.h>
+#if ENABLE_IMAGE_SUPPORT
+  #include <png.h>
 #endif
 
 using namespace p44;
@@ -176,90 +176,165 @@ static lv_fs_res_t pf_tell(lv_fs_drv_t*, void* file_p, uint32_t* pos_p)
 #endif // LV_USE_FILESYSTEM
 
 
-#ifdef NOT_WIP
+#if ENABLE_IMAGE_SUPPORT
 
 // MARK: - PNG image decoder
+
+typedef struct {
+  const void *src; /// to detect inconsistent png_decoder_info/png_decoder_open sequences
+  png_image pngImage; /// control struct
+  png_bytep pngBuffer; /// byte buffer
+} PngDecoderState;
+
+
 
 /// Get info about a PNG image
 /// @param decoder pointer to the decoder where this function belongs
 /// @param src can be file name or pointer to a C array
 /// @param header store the info here
 /// @return LV_RES_OK: no error; LV_RES_INV: can't get the info
-static lv_res_t png_decoder_info(lv_img_decoder_t * decoder, const void* src, lv_img_header_t* header)
+static lv_res_t png_decoder_info(lv_img_decoder_t* decoder, const void* src, lv_img_header_t* header)
 {
-  png_image pngImage; /// The control structure used by libpng
-  lv_img_src_t imgtype = lv_img_src_get_type(src);
-  if (imgtype==LV_IMG_SRC_FILE) {
-
-  }
-  else if (imgtype==LV_IMG_SRC_VARIABLE) {
-    const lv_img_header_t &hdr = *((lv_img_header_t*)src);
-  }
-
-
-  size_t size = 100;
-  if (png_image_begin_read_from_memory(&pngImage, src, size) == 0) {
-    // error
-    return LV_RES_INV;
-  }
-
-  /*
-  if (png_image_begin_read_from_file(&pngImage, aPNGFileName.c_str()) == 0) {
-    // error
-    return TextError::err("could not open PNG file %s", aPNGFileName.c_str());
+  // maintain a PngDecoderState as user data of the decoder
+  PngDecoderState* pngDecP = (PngDecoderState*)decoder->user_data;
+  if (pngDecP==NULL) {
+    // create new decoder state
+    pngDecP = new PngDecoderState;
+    memset(&pngDecP->pngImage, 0, sizeof(png_image));
+    pngDecP->pngImage.version = PNG_IMAGE_VERSION;
+    pngDecP->pngBuffer = NULL;
+    decoder->user_data = pngDecP;
   }
   else {
-    // We only need the luminance
-    pngImage.format = PNG_FORMAT_RGBA;
-    // Now allocate enough memory to hold the image in this format; the
-    // PNG_IMAGE_SIZE macro uses the information about the image (width,
-    // height and format) stored in 'image'.
-    pngBuffer = (png_bytep)malloc(PNG_IMAGE_SIZE(pngImage));
-    LOG(LOG_INFO, "Image size in bytes = %d", PNG_IMAGE_SIZE(pngImage));
-    LOG(LOG_INFO, "Image width = %d", pngImage.width);
-    LOG(LOG_INFO, "Image height = %d", pngImage.height);
-    LOG(LOG_INFO, "Image width*height = %d", pngImage.height*pngImage.width);
-    contentSizeX = pngImage.width;
-    contentSizeY = pngImage.height;
-    if (pngBuffer==NULL) {
-
-   */
-
-
-//  if(is_png(src) == false) return LV_RES_INV;
-//
-//  ...
-//
-//  header->cf = LV_IMG_CF_RAW_ALPHA;
-//  header->w = width;
-//  header->h = height;
-  return LV_FS_RES_OK;
+    // reset png image
+    png_image_free(&pngDecP->pngImage);
+  }
+  if (pngDecP->pngBuffer!=NULL) {
+    free(pngDecP->pngBuffer);
+    pngDecP->pngBuffer = NULL;
+  }
+  lv_img_src_t imgtype = lv_img_src_get_type(src);
+  if (imgtype==LV_IMG_SRC_FILE) {
+    const char *fn = (const char*)src;
+    size_t n = strlen(fn);
+    if(n<5 || strcmp(&fn[strlen(fn) - 4], ".png")!=0) {
+      // not a png file
+      return LV_RES_INV;
+    }
+    // valid PNG filename, try to load PNG from there
+    if (png_image_begin_read_from_file(&pngDecP->pngImage, (const char *)src) == 0) {
+      // does not seem to be a PNG
+      LOG(LOG_WARNING, "Cannot read PNG file %s: error: %s", fn, pngDecP->pngImage.message);
+      return LV_RES_INV;
+    }
+  }
+  else if (imgtype==LV_IMG_SRC_UNKNOWN) {
+    // unknown by littlevGL, could be pointer to a PNG in memory
+    size_t size = 100;
+    if (png_image_begin_read_from_memory(&pngDecP->pngImage, src, size) == 0) {
+      // does not seem to be a PNG
+      LOG(LOG_WARNING, "Memory data is not a PNG: error: %s", pngDecP->pngImage.message);
+      return LV_RES_INV;
+    }
+  }
+  else {
+    // unknown by this decoder (built-in decoder might recognize SYMBOL or VARIABLE
+    return LV_RES_INV;
+  }
+  // if we get here, pngImage has basic info
+  pngDecP->src = src; // save source pointer we got this info from
+  header->cf = LV_IMG_CF_RAW_ALPHA; // PNGs have alpha
+  header->w = pngDecP->pngImage.width;
+  header->h = pngDecP->pngImage.height;
+  return LV_RES_OK;
 }
 
-/**
- * Open a PNG image and return the decided image
- * @param decoder pointer to the decoder where this function belongs
- * @param dsc pointer to a descriptor which describes this decoding session
- * @return LV_RES_OK: no error; LV_RES_INV: can't get the info
- */
+
+/// If the display is not in 32 bit format (ARGB888) then covert the image to the current color depth
+/// @param img the lv_color32_t image (BGRA byte order), will be realloc()ed to fit new size if needed
+/// @param px_cnt number of pixels in `img`
+static void convert_color_depth(uint8_t* &img, uint32_t px_cnt)
+{
+  #if LV_COLOR_DEPTH == 16
+  lv_color32_t* img_argb = (lv_color32_t*)img;
+  lv_color_t c;
+  uint32_t i;
+  for(i = 0; i < px_cnt; i++) {
+    c = LV_COLOR_MAKE(img_argb[i].ch.red, img_argb[i].ch.green, img_argb[i].ch.blue);
+    img[i*3 + 2] = img_argb[i].ch.alpha;
+    img[i*3 + 1] = c.full >> 8;
+    img[i*3 + 0] = c.full & 0xFF;
+  }
+  img = (uint8_t*)realloc(img, px_cnt*3); // 2 bytes plus alpha
+  #elif LV_COLOR_DEPTH == 8
+  #error does not work yet, renders striped image
+  lv_color32_t* img_argb = (lv_color32_t*)img;
+  lv_color_t c;
+  uint32_t i;
+  for(i = 0; i < px_cnt; i++) {
+    c = LV_COLOR_MAKE(img_argb[i].ch.red, img_argb[i].ch.green, img_argb[i].ch.blue);
+    img[i*3 + 1] = img_argb[i].ch.alpha;
+    img[i*3 + 0] = c.full;
+  }
+  img = (uint8_t*)realloc(img, px_cnt*2); // 1 byte color plus alpha
+  #endif
+}
+
+
+/// Open a PNG image and return the decoded image
+/// @param decoder pointer to the decoder where this function belongs
+/// @param dsc pointer to a descriptor which describes this decoding session
+/// @return LV_RES_OK: no error; LV_RES_INV: can't get the info
 static lv_res_t png_decoder_open(lv_img_decoder_t * decoder, lv_img_decoder_dsc_t * dsc)
 {
-
-//  /*Check whether the type `src` is known by the decoder*/
-//  if(is_png(src) == false) return LV_RES_INV;
-//
-//  /*Decode and store the image. If `dsc->img_data` the `read_line` function will be called to get the image data liny-by-line*/
-//  dsc->img_data = my_png_decoder(src);
-//
-//  /*Change the color format if required. For PNG usually 'Raw' is fine*/
-//  dsc->header.cf = LV_IMG_CF_...
-//
-//  /*Call a built in decoder function if required. It's not required if`my_png_decoder` opened the image in true color format.*/
-//  lv_res_t res = lv_img_decoder_built_in_open(decoder, dsc);
-//
-//  return res;
-  return LV_FS_RES_OK;
+  PngDecoderState* pngDecP = (PngDecoderState*)decoder->user_data;
+  if (pngDecP==NULL || dsc->src!=pngDecP->src) {
+    // apparently, png_decoder_info() was not called for this src before. Do it now, it will init the decoder state correctly
+    lv_res_t res = png_decoder_info(decoder, dsc->src, &dsc->header);
+    if (res!=LV_RES_OK) return res;
+  }
+  // now we have a valid PngDecoderState with the PNG read already successfully begun
+  // - have libpng get the data in the lv_color32_t order, which is BGRA
+  pngDecP->pngImage.format = PNG_FORMAT_BGRA;
+  uint32_t pixCount = pngDecP->pngImage.height*pngDecP->pngImage.width;
+  FOCUSLOG("Image width = %d", pngDecP->pngImage.width);
+  FOCUSLOG("Image height = %d", pngDecP->pngImage.height);
+  FOCUSLOG("Image width*height = pixCount = %d", pixCount);
+  // - allocate enough memory to hold the image in this format; the
+  //   PNG_IMAGE_SIZE macro uses the information about the image (width,
+  //   height and format) stored in 'pngImage'.
+  size_t imgSize = PNG_IMAGE_SIZE(pngDecP->pngImage);
+  FOCUSLOG("Image size in bytes = %zu", imgSize);
+  png_bytep imgData = (png_bytep)malloc(imgSize);
+  if (!imgData) {
+    LOG(LOG_WARNING, "Cannot allocate %zu bytes for PNG", imgSize);
+    return LV_RES_INV;
+  }
+  // - now actually read the image
+  if (png_image_finish_read(
+    &pngDecP->pngImage,
+    NULL, // background
+    (png_bytep)imgData,
+    0, // row_stride
+    NULL //colormap
+  ) == 0) {
+    // error
+    LOG(LOG_WARNING, "Error decoding PNG: error: %s", pngDecP->pngImage.message);
+    free(imgData);
+    return LV_RES_INV;
+  }
+  // - convert if LV_COLOR_DEPTH is not 32
+  convert_color_depth(imgData, pixCount); // may realloc the buffer in attempt to reduce it
+  if (imgData==NULL) return LV_RES_INV; // safety, should never happen as image gets REDUCED, not expanded!
+  // - successfully read
+  dsc->img_data = imgData;
+  dsc->header.cf = LV_IMG_CF_TRUE_COLOR_ALPHA;
+  return LV_RES_OK;
 }
+
+
+
+
 
 /**
  * Decode `len` pixels starting from the given `x`, `y` coordinates and store them in `buf`.
@@ -279,7 +354,7 @@ lv_res_t png_decoder_built_in_read_line(lv_img_decoder_t * decoder, lv_img_decod
 
   /*Copy `len` pixels from `x` and `y` coordinates in True color format to `buf` */
 
-  return LV_FS_RES_OK;
+  return LV_RES_OK;
 }
 
 /**
@@ -289,14 +364,22 @@ lv_res_t png_decoder_built_in_read_line(lv_img_decoder_t * decoder, lv_img_decod
  */
 static void png_decoder_close(lv_img_decoder_t * decoder, lv_img_decoder_dsc_t * dsc)
 {
-  /*Free all allocated data*/
-
-  /*Call the built-in close function if the built-in open/read_line was used*/
-//  lv_img_decoder_built_in_close(decoder, dsc);
-
+  // free stuff we put into userdata
+  if (decoder->user_data) {
+    PngDecoderState* pngDecP = (PngDecoderState*)decoder->user_data;
+    png_image_free(&pngDecP->pngImage);
+    if (pngDecP->pngBuffer) {
+      free(pngDecP->pngBuffer);
+      pngDecP->pngBuffer = NULL;
+    }
+    delete pngDecP;
+    decoder->user_data = NULL;
+  }
+  // Call the built-in close function if the built-in open/read_line was used (which use user_data)
+  //lv_img_decoder_built_in_close(decoder, dsc);
 }
 
-#endif
+#endif // ENABLE_IMAGE_SUPPORT
 
 
 // MARK: - littlevGL initialisation
@@ -372,13 +455,13 @@ void LvGL::init(bool aShowCursor)
   pf_fs_drv.tell_cb = pf_tell;
   lv_fs_drv_register(&pf_fs_drv);
   #endif
-  #if NOT_WIP
-  // - PNG decoder
+  #if ENABLE_IMAGE_SUPPORT
+  // - PNG Image decoder
   lv_img_decoder_t * dec = lv_img_decoder_create();
   lv_img_decoder_set_info_cb(dec, png_decoder_info);
   lv_img_decoder_set_open_cb(dec, png_decoder_open);
   lv_img_decoder_set_close_cb(dec, png_decoder_close);
-  #endif
+  #endif // ENABLE_IMAGE_SUPPORT
   // - schedule updates
   lvglTicket.executeOnce(boost::bind(&LvGL::lvglTask, this, _1, _2));
 }

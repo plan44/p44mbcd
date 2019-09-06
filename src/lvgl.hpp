@@ -36,12 +36,12 @@
 
 #if defined(__APPLE__)
   // test&debugging build on MacOS, using SDL2 for graphics
-  // - little vGL
+  // - littlevGL
   #include "lv_drivers/display/monitor.h"
   #include "lv_drivers/indev/mouse.h"
 #else
   // target platform build
-  // - little vGL
+  // - littlevGL
   #include "lv_drivers/display/fbdev.h"
   #include "lv_drivers/indev/evdev.h"
 #endif
@@ -49,6 +49,11 @@
 #ifndef MOUSE_CURSOR_SUPPORT
   #define MOUSE_CURSOR_SUPPORT 1
 #endif
+
+#ifndef ENABLE_IMAGE_SUPPORT
+  #define ENABLE_IMAGE_SUPPORT 1
+#endif
+
 
 using namespace std;
 

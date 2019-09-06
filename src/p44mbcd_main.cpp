@@ -47,6 +47,17 @@ static const struct blobmsg_policy p44mbcapi_policy[] = {
 #endif
 
 
+// FIXME: ugly test code only -> remove
+// littlevGL statics
+static lv_obj_t* plusButton = NULL;
+static lv_obj_t* minusButton = NULL;
+static lv_obj_t* dispLabel = NULL;
+
+extern "C" {
+  extern const lv_img_dsc_t img_bubble_pattern;
+}
+
+
 class P44mbcd : public CmdLineApp
 {
   typedef CmdLineApp inherited;
@@ -395,26 +406,114 @@ public:
 
   // MARK: - littlevGL
 
-  static void demoButtonPressed(int aButtonId)
-  {
-    #if OLDTESTCODEENABLED
-    P44mbcd *p44mbcd = dynamic_cast<P44mbcd *>(Application::sharedApplication());
-    p44mbcd->buttonPressed(aButtonId);
-    #endif
-  }
-
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
     LvGL::lvgl().init(getOption("mousecursor"));
     // - create demo
-    demo_create();
-    demo_setNewText("Ready");
-//    demo_setButtonCallback(demoButtonPressed);
+    testscreen_create();
+    if (dispLabel) lv_label_set_text(dispLabel, "Ready");
+  }
+
+
+  #define DEMOSTUFF 1
+
+  void testscreen_create()
+  {
+    // theme
+    lv_theme_t* th = lv_theme_material_init(10, NULL);
+    lv_theme_set_current(th);
+    // wallpaper
+    lv_obj_t * wp = lv_img_create(lv_scr_act(), NULL);
+
+    lv_img_set_src(wp, dataPath("testimg.png").c_str());
+    //lv_img_set_src(wp, &img_bubble_pattern);
+
+    lv_obj_set_width(wp, LV_HOR_RES * 4);
+    lv_obj_set_protect(wp, LV_PROTECT_POS);
+    // styles
+    // - button background
+    static lv_style_t style_tv_btn_bg;
+    lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
+    style_tv_btn_bg.body.main_color = lv_color_hex(0x487fb7);
+    style_tv_btn_bg.body.grad_color = lv_color_hex(0x487fb7);
+    style_tv_btn_bg.body.padding.top = 0;
+    style_tv_btn_bg.body.padding.bottom = 0;
+    // - button released
+    static lv_style_t style_tv_btn_rel;
+    lv_style_copy(&style_tv_btn_rel, &lv_style_btn_rel);
+    style_tv_btn_rel.body.border.width = 0;
+    // - button pressed
+    static lv_style_t style_tv_btn_pr;
+    lv_style_copy(&style_tv_btn_pr, &lv_style_btn_pr);
+    style_tv_btn_pr.body.radius = 0;
+    style_tv_btn_pr.body.opa = LV_OPA_50;
+    style_tv_btn_pr.body.main_color = LV_COLOR_WHITE;
+    style_tv_btn_pr.body.grad_color = LV_COLOR_WHITE;
+    style_tv_btn_pr.body.border.width = 0;
+    style_tv_btn_pr.text.color = LV_COLOR_GRAY;
+
+    #if DEMOSTUFF
+    // The demo setup
+    lv_obj_t *lbl; // temp
+    lv_obj_t *parent = lv_scr_act();
+
+
+    plusButton = lv_btn_create(parent, NULL);
+    lv_cont_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT); /*Enable resizing horizontally and vertically*/
+    lv_obj_set_user_data(plusButton, (void *)1);   /*Set a unique number for the button*/
+    lv_obj_set_event_cb(plusButton, btn_event_handler);
+    lbl = lv_label_create(plusButton, NULL);
+    lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
+    lv_label_set_text(lbl, "+ Plus +");
+    lv_obj_set_width(plusButton, lv_obj_get_width(parent)-20); // expand to full width
+    lv_obj_align(plusButton, NULL, LV_ALIGN_IN_TOP_MID, 0, 10);
+
+    minusButton = lv_btn_create(parent, plusButton); // mostly same
+    lv_obj_set_user_data(minusButton, (void *)2);   /*Set a unique number for the button*/
+    lbl = lv_label_create(minusButton, NULL);
+    lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
+    lv_label_set_text(lbl, "- Minus -");
+    lv_obj_set_width(minusButton, lv_obj_get_width(parent)-20); // expand to full width
+    lv_obj_align(minusButton, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -10);
+
+    dispLabel = lv_label_create(parent, NULL);
+    static lv_style_t dispLabelStyle;
+    lv_style_copy(&dispLabelStyle, &lv_style_plain);
+    dispLabelStyle.text.font = &lv_font_roboto_28;
+    lv_obj_set_style(dispLabel, &dispLabelStyle);
+    lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_CROP);
+    lv_label_set_recolor(dispLabel, true);
+    lv_label_set_align(dispLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_text(dispLabel, "-");
+    lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_SROLL_CIRC);
+    lv_obj_set_width(dispLabel, lv_obj_get_width(parent)); // expand to full width
+    lv_obj_set_height(dispLabel, 70);
+    lv_obj_align(dispLabel, NULL, LV_ALIGN_CENTER, 0, 0);
+
+    #endif
+  }
+
+
+  static void btn_event_handler(lv_obj_t * btn, lv_event_t event)
+  {
+    if (event==LV_EVENT_RELEASED) {
+      intptr_t id = (intptr_t)lv_obj_get_user_data(btn);
+      char buf[32];
+      snprintf(buf, 32, "Button %ld", id);
+      lv_label_set_text(dispLabel, buf);
+      return;
+    }
   }
 
 
 };
+
+
+
+
+
+
 
 
 int main(int argc, char **argv)
