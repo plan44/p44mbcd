@@ -195,12 +195,16 @@ p44mbcd_SOURCES = \
   ${UBUS_SOURCES} \
   ${LIBMODBUS_SOURCES} \
   ${LVGL_SOURCES} \
+  src/p44utils/analogio.cpp \
+  src/p44utils/analogio.hpp \
   src/p44utils/application.cpp \
   src/p44utils/application.hpp \
   src/p44utils/consolekey.cpp \
   src/p44utils/consolekey.hpp \
   src/p44utils/digitalio.cpp \
   src/p44utils/digitalio.hpp \
+  src/p44utils/expression.cpp \
+  src/p44utils/expression.hpp \
   src/p44utils/i2c.cpp \
   src/p44utils/i2c.hpp \
   src/p44utils/spi.cpp \
