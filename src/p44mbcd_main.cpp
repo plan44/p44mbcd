@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 
-#include "lvgl.hpp"
+#include "lvglui.hpp"
 
 // FIXME: remove later
 #include "lv_examples/lv_apps/demo/demo.h"
@@ -29,6 +29,12 @@
 #define DEFAULT_MODBUS_IP_PORT 1502
 
 #define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
+
+#define UICONFIG_FILE_NAME "uiconfig.json"
+
+#define FATAL_ERROR_IMG "errorscreen.png"
+
+
 
 using namespace p44;
 
@@ -66,6 +72,7 @@ class P44mbcd : public CmdLineApp
   ModbusSlave modBus;
 
   // app
+  LvGLUi ui;
   MLTicket appTicket;
 
 public:
@@ -307,7 +314,7 @@ public:
       1, // max segs
       1, // single file
       true, // p44 header
-      "uiconfig.json",
+      UICONFIG_FILE_NAME,
       false, // R/W
       dataPath()+"/" // write to temp, then copy to data path
     )));
@@ -329,6 +336,7 @@ public:
     }
     // start littlevGL
     initLvgl();
+
 //    // start app
 //    if (!isTerminated())
 //      initApp();
@@ -401,15 +409,59 @@ public:
 
   // MARK: - littlevGL
 
+
+  #define DEMOAPP 0
+
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
     LvGL::lvgl().init(getOption("mousecursor"));
+    #if DEMOAPP
     // - create demo
     testscreen_create();
     if (dispLabel) lv_label_set_text(dispLabel, "Ready");
+    #else
+    // real app UI
+    ErrorPtr err;
+    JsonObjectPtr uiConfig = JsonObject::objFromFile(dataPath(UICONFIG_FILE_NAME).c_str(), &err, true);
+    if (Error::isError(err, SysError::domain(), ENOENT)) {
+      // try resources
+      uiConfig = JsonObject::objFromFile(resourcePath(UICONFIG_FILE_NAME).c_str(), &err, true);
+    }
+    if (uiConfig && Error::isOK(err)) {
+      LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
+      err = ui.initForDisplay(lv_disp_get_default(), uiConfig);
+    }
+    if (Error::notOK(err)) {
+      LOG(LOG_ERR, "Failed creating UI from config: %s", Error::text(err));
+      fatalErrorScreen(string_format("UI config error: %s", Error::text(err)));
+    }
+    #endif
   }
 
+
+  void fatalErrorScreen(const string aMessage)
+  {
+    lv_obj_t* errorScreen = lv_img_create(NULL, NULL);
+    lv_img_set_src(errorScreen, resourcePath(FATAL_ERROR_IMG).c_str());
+    // error label
+    lv_obj_t* errLabel = lv_label_create(errorScreen, NULL);
+    static lv_style_t errLabelStyle;
+    lv_style_copy(&errLabelStyle, &lv_style_plain);
+    errLabelStyle.text.font = &lv_font_roboto_16;
+    lv_obj_set_style(errLabel, &errLabelStyle);
+    lv_label_set_long_mode(errLabel, LV_LABEL_LONG_SROLL_CIRC);
+    lv_label_set_align(errLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_text(errLabel, aMessage.c_str());
+    lv_obj_set_width(errLabel, lv_obj_get_width(errorScreen)-10); // expand to full width
+    lv_obj_set_height(errLabel, 42);
+    lv_obj_align(errLabel, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    // activate the error screen
+    lv_scr_load(errorScreen);
+  }
+
+
+  #if DEMOAPP
 
   #define DEMOSTUFF 1
 
@@ -500,6 +552,7 @@ public:
     }
   }
 
+  #endif // DEMOAPP
 
 };
 

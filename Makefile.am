@@ -258,6 +258,8 @@ p44mbcd_SOURCES = \
   src/p44utils/p44utils_common.hpp \
   src/lvgl.cpp \
   src/lvgl.hpp \
+  src/lvglui.cpp \
+  src/lvglui.hpp \
   src/p44mbcd_main.cpp
 
 
