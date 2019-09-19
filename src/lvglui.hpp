@@ -113,12 +113,13 @@ namespace p44 {
 
   public:
 
-    string text; ///< text (e.g. title)
     lv_obj_t* element;
     LVGLUiContainer* parentP;
 
     LVGLUiElement(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate);
     virtual ~LVGLUiElement();
+
+    lv_obj_t* lvParent();
 
     /// configure this object from json
     /// @param aConfig JSON object containing configuration propertyname/values
@@ -171,6 +172,9 @@ namespace p44 {
 
     /// clear this element (and all of its named and unnamed children)
     virtual void clear() P44_OVERRIDE;
+
+    /// @return true if the wrapper object must be kept around (e.g. because it needs to handle events)
+    virtual bool wrapperNeeded() { return true; }; // containers always needs wrapper
 
     /// @param aElementPath dot separated absolute path beginning at root container, or dot-prefixed relative path
     ///   (.elem = one of my subelements, ..elem=a sibling (element in my parent's container), ...=grandparent, etc.)

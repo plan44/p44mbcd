@@ -341,7 +341,7 @@ ErrorPtr LvGLUiTheme::configure(JsonObjectPtr aConfig)
 ErrorPtr LvGLUiStyle::configure(JsonObjectPtr aConfig)
 {
   JsonObjectPtr o;
-  if (aConfig->get("base", o)) {
+  if (aConfig->get("template", o)) {
     lv_style_copy(&style, getStyleByName(o->stringValue()));
   }
   else {
@@ -509,6 +509,12 @@ LVGLUiElement::LVGLUiElement(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_
 }
 
 
+lv_obj_t* LVGLUiElement::lvParent()
+{
+  return parentP ? parentP->element : NULL;
+}
+
+
 LVGLUiElement::~LVGLUiElement()
 {
   clear();
@@ -542,9 +548,6 @@ ErrorPtr LVGLUiElement::configure(JsonObjectPtr aConfig)
   lv_coord_t align_dy = 0;
   bool align_middle = false;
   // common properties
-  if (aConfig->get("text", o)) {
-    text = o->stringValue();
-  }
   if (aConfig->get("x", o)) {
     lv_obj_set_x(element, o->int32Value());
   }
@@ -642,8 +645,13 @@ ErrorPtr LVGLUiContainer::addElements(JsonObjectPtr aElementConfigArray, LVGLUiC
     if (!uielement->getName().empty()) {
       namedElements[uielement->getName()] = uielement;
     }
-    else if (uielement->wrapperNeeded()) {
+    else if (!aParent || uielement->wrapperNeeded()) {
       anonymousElements.push_back(uielement);
+    }
+    else {
+      // this element does not need a wrapper, and has a parent which will release this child's memory
+      // so we just need to make sure disposing of the wrapper will not delete the lv_obj
+      uielement->element = NULL; // cut lv_obj from the wrapper
     }
   }
   return err;
@@ -670,7 +678,7 @@ LVGLUiElementPtr LVGLUiContainer::namedElement(const string aElementPath)
   if (aElementPath.c_str()[0]!='.') {
     // absolute path lookup
     LVGLUiContainer* cP = dynamic_cast<LVGLUiContainer *>(&lvglui);
-    if (cP) return cP->namedElement(aElementPath);
+    if (cP) return cP->namedElement("."+aElementPath); // lookup relative to root
   }
   else {
     // relative lookup
@@ -681,7 +689,7 @@ LVGLUiElementPtr LVGLUiContainer::namedElement(const string aElementPath)
     }
     else {
       if (sep==string::npos) sep=aElementPath.size();
-      ElementMap::iterator pos = namedElements.find(aElementPath.substr(0, sep));
+      ElementMap::iterator pos = namedElements.find(aElementPath.substr(1, sep-1));
       if (pos!=namedElements.end()) {
         if (sep<aElementPath.size()) {
           // path goes on
@@ -704,7 +712,7 @@ LVGLUiElementPtr LVGLUiContainer::namedElement(const string aElementPath)
 LvGLUiPlain::LvGLUiPlain(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_obj_create(aParentP->element, aTemplate);
+  element = lv_obj_create(lvParent(), aTemplate);
 }
 
 
@@ -713,7 +721,7 @@ LvGLUiPlain::LvGLUiPlain(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *a
 LvGLUiPanel::LvGLUiPanel(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_cont_create(aParentP->element, aTemplate);
+  element = lv_cont_create(lvParent(), aTemplate);
 }
 
 
@@ -722,7 +730,7 @@ LvGLUiPanel::LvGLUiPanel(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *a
 LvGLUiImage::LvGLUiImage(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_img_create(aParentP->element, aTemplate);
+  element = lv_img_create(lvParent(), aTemplate);
 }
 
 
@@ -759,7 +767,7 @@ ErrorPtr LvGLUiImage::configure(JsonObjectPtr aConfig)
 LvGLUiLabel::LvGLUiLabel(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_label_create(aParentP->element, aTemplate);
+  element = lv_label_create(lvParent(), aTemplate);
 }
 
 
@@ -788,12 +796,10 @@ ErrorPtr LvGLUiLabel::configure(JsonObjectPtr aConfig)
   if (aConfig->get("inline_colors", o)) {
     lv_label_set_recolor(element, o->boolValue());
   }
-  ErrorPtr err = inherited::configure(aConfig);
-  if (Error::ok(err)) {
-    // label always displays the static text/title after configuration
-    lv_label_set_static_text(element, text.c_str());
+  if (aConfig->get("text", o)) {
+    lv_label_set_text(element, o->stringValue().c_str());
   }
-  return err;
+  return inherited::configure(aConfig);
 }
 
 
@@ -802,7 +808,7 @@ ErrorPtr LvGLUiLabel::configure(JsonObjectPtr aConfig)
 LvGLUiButton::LvGLUiButton(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_btn_create(aParentP->element, aTemplate);
+  element = lv_btn_create(lvParent(), aTemplate);
 }
 
 
@@ -864,7 +870,7 @@ ErrorPtr LvGLUiButton::configure(JsonObjectPtr aConfig)
 LvGLUiImgButton::LvGLUiImgButton(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_imgbtn_create(aParentP->element, aTemplate);
+  element = lv_imgbtn_create(lvParent(), aTemplate);
 }
 
 
@@ -900,7 +906,7 @@ ErrorPtr LvGLUiImgButton::configure(JsonObjectPtr aConfig)
 LvGLUiSlider::LvGLUiSlider(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
   inherited(aLvGLUI, aParentP, aTemplate)
 {
-  element = lv_slider_create(aParentP->element, aTemplate);
+  element = lv_slider_create(lvParent(), aTemplate);
 }
 
 
