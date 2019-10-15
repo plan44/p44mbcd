@@ -462,8 +462,8 @@ static LVGLUiElementPtr createElement(LvGLUi& aLvGLUI, JsonObjectPtr aConfig, LV
     tn = o->stringValue();
   }
   if (aConfig->get("template", o)) {
-    // reference an existing named element to copy from
-    LVGLUiElementPtr templateElem = aLvGLUI.namedElement(o->stringValue());
+    // reference an existing named element to copy from (sibling)
+    LVGLUiElementPtr templateElem = aLvGLUI.namedElement(o->stringValue(), aParentP);
     if (templateElem) tmpl = templateElem->element;
   }
   // now create according to type
@@ -531,14 +531,6 @@ void LVGLUiElement::clear()
 }
 
 
-LVGLUiElementPtr LVGLUiElement::namedElement(const string aElementPath, LVGLUiElementPtr aOrigin)
-{
-  if (aElementPath.c_str()[0]=='.' && aElementPath.c_str()[1]!='.') return LVGLUiElementPtr(); // leaf elements cannot lookup child objects
-  if (parentP) return parentP->namedElement(aElementPath.substr(1)); // look up in parent with one dot less
-  return LVGLUiElementPtr();
-}
-
-
 
 ErrorPtr LVGLUiElement::configure(JsonObjectPtr aConfig)
 {
@@ -562,7 +554,7 @@ ErrorPtr LVGLUiElement::configure(JsonObjectPtr aConfig)
     lv_obj_set_height(element, o->int32Value());
   }
   if (aConfig->get("alignto", o)) {
-    alignRef = namedElement(o->stringValue());
+    alignRef = lvglui.namedElement(o->stringValue(), parentP); // sibling
   }
   if (aConfig->get("align_dx", o)) {
     align_dx = o->int32Value();
@@ -614,7 +606,7 @@ ErrorPtr LVGLUiElement::configure(JsonObjectPtr aConfig)
 
 static void elementEventCallback(lv_obj_t * obj, lv_event_t event)
 {
-  LVGLUiElement *eventSource = *(static_cast<LVGLUiElement**>(lv_obj_get_ext_attr(obj)));
+  LVGLUiElement *eventSource = static_cast<LVGLUiElement*>(lv_obj_get_user_data(obj));
   if (eventSource) {
     eventSource->handleEvent(event);
   }
@@ -625,9 +617,8 @@ void LVGLUiElement::installEventHandler()
 {
   if (!handlesEvents) {
     handlesEvents = true;
-    // store reference to this element C++ object in ext_attr
-    lv_obj_allocate_ext_attr(element, sizeof(LVGLUiElement*));
-    *(static_cast<LVGLUiElement**>(lv_obj_get_ext_attr(element))) = this;
+    // set user data
+    lv_obj_set_user_data(element, (void *)this);
     // set callback
     lv_obj_set_event_cb(element, &elementEventCallback);
   }
@@ -730,45 +721,6 @@ ErrorPtr LVGLUiContainer::configure(JsonObjectPtr aConfig)
 }
 
 
-LVGLUiElementPtr LVGLUiContainer::namedElement(const string aElementPath, LVGLUiElementPtr aOrigin)
-{
-  if (aElementPath.c_str()[0]!='.') {
-    // absolute path lookup
-    LVGLUiContainerPtr cP = dynamic_cast<LVGLUiContainer *>(&lvglui);
-    if (cP) return cP->namedElement("."+aElementPath); // lookup relative to root
-  }
-  else {
-    // relative lookup
-    if (!aOrigin) aOrigin = this; // default to this container as origin
-    if (aElementPath.size()==1) return aOrigin; // single "." -> means origin
-    size_t sep = aElementPath.find(".",1);
-    if (sep==1) {
-      // (at least) double dot, ask parent
-      if (aOrigin->parentP) return parentP->namedElement(aElementPath.substr(1));
-    }
-    else {
-      LVGLUiContainerPtr org = boost::dynamic_pointer_cast<LVGLUiContainer>(aOrigin);
-      if (org) {
-        if (sep==string::npos) sep=aElementPath.size();
-        ElementMap::iterator pos = org->namedElements.find(aElementPath.substr(1, sep-1));
-        if (pos!=org->namedElements.end()) {
-          if (sep<aElementPath.size()) {
-            // path goes on
-            LVGLUiContainer* cP = dynamic_cast<LVGLUiContainer *>(pos->second.get());
-            if (cP) return cP->namedElement(aElementPath.substr(sep));
-          }
-          else {
-            // leaf
-            return pos->second;
-          }
-        }
-      }
-    }
-  }
-  return LVGLUiElementPtr(); // not found
-}
-
-
 // MARK: - LvGLUiPlain - simple object with no child layout
 
 LvGLUiPlain::LvGLUiPlain(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate) :
@@ -804,7 +756,8 @@ ErrorPtr LvGLUiImage::configure(JsonObjectPtr aConfig)
     lv_img_set_auto_size(element, o->boolValue());
   }
   if (aConfig->get("src", o)) {
-    lv_img_set_src(element, lvglui.namedImageSource(o->stringValue()).c_str());
+    imgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_img_set_src(element, imgSrc.c_str());
   }
   if (aConfig->get("symbol", o)) {
     lv_img_set_src(element, getSymbolByName(o->stringValue()));
@@ -981,19 +934,24 @@ ErrorPtr LvGLUiImgButton::configure(JsonObjectPtr aConfig)
   }
   configureButtonStyles(lvglui, element, aConfig);
   if (aConfig->get("released_image", o) || aConfig->get("image", o)) {
-    lv_imgbtn_set_src(element, LV_BTN_STATE_REL, lvglui.namedImageSource(o->stringValue()).c_str());
+    relImgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_imgbtn_set_src(element, LV_BTN_STATE_REL, relImgSrc.c_str());
   }
   if (aConfig->get("pressed_image", o)) {
-    lv_imgbtn_set_src(element, LV_BTN_STATE_PR, lvglui.namedImageSource(o->stringValue()).c_str());
+    prImgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_imgbtn_set_src(element, LV_BTN_STATE_PR, prImgSrc.c_str());
   }
   if (aConfig->get("on_image", o)) {
-    lv_imgbtn_set_src(element, LV_BTN_STATE_TGL_PR, lvglui.namedImageSource(o->stringValue()).c_str());
+    tglPrImgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_imgbtn_set_src(element, LV_BTN_STATE_TGL_PR, tglPrImgSrc.c_str());
   }
   if (aConfig->get("off_image", o)) {
-    lv_imgbtn_set_src(element, LV_BTN_STATE_TGL_REL, lvglui.namedImageSource(o->stringValue()).c_str());
+    tglRelImgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_imgbtn_set_src(element, LV_BTN_STATE_TGL_REL, tglRelImgSrc.c_str());
   }
   if (aConfig->get("disabled_image", o)) {
-    lv_imgbtn_set_src(element, LV_BTN_STATE_INA, lvglui.namedImageSource(o->stringValue()).c_str());
+    inaImgSrc = lvglui.namedImageSource(o->stringValue());
+    lv_imgbtn_set_src(element, LV_BTN_STATE_INA, inaImgSrc.c_str());
   }
   // event handling
   if (aConfig->get("onpress", o)) {
@@ -1085,7 +1043,7 @@ ErrorPtr LvGLUiSlider::configure(JsonObjectPtr aConfig)
     lv_slider_set_knob_in(element, o->boolValue());
   }
   // event handling
-  if (aConfig->get("onrelease", o)) {
+  if (aConfig->get("onchange", o)) {
     onChangeScript = o->stringValue();
     installEventHandler();
   }
@@ -1137,7 +1095,17 @@ bool LvGLUiScriptContext::evaluateFunction(const string &aFunc, const FunctionAr
     }
     aResult.setString(etxt);
   }
-  else if (aFunc=="setValue" && aArgs.size()>=1 && aArgs.size()<=3) {
+  else if (aFunc=="value" && aArgs.size()<=1) {
+    // value([<element>])
+    LVGLUiElementPtr elem = currentElement;
+    if (aArgs.size()>=1) {
+      elem = lvglui.namedElement(aArgs[0].stringValue(), currentElement);
+    }
+    if (elem) {
+      aResult.setNumber(elem->getValue());
+    }
+  }
+  else if (aFunc=="setvalue" && aArgs.size()>=1 && aArgs.size()<=3) {
     // setValue([<element>,] value [,animationtime])
     LVGLUiElementPtr elem = currentElement;
     int arridx = 0;
@@ -1151,7 +1119,7 @@ bool LvGLUiScriptContext::evaluateFunction(const string &aFunc, const FunctionAr
       elem->setValue(aArgs[arridx].intValue(), animtime);
     }
   }
-  else if (aFunc=="setText" && aArgs.size()>=1 && aArgs.size()<=2) {
+  else if (aFunc=="settext" && aArgs.size()>=1 && aArgs.size()<=2) {
     // setText([<element>,] text)
     LVGLUiElementPtr elem = currentElement;
     int arridx = 0;
@@ -1175,7 +1143,7 @@ bool LvGLUiScriptContext::evaluateFunction(const string &aFunc, const FunctionAr
   }
   else if (aFunc=="showscreen" && aArgs.size()==1) {
     // showScreen(<screenname>)
-    LVGLUiElementPtr screen = lvglui.namedElement(aArgs[0].stringValue());
+    LVGLUiElementPtr screen = lvglui.namedElement(aArgs[0].stringValue(), &lvglui);
     if (screen) {
       lv_scr_load(screen->element);
     }
@@ -1210,7 +1178,7 @@ bool LvGLUiScriptContext::evaluateFunction(const string &aFunc, const FunctionAr
   }
   else {
     // unknown function
-    return false;
+    return inherited::evaluateFunction(aFunc, aArgs, aResult);
   }
   return true;
 }
@@ -1282,6 +1250,54 @@ lv_style_t* LvGLUi::namedOrAdHocStyle(JsonObjectPtr aStyleNameOrDefinition, bool
 }
 
 
+LVGLUiElementPtr LvGLUi::namedElement(string aElementPath, LVGLUiElementPtr aOrigin)
+{
+  if (!aOrigin || aElementPath.c_str()[0]!='.') {
+    // absolute path lookup
+    aOrigin = this;
+  }
+  else {
+    aElementPath.erase(0);
+    if (aElementPath.size()==0) return aOrigin; // single dot means origin itself
+  }
+  // now process as relative lookup
+  do {
+    // find end of path element
+    size_t sep = aElementPath.find(".");
+    if (sep==0) {
+      // (at least) double dot, step back to parent
+      aOrigin = aOrigin->parentP;
+      aElementPath.erase(0);
+      continue;
+    }
+    string elemname;
+    if (sep==string::npos) {
+      sep=aElementPath.size();
+      elemname = aElementPath;
+      aElementPath.clear();
+    }
+    else {
+      elemname = aElementPath.substr(0,sep);
+      aElementPath.erase(sep+1);
+    }
+    LVGLUiContainerPtr cont = boost::dynamic_pointer_cast<LVGLUiContainer>(aOrigin);
+    if (cont) {
+      ElementMap::iterator pos = cont->namedElements.find(elemname);
+      if (pos!=cont->namedElements.end()) {
+        aOrigin = pos->second;
+        continue;
+      }
+    }
+    return LVGLUiElementPtr(); // not found
+  } while (aElementPath.size()>0);
+  return aOrigin;
+}
+
+
+
+
+
+
 void LvGLUi::runEventScript(lv_event_t aEvent, LVGLUiElementPtr aElement, const string &aScriptCode)
 {
   uiScriptContext.abort();
@@ -1331,7 +1347,7 @@ ErrorPtr LvGLUi::configure(JsonObjectPtr aConfig)
   }
   // check for screens
   if (aConfig->get("startscreen", o)) {
-    LVGLUiElementPtr screen = namedElement(o->stringValue());
+    LVGLUiElementPtr screen = namedElement(o->stringValue(), this);
     if (screen) lv_scr_load(screen->element);
   }
   else {

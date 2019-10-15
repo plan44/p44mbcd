@@ -85,6 +85,7 @@ public:
   P44mbcd()
   {
     modBus.isMemberVariable();
+    ui.isMemberVariable();
   }
 
   virtual int main(int argc, char **argv)

@@ -141,20 +141,16 @@ namespace p44 {
     /// @return true if the wrapper object must be kept around (e.g. because it needs to handle events)
     virtual bool wrapperNeeded() { return handlesEvents || !getName().empty(); }; // simple objects need the wrapper only if they handle events or can be referenced by name
 
-    /// @param aElementPath dot separated absolute path beginning at root container, or dot-prefixed relative path
-    ///   (.elem = one of my subelements, ..elem=a sibling (element in my parent's container), ...=grandparent, etc.).
-    ///   Single "." means origin element itself
-    /// @param aOrigin the origin for relative paths
-    /// @return requested element or NULL if none found
-    /// @note leaf element can only use absolute or at least ..-prefixed paths
-    virtual LVGLUiElementPtr namedElement(const string aElementPath, LVGLUiElementPtr aOrigin = LVGLUiElementPtr());
-
     /// @param aValue the value to set to the element (depends on element type)
     /// @param aAnimationTime if set>0, the value change will be animated
     virtual void setValue(int16_t aValue, uint16_t aAnimationTime = 0) { /* NOP in base class */ }
 
     /// set a new text for an element
     virtual void setText(const string &aNewText) { /* NOP in base class */ }
+
+    /// get value
+    /// @return current value of the control
+    virtual int16_t getValue() { return 0; /* no value in base class */ }
 
     /// run event script
     void runEventScript(lv_event_t aEvent, const string &aScriptCode);
@@ -182,6 +178,7 @@ namespace p44 {
   class LVGLUiContainer : public LvGLUiLayoutContainer
   {
     typedef LvGLUiLayoutContainer inherited;
+    friend class LvGLUi;
 
     ElementMap namedElements; ///< the contained elements that have a name because the need to be referencable
     ElementList anonymousElements; ///< the contained elements that need to be around after configuration because they are actionable
@@ -200,11 +197,6 @@ namespace p44 {
 
     /// @return true if the wrapper object must be kept around (e.g. because it needs to handle events)
     virtual bool wrapperNeeded() P44_OVERRIDE { return true; }; // containers always needs wrapper
-
-    /// @param aElementPath dot separated absolute path beginning at root container, or dot-prefixed relative path
-    ///   (.elem = one of my subelements, ..elem=a sibling (element in my parent's container), ...=grandparent, etc.)
-    /// @return requested element or NULL if none found
-    virtual LVGLUiElementPtr namedElement(const string aElementPath, LVGLUiElementPtr aOrigin = LVGLUiElementPtr()) P44_OVERRIDE;
 
   protected:
 
@@ -235,11 +227,13 @@ namespace p44 {
   class LvGLUiImage : public LVGLUiElement
   {
     typedef LVGLUiElement inherited;
+    string imgSrc;
   public:
     LvGLUiImage(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate);
     virtual ErrorPtr configure(JsonObjectPtr aConfig) P44_OVERRIDE;
     virtual void setText(const string &aNewText) P44_OVERRIDE;
-  };
+    virtual bool wrapperNeeded() P44_OVERRIDE { return true; }; // wrapper stores the image source, must be kept
+};
 
 
   class LvGLUiLabel : public LVGLUiElement
@@ -272,9 +266,15 @@ namespace p44 {
     typedef LVGLUiElement inherited;
     string onPressScript;
     string onReleaseScript;
+    string relImgSrc;
+    string prImgSrc;
+    string tglPrImgSrc;
+    string tglRelImgSrc;
+    string inaImgSrc;
   public:
     LvGLUiImgButton(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate);
     virtual ErrorPtr configure(JsonObjectPtr aConfig) P44_OVERRIDE;
+    virtual bool wrapperNeeded() P44_OVERRIDE { return true; }; // wrapper stores the image sources, must be kept
   protected:
     virtual void handleEvent(lv_event_t aEvent) P44_OVERRIDE;
   };
@@ -296,6 +296,7 @@ namespace p44 {
     typedef LvGLUiBarBase inherited;
   public:
     LvGLUiBar(LvGLUi& aLvGLUI, LVGLUiContainer* aParentP, lv_obj_t *aTemplate);
+    virtual int16_t getValue() P44_OVERRIDE { return lv_bar_get_value(element); }
   };
 
 
@@ -308,6 +309,7 @@ namespace p44 {
     virtual ErrorPtr configure(JsonObjectPtr aConfig) P44_OVERRIDE;
   protected:
     virtual void handleEvent(lv_event_t aEvent) P44_OVERRIDE;
+    virtual int16_t getValue() P44_OVERRIDE { return lv_slider_get_value(element); }
   };
 
 
@@ -316,6 +318,7 @@ namespace p44 {
 
   class LvGLUiScriptContext : public ScriptExecutionContext
   {
+    typedef ScriptExecutionContext inherited;
     friend class LvGLUi;
 
     LvGLUi& lvglui;
@@ -376,6 +379,13 @@ namespace p44 {
     /// @note names containing dots will be considered file paths. Other texts are considered symbol names.
     ///    fallback is a text image label.
     string namedImageSource(const string& aImageSpec);
+
+    /// @param aElementPath dot separated absolute path beginning at root container, or dot-prefixed relative path
+    ///   (.elem = one of my subelements, ..elem=a sibling (element in my parent's container), ...=grandparent, etc.)
+    /// @param aOrigin the origin for relative paths
+    /// @return requested element or NULL if none found
+    LVGLUiElementPtr namedElement(string aElementPath, LVGLUiElementPtr aOrigin);
+
 
     /// run event script
     void runEventScript(lv_event_t aEvent, LVGLUiElementPtr aElement, const string &aScriptCode);
