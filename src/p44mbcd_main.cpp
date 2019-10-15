@@ -75,6 +75,11 @@ class P44mbcd : public CmdLineApp
   LvGLUi ui;
   MLTicket appTicket;
 
+  // scripting
+  ScriptExecutionContext writeHandlerScript;
+  int writtenAddress;
+  bool writtenBit;
+
 public:
 
   P44mbcd()
@@ -400,10 +405,92 @@ public:
       aWrite ? "write" : "read",
       val, val
     );
+    // report write access
+    if (aWrite) {
+      writtenAddress = aAddress;
+      writtenBit = aBit;
+      writeHandlerScript.execute(true);
+    }
     if (aAddress==128) {
       return TextError::err("Special register 128 not yet implemented");
     }
     return ErrorPtr();
+  }
+
+
+  // MARK: - script and config interface
+
+  bool modbusFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
+  {
+    if (aFunc=="writtenreg" && aArgs.size()==0) {
+      // writtenreg() returns written register number or null
+      if (!writtenBit) aResult.setNumber(writtenAddress);
+    }
+    else if (aFunc=="writtenbit" && aArgs.size()==0) {
+      // writtenreg() returns written bit number or null
+      if (writtenBit) aResult.setNumber(writtenAddress);
+    }
+    else {
+      return false;
+    }
+    return true;
+  }
+
+
+
+  /// callback function for function evaluation
+  /// @param aFunc the name of the function to execute, always passed in in all lowercase
+  /// @param aArgs vector of function arguments, tuple contains expression starting position and value
+  /// @param aResult set to function's result
+  /// @return true if function executed, false if function signature (name, number of args) is unknown
+  bool uiFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
+  {
+    if (aFunc=="modbus_setreg" && aArgs.size()>=2 && aArgs.size()<=3) {
+      // modbus_setreg(regaddr, value [,input])
+      int addr = aArgs[0].intValue();
+      uint16_t val = aArgs[1].intValue();
+      bool inp = aArgs[2].boolValue(); // null or false means non-input
+      modBus.setReg(addr, inp, val);
+    }
+    else if (aFunc=="modbus_setbit" && aArgs.size()>=2 && aArgs.size()<=3) {
+      // modbus_setreg(regaddr, value [,input])
+      int addr = aArgs[0].intValue();
+      bool bit = aArgs[1].boolValue();
+      bool inp = aArgs[2].boolValue(); // null or false means non-input
+      modBus.setBit(addr, inp, bit);
+    }
+    else if (aFunc=="modbus_getreg" && aArgs.size()>=1 && aArgs.size()<=2) {
+      // modbus_getreg(regaddr [,input])
+      int addr = aArgs[0].intValue();
+      bool inp = aArgs[1].boolValue(); // null or false means non-input
+      aResult.setNumber(modBus.getReg(addr, inp));
+    }
+    else if (aFunc=="modbus_getbit" && aArgs.size()>=1 && aArgs.size()<=2) {
+      // modbus_getbit(regaddr [,input])
+      int addr = aArgs[0].intValue();
+      bool inp = aArgs[1].boolValue(); // null or false means non-input
+      aResult.setBool(modBus.getBit(addr, inp));
+    }
+    else {
+      // unknown function
+      return false;
+    }
+    return true;
+  }
+
+
+  ErrorPtr processModbusConfig(JsonObjectPtr aConfig)
+  {
+    ErrorPtr err;
+    JsonObjectPtr mbCfg = aConfig->get("modbus");
+    if (mbCfg) {
+      JsonObjectPtr o;
+      if (mbCfg->get("writehandler", o)) {
+        writeHandlerScript.setCode(o->stringValue());
+        writeHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
+      }
+    }
+    return err;
   }
 
 
@@ -422,6 +509,9 @@ public:
     if (dispLabel) lv_label_set_text(dispLabel, "Ready");
     #else
     // real app UI
+    // - install app specific script functions
+    ui.uiScriptContext.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+    // - get config
     ErrorPtr err;
     JsonObjectPtr uiConfig = JsonObject::objFromFile(dataPath(UICONFIG_FILE_NAME).c_str(), &err, true);
     if (Error::isError(err, SysError::domain(), ENOENT)) {
@@ -430,7 +520,10 @@ public:
     }
     if (uiConfig && Error::isOK(err)) {
       LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
-      err = ui.initForDisplay(lv_disp_get_default(), uiConfig);
+      err = processModbusConfig(uiConfig);
+      if (Error::isOK(err)) {
+        err = ui.initForDisplay(lv_disp_get_default(), uiConfig);
+      }
     }
     if (Error::notOK(err)) {
       LOG(LOG_ERR, "Failed creating UI from config: %s", Error::text(err));
