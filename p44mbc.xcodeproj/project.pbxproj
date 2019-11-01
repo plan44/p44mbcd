@@ -36,7 +36,6 @@
 		ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ED43FD6F22CC00BA00ED57F3 /* modbus-tcp.c */; };
 		ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED74563E1731B813001C9565 /* mainloop.cpp */; };
 		ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
-		ED5A057C22CE26BF0047D746 /* evdev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AE72276F0C3009B43A8 /* evdev.c */; };
 		ED5A058022CE26BF0047D746 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026CF7171D9CAB00AD5FD6 /* utils.cpp */; };
 		ED5A058222CE26BF0047D746 /* p44obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED81337717C6C765003982CC /* p44obj.cpp */; };
 		ED5A058B22CE26BF0047D746 /* consolekey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC1166C177EDDDF00F27115 /* consolekey.cpp */; };
@@ -1324,7 +1323,6 @@
 				ED5A057222CE26BF0047D746 /* modbus-tcp.c in Sources */,
 				ED5A057522CE26BF0047D746 /* mainloop.cpp in Sources */,
 				ED5A057922CE26BF0047D746 /* macaddress.cpp in Sources */,
-				ED5A057C22CE26BF0047D746 /* evdev.c in Sources */,
 				ED5A058022CE26BF0047D746 /* utils.cpp in Sources */,
 				ED5A058222CE26BF0047D746 /* p44obj.cpp in Sources */,
 				ED5A058B22CE26BF0047D746 /* consolekey.cpp in Sources */,
