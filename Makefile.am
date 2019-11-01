@@ -248,6 +248,10 @@ p44mbcd_SOURCES = \
   src/p44utils/modbus.hpp \
   src/p44utils/utils.cpp \
   src/p44utils/utils.hpp \
+  src/p44utils/lvgl.cpp \
+  src/p44utils/lvgl.hpp \
+  src/p44utils/lvglui.cpp \
+  src/p44utils/lvglui.hpp \
   src/p44utils/thirdparty/civetweb/civetweb.c \
   src/p44utils/thirdparty/civetweb/civetweb.h \
   src/p44utils/thirdparty/civetweb/handle_form.inl \
@@ -256,10 +260,6 @@ p44mbcd_SOURCES = \
   src/p44utils/thirdparty/civetweb/hostcheck.inl \
   src/p44utils/thirdparty/civetweb/openssl_hostname_validation.inl \
   src/p44utils/p44utils_common.hpp \
-  src/lvgl.cpp \
-  src/lvgl.hpp \
-  src/lvglui.cpp \
-  src/lvglui.hpp \
   src/p44mbcd_main.cpp
 
 

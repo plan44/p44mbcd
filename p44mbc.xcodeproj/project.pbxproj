@@ -54,11 +54,12 @@
 		ED5A05BC22CE26BF0047D746 /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED0E441C1732FE4F00C4C283 /* application.cpp */; };
 		ED5A05C322CE26BF0047D746 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED026D03171E94D700AD5FD6 /* error.cpp */; };
 		ED5A05D422CE28B90047D746 /* p44mbutil_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */; };
-		ED61E20422DF75A9004849D2 /* lvgl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED61E20222DF75A9004849D2 /* lvgl.cpp */; };
 		ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */; };
 		ED8A99A82020D17B0069EBF6 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = ED8A99A12020D17A0069EBF6 /* civetweb.c */; };
 		ED8A99AD2020D6540069EBF6 /* libcrypto.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */; };
 		ED8A99AE2020D6540069EBF6 /* libssl.1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */; };
+		ED8B1FA6236C98C100ED4B96 /* lvglui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED8B1FA3236C975700ED4B96 /* lvglui.cpp */; };
+		ED8B1FA7236C98C500ED4B96 /* lvgl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED8B1FA4236C975700ED4B96 /* lvgl.cpp */; };
 		ED9D3A752276F0A5009B43A8 /* lv_indev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39A52276F0A4009B43A8 /* lv_indev.c */; };
 		ED9D3A762276F0A5009B43A8 /* lv_refr.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39A82276F0A4009B43A8 /* lv_refr.c */; };
 		ED9D3A782276F0A5009B43A8 /* lv_style.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D39AA2276F0A4009B43A8 /* lv_style.c */; };
@@ -142,7 +143,6 @@
 		EDB5B3F623226DBE00A0C84D /* analogio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3ED23226DBB00A0C84D /* analogio.cpp */; };
 		EDB5B3F723226DBE00A0C84D /* expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EE23226DBB00A0C84D /* expressions.cpp */; };
 		EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3F023226DBC00A0C84D /* pwm.cpp */; };
-		EDD9614A232FD23200AFE94D /* lvglui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD96148232FD23200AFE94D /* lvglui.cpp */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
 		EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
@@ -270,8 +270,6 @@
 		ED5A05D322CE28B80047D746 /* p44mbutil_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = p44mbutil_main.cpp; sourceTree = "<group>"; };
 		ED5B2933174124D300334C71 /* sqlite3persistence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3persistence.cpp; sourceTree = "<group>"; };
 		ED5B2934174124D400334C71 /* sqlite3persistence.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = sqlite3persistence.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		ED61E20222DF75A9004849D2 /* lvgl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lvgl.cpp; sourceTree = "<group>"; };
-		ED61E20322DF75A9004849D2 /* lvgl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lvgl.hpp; sourceTree = "<group>"; };
 		ED6D7BEA1716B6B1005DED18 /* p44mbcd_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = p44mbcd_main.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEE1716EAA6005DED18 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = logger.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED6D7BEF1716EAA6005DED18 /* logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = logger.hpp; sourceTree = "<group>"; };
@@ -292,6 +290,10 @@
 		ED8A99AA2020D2070069EBF6 /* Makefile.am */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; path = Makefile.am; sourceTree = "<group>"; };
 		ED8A99AB2020D6540069EBF6 /* libcrypto.1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.1.0.0.dylib; path = ../../../../../../../../../usr/local/Cellar/openssl/1.0.2k/lib/libcrypto.1.0.0.dylib; sourceTree = "<group>"; };
 		ED8A99AC2020D6540069EBF6 /* libssl.1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.1.0.0.dylib; path = ../../../../../../../../../usr/local/Cellar/openssl/1.0.2k/lib/libssl.1.0.0.dylib; sourceTree = "<group>"; };
+		ED8B1FA2236C975600ED4B96 /* lvglui.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lvglui.hpp; sourceTree = "<group>"; };
+		ED8B1FA3236C975700ED4B96 /* lvglui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lvglui.cpp; sourceTree = "<group>"; };
+		ED8B1FA4236C975700ED4B96 /* lvgl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lvgl.cpp; sourceTree = "<group>"; };
+		ED8B1FA5236C975700ED4B96 /* lvgl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lvgl.hpp; sourceTree = "<group>"; };
 		ED93DFF21D256BD400D6AF0A /* p44utils_common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = p44utils_common.hpp; sourceTree = "<group>"; };
 		ED9D39A42276F0A4009B43A8 /* lv_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_group.h; sourceTree = "<group>"; };
 		ED9D39A52276F0A4009B43A8 /* lv_indev.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_indev.c; sourceTree = "<group>"; };
@@ -511,8 +513,6 @@
 		EDC1166D177EDDDF00F27115 /* consolekey.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = consolekey.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		EDCFE85E17203E47001D35F3 /* fnv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnv.cpp; sourceTree = "<group>"; };
 		EDCFE85F17203E47001D35F3 /* fnv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fnv.hpp; sourceTree = "<group>"; };
-		EDD96148232FD23200AFE94D /* lvglui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lvglui.cpp; sourceTree = "<group>"; };
-		EDD96149232FD23200AFE94D /* lvglui.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lvglui.hpp; sourceTree = "<group>"; };
 		EDDE42C017F41A36005B97A0 /* macaddress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = macaddress.hpp; sourceTree = "<group>"; };
 		EDDE42C117F41A36005B97A0 /* macaddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = macaddress.cpp; sourceTree = "<group>"; };
 		EDF1AF241D0D98D000302F77 /* spi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spi.cpp; sourceTree = "<group>"; };
@@ -608,6 +608,10 @@
 				ED07E26117DA37BF00889CC3 /* jsonwebclient.hpp */,
 				ED6D7BEE1716EAA6005DED18 /* logger.cpp */,
 				ED6D7BEF1716EAA6005DED18 /* logger.hpp */,
+				ED8B1FA3236C975700ED4B96 /* lvglui.cpp */,
+				ED8B1FA2236C975600ED4B96 /* lvglui.hpp */,
+				ED8B1FA4236C975700ED4B96 /* lvgl.cpp */,
+				ED8B1FA5236C975700ED4B96 /* lvgl.hpp */,
 				EDDE42C117F41A36005B97A0 /* macaddress.cpp */,
 				EDDE42C017F41A36005B97A0 /* macaddress.hpp */,
 				ED74563E1731B813001C9565 /* mainloop.cpp */,
@@ -745,10 +749,6 @@
 		ED6D7BE71716B6B1005DED18 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				EDD96148232FD23200AFE94D /* lvglui.cpp */,
-				EDD96149232FD23200AFE94D /* lvglui.hpp */,
-				ED61E20222DF75A9004849D2 /* lvgl.cpp */,
-				ED61E20322DF75A9004849D2 /* lvgl.hpp */,
 				ED9D3C662276F294009B43A8 /* lv_conf.h */,
 				ED9D3C672276F2F9009B43A8 /* lv_drv_conf.h */,
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
@@ -1197,10 +1197,10 @@
 				ED43FD7D22CC154900ED57F3 /* modbus-rtu.c in Sources */,
 				ED9D3ACC2276F0A5009B43A8 /* lv_table.c in Sources */,
 				ED9D3A902276F0A5009B43A8 /* lv_theme_nemo.c in Sources */,
+				ED8B1FA6236C98C100ED4B96 /* lvglui.cpp in Sources */,
 				ED9D3ACB2276F0A5009B43A8 /* lv_bar.c in Sources */,
 				ED9D3A8A2276F0A5009B43A8 /* lv_gc.c in Sources */,
 				ED9D3AAA2276F0A5009B43A8 /* lv_hal_indev.c in Sources */,
-				EDD9614A232FD23200AFE94D /* lvglui.cpp in Sources */,
 				ED9D3AAC2276F0A5009B43A8 /* lv_draw_line.c in Sources */,
 				ED9D3AB42276F0A5009B43A8 /* lv_draw.c in Sources */,
 				ED9D3A7B2276F0A5009B43A8 /* lv_group.c in Sources */,
@@ -1229,6 +1229,7 @@
 				EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */,
 				ED25C42717EC59D1005B115F /* socketcomm.cpp in Sources */,
 				ED9D3A942276F0A5009B43A8 /* lv_theme_default.c in Sources */,
+				ED8B1FA7236C98C500ED4B96 /* lvgl.cpp in Sources */,
 				ED43FD7E22CC154900ED57F3 /* modbus-tcp.c in Sources */,
 				ED9D3ABC2276F0A5009B43A8 /* lv_lmeter.c in Sources */,
 				ED25C42317EC59D1005B115F /* mainloop.cpp in Sources */,
@@ -1306,7 +1307,6 @@
 				ED9D3A852276F0A5009B43A8 /* lv_templ.c in Sources */,
 				ED9D3AC42276F0A5009B43A8 /* lv_led.c in Sources */,
 				ED25C42217EC59D1005B115F /* error.cpp in Sources */,
-				ED61E20422DF75A9004849D2 /* lvgl.cpp in Sources */,
 				ED9D3AFE2276F0C4009B43A8 /* keyboard.c in Sources */,
 				ED9D3A862276F0A5009B43A8 /* lv_circ.c in Sources */,
 				ED9D3AAB2276F0A5009B43A8 /* lv_hal_disp.c in Sources */,
