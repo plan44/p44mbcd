@@ -247,6 +247,7 @@
 		ED43FD7822CC00BA00ED57F3 /* modbus.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = modbus.h; path = src/modbus.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		ED43FD7922CC00BA00ED57F3 /* modbus-tcp-private.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-tcp-private.h"; path = "src/modbus-tcp-private.h"; sourceTree = "<group>"; tabWidth = 4; };
 		ED43FD7B22CC00BA00ED57F3 /* modbus-rtu-private.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = "modbus-rtu-private.h"; path = "src/modbus-rtu-private.h"; sourceTree = "<group>"; tabWidth = 4; };
+		ED49ECD2237EBE5500706C43 /* p44utils_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = p44utils_config.hpp; sourceTree = "<group>"; };
 		ED5372F61DFCAD3C0066FF5A /* sqlite3pp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3pp.cpp; sourceTree = "<group>"; };
 		ED5372F71DFCAD3C0066FF5A /* sqlite3pp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite3pp.h; sourceTree = "<group>"; };
 		ED5372F81DFCAD3C0066FF5A /* sqlite3ppext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite3ppext.cpp; sourceTree = "<group>"; };
@@ -748,6 +749,7 @@
 		ED6D7BE71716B6B1005DED18 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				ED49ECD2237EBE5500706C43 /* p44utils_config.hpp */,
 				ED9D3C662276F294009B43A8 /* lv_conf.h */,
 				ED9D3C672276F2F9009B43A8 /* lv_drv_conf.h */,
 				ED9D3C682276F37C009B43A8 /* lv_ex_conf.h */,
