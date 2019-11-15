@@ -517,6 +517,7 @@ public:
     JsonObjectPtr uiConfig = JsonObject::objFromFile(dataPath(UICONFIG_FILE_NAME).c_str(), &err, true);
     if (Error::isError(err, SysError::domain(), ENOENT)) {
       // try resources
+      err.reset();
       uiConfig = JsonObject::objFromFile(resourcePath(UICONFIG_FILE_NAME).c_str(), &err, true);
     }
     if (uiConfig && Error::isOK(err)) {

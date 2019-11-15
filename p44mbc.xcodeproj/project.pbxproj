@@ -500,7 +500,6 @@
 		EDB5B3EC23226DBA00A0C84D /* timeutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeutils.cpp; sourceTree = "<group>"; };
 		EDB5B3ED23226DBB00A0C84D /* analogio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = analogio.cpp; sourceTree = "<group>"; };
 		EDB5B3EE23226DBB00A0C84D /* expressions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expressions.cpp; sourceTree = "<group>"; };
-		EDB5B3EF23226DBC00A0C84D /* p44utils_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = p44utils_config.hpp; sourceTree = "<group>"; };
 		EDB5B3F023226DBC00A0C84D /* pwm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pwm.cpp; sourceTree = "<group>"; };
 		EDB5B3F123226DBC00A0C84D /* timeutils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeutils.hpp; sourceTree = "<group>"; };
 		EDB5B3F223226DBD00A0C84D /* pwm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pwm.hpp; sourceTree = "<group>"; };
@@ -570,7 +569,6 @@
 			isa = PBXGroup;
 			children = (
 				ED93DFF21D256BD400D6AF0A /* p44utils_common.hpp */,
-				EDB5B3EF23226DBC00A0C84D /* p44utils_config.hpp */,
 				ED5372E11DFCAD3C0066FF5A /* thirdparty */,
 				EDB5B3ED23226DBB00A0C84D /* analogio.cpp */,
 				EDB5B3F323226DBD00A0C84D /* analogio.hpp */,
