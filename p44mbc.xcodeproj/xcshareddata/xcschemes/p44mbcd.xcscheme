@@ -85,6 +85,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--datapath /Volumes/CaseSens/openwrt/feeds/p44i/p44mbc-config/files/resources"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "--resourcepath /Volumes/CaseSens/openwrt/feeds/p44i/p44mbc-config/files/resources"
             isEnabled = "YES">
          </CommandLineArgument>

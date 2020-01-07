@@ -12,6 +12,8 @@
 #include "modbus.hpp"
 #include "utils.hpp"
 #include "jsonobject.hpp"
+#include "analogio.hpp"
+#include "gpio.hpp"
 
 #if ENABLE_UBUS
   #include "ubus.hpp"
@@ -34,6 +36,11 @@
 
 #define FATAL_ERROR_IMG "errorscreen.png"
 
+#define FILENO_FIRMWARE 1
+#define FILENO_LOG 90
+#define FILENO_UICONFIG 100
+#define FILENO_IMAGES_BASE 200
+#define MAX_IMAGES 100
 
 
 using namespace p44;
@@ -52,12 +59,6 @@ static const struct blobmsg_policy p44mbcapi_policy[] = {
 };
 #endif
 
-
-// FIXME: ugly test code only -> remove
-// littlevGL statics
-static lv_obj_t* plusButton = NULL;
-static lv_obj_t* minusButton = NULL;
-static lv_obj_t* dispLabel = NULL;
 
 class P44mbcd : public CmdLineApp
 {
@@ -80,6 +81,9 @@ class P44mbcd : public CmdLineApp
   int writtenAddress;
   bool writtenBit;
 
+  // LCD backlight
+  AnalogIoPtr backlight;
+
 public:
 
   P44mbcd()
@@ -98,7 +102,9 @@ public:
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
       { 0  , "bytetime",        true,  "time;custom time per byte in nS" },
       { 0  , "slave",           true,  "slave;use this slave by default" },
+      { 0  , "slaveswitch",     true,  "gpiono:numgpios;use GPIOs for slave address DIP switch, first GPIO=A0" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
+      { 0  , "backlight",       true,  "pinspec;analog output for LCD backlight control" },
       #if MOUSE_CURSOR_SUPPORT
       { 0  , "mousecursor",     false, "show mouse cursor" },
       #endif
@@ -281,7 +287,22 @@ public:
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
     }
+    // slave address
     int slave = 1;
+    // - can be sampled from GPIOs
+    string dipcfg;
+    if (getStringOption("slaveswitch", dipcfg)) {
+      int firstGpio, numGpios;
+      slave = 0;
+      if (sscanf(dipcfg.c_str(), "%d:%d", &firstGpio, &numGpios)==2) {
+        for (int bitpos=0; bitpos<numGpios; bitpos++) {
+          IOPinPtr switchBit = IOPinPtr(new GpioPin(firstGpio+bitpos, false, false));
+          if (switchBit->getState()==0) slave |= 1<<bitpos;
+        }
+        LOG(LOG_NOTICE, "Modbus slave address %d read from DIP-Switch (GPIO%d..%d)", slave, firstGpio, firstGpio+numGpios-1);
+      }
+    }
+    // - can be overridden
     getIntOption("slave", slave);
     modBus.setSlaveAddress(slave);
     modBus.setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
@@ -297,7 +318,7 @@ public:
     // Files
     // - firmware
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      1, // firmware
+      FILENO_FIRMWARE,
       9, // max segs
       1, // single file
       true, // p44 header
@@ -307,7 +328,7 @@ public:
     )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFWReceivedHandler, this, _1, _2, _3));
     // - log
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      90, // log
+      FILENO_LOG,
       9, // max segs
       1, // single file
       true, // p44 header
@@ -316,19 +337,19 @@ public:
     )));
     // - json config
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      100, // log
+      FILENO_UICONFIG,
       1, // max segs
       1, // single file
       true, // p44 header
       UICONFIG_FILE_NAME,
       false, // R/W
       dataPath()+"/" // write to temp, then copy to data path
-    )));
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
     // - UI images
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      200, // images
+      FILENO_IMAGES_BASE,
       1, // max segs
-      100, // 100 files allowed
+      MAX_IMAGES, // number of files allowed
       true, // p44 header
       "image%03d.png",
       false, // R/W
@@ -340,12 +361,12 @@ public:
       terminateAppWith(err->withPrefix("Failed to start modbus slave server: "));
       return;
     }
+    // LCD backlight
+    string blspec = "missing";
+    getStringOption("backlight", blspec);
+    backlight = AnalogIoPtr(new AnalogIo(blspec.c_str(), true, 100));
     // start littlevGL
     initLvgl();
-
-//    // start app
-//    if (!isTerminated())
-//      initApp();
   }
 
 
@@ -368,13 +389,16 @@ public:
       return;
     }
     LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
-    // TODO: now act depending on what file we've got
+    if (aFileNo==FILENO_UICONFIG) {
+      LOG(LOG_NOTICE, "new uiconfig received -> restart daemon");
+      terminateApp(EXIT_SUCCESS);
+    }
   }
 
 
   void modbusFWReceivedHandler(uint16_t aFileNo, const string aFinalPath, const string aTempPath)
   {
-    // firmware received, just move/ename it
+    // firmware received, just move/rename it
     if (!aTempPath.empty()) {
       MainLoop::currentMainLoop().fork_and_system(
         boost::bind(&P44mbcd::modbusFWStored, this, aFileNo, aFinalPath, _1),
@@ -472,6 +496,10 @@ public:
       bool inp = aArgs[1].boolValue(); // null or false means non-input
       aResult.setBool(modBus.getBit(addr, inp));
     }
+    else if (aFunc=="backlight" && aArgs.size()==1) {
+      // backlight(percentage)
+      backlight->setValue(aArgs[0].numValue());
+    }
     else {
       // unknown function
       return false;
@@ -498,21 +526,22 @@ public:
   // MARK: - littlevGL
 
 
-  #define DEMOAPP 0
-
   void initLvgl()
   {
     LOG(LOG_NOTICE, "initializing littlevGL");
     LvGL::lvgl().init(getOption("mousecursor"));
-    #if DEMOAPP
-    // - create demo
-    testscreen_create();
-    if (dispLabel) lv_label_set_text(dispLabel, "Ready");
-    #else
-    // real app UI
+    // create app UI
     // - install app specific script functions
     ui.uiScriptContext.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
-    // - get config
+    // - init display
+    ui.initForDisplay(lv_disp_get_default());
+    // - load display config
+    configUi();
+  }
+
+
+  void configUi()
+  {
     ErrorPtr err;
     JsonObjectPtr uiConfig = JsonObject::objFromFile(dataPath(UICONFIG_FILE_NAME).c_str(), &err, true);
     if (Error::isError(err, SysError::domain(), ENOENT)) {
@@ -524,14 +553,13 @@ public:
       LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
       err = processModbusConfig(uiConfig);
       if (Error::isOK(err)) {
-        err = ui.initForDisplay(lv_disp_get_default(), uiConfig);
+        err = ui.setConfig(uiConfig);
       }
     }
     if (Error::notOK(err)) {
       LOG(LOG_ERR, "Failed creating UI from config: %s", Error::text(err));
       fatalErrorScreen(string_format("UI config error: %s", Error::text(err)));
     }
-    #endif
   }
 
 
@@ -555,99 +583,6 @@ public:
     lv_scr_load(errorScreen);
   }
 
-
-  #if DEMOAPP
-
-  #define DEMOSTUFF 1
-
-  void testscreen_create()
-  {
-    // theme
-    lv_theme_t* th = lv_theme_material_init(10, NULL);
-    lv_theme_set_current(th);
-    // wallpaper
-    lv_obj_t * wp = lv_img_create(lv_scr_act(), NULL);
-
-    lv_img_set_src(wp, dataPath("testimg.png").c_str());
-
-    lv_obj_set_width(wp, LV_HOR_RES * 4);
-    lv_obj_set_protect(wp, LV_PROTECT_POS);
-    // styles
-    // - button background
-    static lv_style_t style_tv_btn_bg;
-    lv_style_copy(&style_tv_btn_bg, &lv_style_plain);
-    style_tv_btn_bg.body.main_color = lv_color_hex(0x487fb7);
-    style_tv_btn_bg.body.grad_color = lv_color_hex(0x487fb7);
-    style_tv_btn_bg.body.padding.top = 0;
-    style_tv_btn_bg.body.padding.bottom = 0;
-    // - button released
-    static lv_style_t style_tv_btn_rel;
-    lv_style_copy(&style_tv_btn_rel, &lv_style_btn_rel);
-    style_tv_btn_rel.body.border.width = 0;
-    // - button pressed
-    static lv_style_t style_tv_btn_pr;
-    lv_style_copy(&style_tv_btn_pr, &lv_style_btn_pr);
-    style_tv_btn_pr.body.radius = 0;
-    style_tv_btn_pr.body.opa = LV_OPA_50;
-    style_tv_btn_pr.body.main_color = LV_COLOR_WHITE;
-    style_tv_btn_pr.body.grad_color = LV_COLOR_WHITE;
-    style_tv_btn_pr.body.border.width = 0;
-    style_tv_btn_pr.text.color = LV_COLOR_GRAY;
-
-    #if DEMOSTUFF
-    // The demo setup
-    lv_obj_t *lbl; // temp
-    lv_obj_t *parent = lv_scr_act();
-
-
-    plusButton = lv_btn_create(parent, NULL);
-    lv_cont_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT); /*Enable resizing horizontally and vertically*/
-    lv_obj_set_user_data(plusButton, (void *)1);   /*Set a unique number for the button*/
-    lv_obj_set_event_cb(plusButton, btn_event_handler);
-    lbl = lv_label_create(plusButton, NULL);
-    lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
-    lv_label_set_text(lbl, "+ Plus +");
-    lv_obj_set_width(plusButton, lv_obj_get_width(parent)-20); // expand to full width
-    lv_obj_align(plusButton, NULL, LV_ALIGN_IN_TOP_MID, 0, 10);
-
-    minusButton = lv_btn_create(parent, plusButton); // mostly same
-    lv_obj_set_user_data(minusButton, (void *)2);   /*Set a unique number for the button*/
-    lbl = lv_label_create(minusButton, NULL);
-    lv_btn_set_fit2(plusButton, LV_FIT_NONE, LV_FIT_TIGHT);
-    lv_label_set_text(lbl, "- Minus -");
-    lv_obj_set_width(minusButton, lv_obj_get_width(parent)-20); // expand to full width
-    lv_obj_align(minusButton, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, -10);
-
-    dispLabel = lv_label_create(parent, NULL);
-    static lv_style_t dispLabelStyle;
-    lv_style_copy(&dispLabelStyle, &lv_style_plain);
-    dispLabelStyle.text.font = &lv_font_roboto_28;
-    lv_obj_set_style(dispLabel, &dispLabelStyle);
-    lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_CROP);
-    lv_label_set_recolor(dispLabel, true);
-    lv_label_set_align(dispLabel, LV_LABEL_ALIGN_CENTER);
-    lv_label_set_text(dispLabel, "-");
-    lv_label_set_long_mode(dispLabel, LV_LABEL_LONG_SROLL_CIRC);
-    lv_obj_set_width(dispLabel, lv_obj_get_width(parent)); // expand to full width
-    lv_obj_set_height(dispLabel, 70);
-    lv_obj_align(dispLabel, NULL, LV_ALIGN_CENTER, 0, 0);
-
-    #endif
-  }
-
-
-  static void btn_event_handler(lv_obj_t * btn, lv_event_t event)
-  {
-    if (event==LV_EVENT_RELEASED) {
-      intptr_t id = (intptr_t)lv_obj_get_user_data(btn);
-      char buf[32];
-      snprintf(buf, 32, "Button %ld", id);
-      lv_label_set_text(dispLabel, buf);
-      return;
-    }
-  }
-
-  #endif // DEMOAPP
 
 };
 
