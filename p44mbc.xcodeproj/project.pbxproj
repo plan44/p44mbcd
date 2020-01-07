@@ -142,6 +142,7 @@
 		EDB5B3F623226DBE00A0C84D /* analogio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3ED23226DBB00A0C84D /* analogio.cpp */; };
 		EDB5B3F723226DBE00A0C84D /* expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EE23226DBB00A0C84D /* expressions.cpp */; };
 		EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3F023226DBC00A0C84D /* pwm.cpp */; };
+		EDBE611C23C4BFDD00C2BA4E /* lv_async.c in Sources */ = {isa = PBXBuildFile; fileRef = EDBE611B23C4BFDD00C2BA4E /* lv_async.c */; };
 		EDDE42C217F41A36005B97A0 /* macaddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDDE42C117F41A36005B97A0 /* macaddress.cpp */; };
 		EDDEE88617FC6BC700A65599 /* gpio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB2844B1733DE2900EAE5DE /* gpio.cpp */; };
 		EDDEE88817FC6BE100A65599 /* iopin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED369998178D6A2C00376405 /* iopin.cpp */; };
@@ -510,6 +511,8 @@
 		EDB5B3FB2322BF0000A0C84D /* testimg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = testimg.c; sourceTree = "<group>"; };
 		EDB5BC1917B50E79004DB38D /* fdcomm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fdcomm.cpp; sourceTree = "<group>"; };
 		EDB5BC1A17B50E79004DB38D /* fdcomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = fdcomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		EDBE611A23C4BFDC00C2BA4E /* lv_async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_async.h; sourceTree = "<group>"; };
+		EDBE611B23C4BFDD00C2BA4E /* lv_async.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_async.c; sourceTree = "<group>"; };
 		EDC1166C177EDDDF00F27115 /* consolekey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = consolekey.cpp; sourceTree = "<group>"; };
 		EDC1166D177EDDDF00F27115 /* consolekey.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = consolekey.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		EDCFE85E17203E47001D35F3 /* fnv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnv.cpp; sourceTree = "<group>"; };
@@ -800,6 +803,8 @@
 		ED9D39B32276F0A4009B43A8 /* lv_misc */ = {
 			isa = PBXGroup;
 			children = (
+				EDBE611B23C4BFDD00C2BA4E /* lv_async.c */,
+				EDBE611A23C4BFDC00C2BA4E /* lv_async.h */,
 				ED9D39CC2276F0A4009B43A8 /* lv_anim.c */,
 				ED9D39BA2276F0A4009B43A8 /* lv_anim.h */,
 				ED9D39C42276F0A4009B43A8 /* lv_area.c */,
@@ -1190,6 +1195,7 @@
 				ED9D3B062276F0C4009B43A8 /* fbdev.c in Sources */,
 				ED9D3A882276F0A5009B43A8 /* lv_anim.c in Sources */,
 				EDF356D622DDCAC700C4110C /* lv_utils.c in Sources */,
+				EDBE611C23C4BFDD00C2BA4E /* lv_async.c in Sources */,
 				ED9D3AC22276F0A5009B43A8 /* lv_ddlist.c in Sources */,
 				EDDEE88A17FC6ED400A65599 /* i2c.cpp in Sources */,
 				ED9D3A762276F0A5009B43A8 /* lv_refr.c in Sources */,
@@ -1384,7 +1390,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/opt/openssl/lib,
-					"/usr/local/Cellar/openssl@1.1/1.1.1d/lib",
 				);
 				OTHER_LDFLAGS = (
 					"${inherited}",
@@ -1427,7 +1432,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/opt/openssl/lib,
-					"/usr/local/Cellar/openssl@1.1/1.1.1d/lib",
 				);
 				OTHER_LDFLAGS = (
 					"${inherited}",

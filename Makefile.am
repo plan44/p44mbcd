@@ -76,6 +76,7 @@ LVGL_SOURCES = \
   src/lvgl/src/lv_hal/lv_hal_tick.c \
   src/lvgl/src/lv_misc/lv_anim.c \
   src/lvgl/src/lv_misc/lv_area.c \
+  src/lvgl/src/lv_misc/lv_async.c \
   src/lvgl/src/lv_misc/lv_circ.c \
   src/lvgl/src/lv_misc/lv_color.c \
   src/lvgl/src/lv_misc/lv_fs.c \
