@@ -41,13 +41,16 @@ public:
     const char *usageText =
       "Usage: %1$s [options] <command> [<commandarg>...]\n"
       "Commands:\n"
-      "  readreg <regno> [<count>]             : read from modbus register(s)\n"
-      "  writereg <regno> <value>              : write value to modbus register\n"
+      "  read <addr> [<count>]                 : read from modbus register(s) / bit(s)\n"
+      "  write <addr> <value>                  : write value to modbus register/bit\n"
+      "  monitor <addr> [<interval in ms>]     : monitor (constantly poll) register/bit, default interval = 200mS\n"
       "  readinfo                              : read slave info\n"
       "  scan                                  : scan for slaves on the bus by querying slave info\n"
       "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n"
       "  getfile <path> <fileno>               : get file from slave\n";
     const CmdLineOptionDescriptor options[] = {
+      { 'i', "input",           false, "read input-only register / bit" },
+      { 'b', "bit",             false, "access bit (not register)" },
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
@@ -111,47 +114,71 @@ public:
   {
     string cmd;
     if (!getStringArgument(0, cmd)) return TextError::err("missing command");
-    if (cmd=="readreg") {
-      int reg;
-      if (!getIntArgument(1, reg) || reg<0 || reg>0xFFFF) return TextError::err("missing or invalid register address");
+    bool isInput = getOption("input");
+    bool isBit = getOption("bit");
+    if (cmd=="read") {
+      ErrorPtr err;
+      int addr;
+      if (!getIntArgument(1, addr) || addr<0 || addr>0xFFFF) return TextError::err("missing or invalid address");
       int cnt = 1;
-      if (getIntArgument(2, cnt) && (cnt<1 || cnt>125)) return TextError::err("invalid register count (1..125 allowed)");
-      uint16_t vals[125];
-      ErrorPtr err = modBus.readRegisters(reg, cnt, vals);
-      if (Error::isOK(err)) {
-        for (int i=0; i<cnt; i++) {
-          printf("Register %5d = %5d (0x%04x)\n", reg+i, vals[i], vals[i]);
+      if (getIntArgument(2, cnt) && (cnt<1 || cnt>125)) return TextError::err("invalid count (1..125 allowed)");
+      if (isBit) {
+        uint8_t bits[125];
+        ErrorPtr err = modBus.readBits(addr, cnt, bits, isInput);
+        if (Error::isOK(err)) {
+          for (int i=0; i<cnt; i++) {
+            printf("%s bit %5d = %d\n", isInput ? "Input" : "Coil", addr+i, bits[i]);
+          }
+        }
+      }
+      else {
+        uint16_t vals[125];
+        err = modBus.readRegisters(addr, cnt, vals, isInput);
+        if (Error::isOK(err)) {
+          for (int i=0; i<cnt; i++) {
+            printf("%s register %5d = %5d (0x%04x)\n", isInput ? "Input" : "R/W", addr+i, vals[i], vals[i]);
+          }
         }
       }
       return err;
     }
-    else if (cmd=="writereg") {
-      int reg;
-      if (!getIntArgument(1, reg) || reg<0 || reg>0xFFFF) return TextError::err("missing or invalid register address");
-      int val;
-      if (!getIntArgument(2, val) || val<0 || val>0xFFFF) return TextError::err("missing or invalid register value");
-      return modBus.writeRegister(reg, (uint16_t)val);
-    }
-    else if (cmd=="readbit") {
-      int reg;
-      if (!getIntArgument(1, reg) || reg<0 || reg>0xFFFF) return TextError::err("missing or invalid bit address");
-      int cnt = 1;
-      if (getIntArgument(2, cnt) && (cnt<1 || cnt>125)) return TextError::err("invalid bit count (1..125 allowed)");
-      uint16_t vals[125];
-      ErrorPtr err = modBus.readRegisters(reg, cnt, vals);
-      if (Error::isOK(err)) {
-        for (int i=0; i<cnt; i++) {
-          printf("Register %5d = %5d (0x%04x)\n", reg+i, vals[i], vals[i]);
+    else if (cmd=="monitor") {
+      int addr;
+      if (!getIntArgument(1, addr) || addr<0 || addr>0xFFFF) return TextError::err("missing or invalid address");
+      int interval = 200;
+      if (getIntArgument(2, interval) && (interval<10)) return TextError::err("invalid interval (>=10mS allowed)");
+      while (!isTerminated()) {
+        ErrorPtr err;
+        if (isBit) {
+          bool bitVal;
+          err = modBus.readBit(addr, bitVal, isInput);
+          if (Error::isOK(err)) printf("%s bit %4d: %d\r", isInput ? "Input" : "Coil", addr, bitVal);
         }
+        else {
+          uint16_t regVal;
+          err = modBus.readRegister(addr, regVal, isInput);
+          if (Error::isOK(err)) printf("%s Register %4d: %5hd (0x%04hX)\r", isInput ? "Input" : "R/W", addr, regVal, regVal);
+        }
+        if (Error::notOK(err)) {
+          printf("Register %4d: error: %s\r", addr, err->text());
+        }
+        fflush(stdout);
+        MainLoop::sleep(interval*MilliSecond);
       }
-      return err;
+      printf("\r\n");
+      return ErrorPtr();
     }
-    else if (cmd=="writebit") {
-      int reg;
-      if (!getIntArgument(1, reg) || reg<0 || reg>0xFFFF) return TextError::err("missing or invalid bit address");
+    else if (cmd=="write") {
+      int addr;
+      if (!getIntArgument(1, addr) || addr<0 || addr>0xFFFF) return TextError::err("missing or invalid address");
       int val;
-      if (!getIntArgument(2, val) || val<0 || val>1) return TextError::err("missing or invalid bit value");
-      return modBus.writeRegister(reg, (uint16_t)val);
+      if (!getIntArgument(2, val) || val<0 || val>0xFFFF) return TextError::err("missing or invalid value");
+      if (isBit) {
+        return modBus.writeBit(addr, (bool)val);
+      }
+      else {
+        return modBus.writeRegister(addr, (uint16_t)val);
+      }
     }
     else if (cmd=="readinfo") {
       string id;
