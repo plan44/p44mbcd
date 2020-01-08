@@ -51,6 +51,7 @@ public:
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
+      { 0  , "rs485rxenable",   true,  "pinspec;a digital output pin specification for RX input enable" },
       { 0  , "bytetime",        true,  "time;custom time per byte in nS" },
       { 0  , "stdmodbusfiles",  false, "disable p44 file handling, just use standard modbus file record access" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
@@ -85,7 +86,13 @@ public:
     getIntOption("rs485txdelay", txDelayUs);
     int byteTimeNs = 0;
     getIntOption("bytetime", byteTimeNs);
-    ErrorPtr err = modBus.setConnectionSpecification(mbconn.c_str(), DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS, txen.c_str(), txDelayUs, byteTimeNs);
+    ErrorPtr err = modBus.setConnectionSpecification(
+      mbconn.c_str(),
+      DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
+      txen.c_str(), txDelayUs,
+      getOption("rs485rxenable"), // can be NULL if there is no separate rx enable
+      byteTimeNs
+    );
     if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
       return;
