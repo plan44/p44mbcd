@@ -33,3 +33,5 @@ p44mbcd
 config.rpath
 ipkg-*/
 p44mbutil
+*.DS_Store
+p44mbutil.exe

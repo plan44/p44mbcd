@@ -1,7 +1,15 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
+if P44_BUILD_WIN
+
+bin_PROGRAMS = p44mbutil
+
+else
+
 bin_PROGRAMS = p44mbcd p44mbutil
+
+endif
 
 # embedded libmodbus
 if EMBEDDED_LIBMODBUS
@@ -157,7 +165,11 @@ LVGL_FLAGS = \
 
 
 
+
+
 # p44mbcd
+
+if !P44_BUILD_WIN
 
 if DEBUG
 p44mbcd_DEBUG = -D DEBUG=1
@@ -263,6 +275,7 @@ p44mbcd_SOURCES = \
   src/p44utils_config.hpp \
   src/p44mbcd_main.cpp
 
+endif
 
 # p44mbutil
 
@@ -273,6 +286,11 @@ endif
 if P44_BUILD_OW
 p44mbutil_PLATFORM = -D P44_BUILD_OW=1
 endif
+
+if P44_BUILD_WIN
+p44mbutil_PLATFORM = -D P44_BUILD_WIN=1 -static-libgcc -static-libstdc++
+endif
+
 
 # main
 
