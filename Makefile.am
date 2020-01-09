@@ -288,7 +288,8 @@ p44mbutil_PLATFORM = -D P44_BUILD_OW=1
 endif
 
 if P44_BUILD_WIN
-p44mbutil_PLATFORM = -D P44_BUILD_WIN=1 -static-libgcc -static-libstdc++
+p44mbutil_PLATFORM = -D P44_BUILD_WIN=1 -static -static-libgcc -static-libstdc++
+p44mbutil_LDFLAGS = -static -static-libgcc -static-libstdc++
 endif
 
 
