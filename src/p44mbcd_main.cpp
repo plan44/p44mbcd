@@ -78,19 +78,29 @@ class P44mbcd : public CmdLineApp
   MLTicket appTicket;
 
   // scripting
-  ScriptExecutionContext writeHandlerScript;
-  int writtenAddress;
-  bool writtenBit;
+  LvGLUiScriptContext initScript;
+  LvGLUiScriptContext writeHandlerScript;
+  LvGLUiScriptContext readHandlerScript;
+  int accessAddress;
+  bool accessBit;
+  bool accessInput;
+
 
   // LCD backlight
   AnalogIoPtr backlight;
 
 public:
 
-  P44mbcd()
+  P44mbcd() :
+    writeHandlerScript(ui),
+    readHandlerScript(ui),
+    initScript(ui)
   {
-    modBus.isMemberVariable();
     ui.isMemberVariable();
+    modBus.isMemberVariable();
+    initScript.isMemberVariable();
+    writeHandlerScript.isMemberVariable();
+    readHandlerScript.isMemberVariable();
   }
 
   virtual int main(int argc, char **argv)
@@ -306,7 +316,7 @@ public:
       if (sscanf(dipcfg.c_str(), "%d:%d", &firstGpio, &numGpios)==2) {
         for (int bitpos=0; bitpos<numGpios; bitpos++) {
           IOPinPtr switchBit = IOPinPtr(new GpioPin(firstGpio+bitpos, false, false));
-          if (switchBit->getState()==0) slave |= 1<<bitpos;
+          if (switchBit->getState()==0) slave |= 1<<bitpos; // inverted
         }
         LOG(LOG_NOTICE, "Modbus slave address %d read from DIP-Switch (GPIO%d..%d)", slave, firstGpio, firstGpio+numGpios-1);
       }
@@ -376,6 +386,8 @@ public:
     backlight = AnalogIoPtr(new AnalogIo(blspec.c_str(), true, 100));
     // start littlevGL
     initLvgl();
+    // call init script
+    initScript.execute(true);
   }
 
 
@@ -440,13 +452,14 @@ public:
       val, val
     );
     // report write access
+    accessAddress = aAddress;
+    accessBit = aBit;
+    accessInput = aInput;
     if (aWrite) {
-      writtenAddress = aAddress;
-      writtenBit = aBit;
       writeHandlerScript.execute(true);
     }
-    if (aAddress==128) {
-      return TextError::err("Special register 128 not yet implemented");
+    else {
+      readHandlerScript.execute(true);
     }
     return ErrorPtr();
   }
@@ -456,13 +469,15 @@ public:
 
   bool modbusFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
   {
-    if (aFunc=="writtenreg" && aArgs.size()==0) {
-      // writtenreg() returns written register number or null
-      if (!writtenBit) aResult.setNumber(writtenAddress);
+    if (aFunc=="reg" && aArgs.size()<=1) {
+      // reg([input]) returns accessed register number or null
+      bool inp = aArgs[2].boolValue(); // null or false means non-input
+      if (!accessBit && inp==accessInput) aResult.setNumber(accessAddress);
     }
-    else if (aFunc=="writtenbit" && aArgs.size()==0) {
-      // writtenreg() returns written bit number or null
-      if (writtenBit) aResult.setNumber(writtenAddress);
+    else if (aFunc=="bit" && aArgs.size()<=1) {
+      // bit([input]) returns accessed bit number or null
+      bool inp = aArgs[2].boolValue(); // null or false means non-input
+      if (accessBit && inp==accessInput) aResult.setNumber(accessAddress);
     }
     else {
       return false;
@@ -526,6 +541,12 @@ public:
       if (mbCfg->get("writehandler", o)) {
         writeHandlerScript.setCode(o->stringValue());
         writeHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
+        writeHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+      }
+      if (mbCfg->get("readhandler", o)) {
+        readHandlerScript.setCode(o->stringValue());
+        readHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
+        readHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
       }
     }
     return err;
@@ -562,6 +583,14 @@ public:
       LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
       err = processModbusConfig(uiConfig);
       if (Error::isOK(err)) {
+        // check for init script
+        JsonObjectPtr o;
+        if (uiConfig->get("initscript", o)) {
+          initScript.setCode(o->stringValue());
+          initScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
+          initScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+        }
+        // read UI config
         err = ui.setConfig(uiConfig);
       }
     }
