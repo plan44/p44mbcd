@@ -60,6 +60,110 @@ static const struct blobmsg_policy p44mbcapi_policy[] = {
 #endif
 
 
+class BackLightController : public P44Obj
+{
+  const MLMicroSeconds fadeStep = 20 * MilliSecond;
+
+  AnalogIoPtr backlightOutput; ///< the backlight output
+  bool active; ///< set if in active mode
+  double activeBrightness; ///< brightness when active
+  double standbyBrightness; ///< brightness when in standby
+  double currentBrightness; ///< (possibly intermediate) current brightness state
+
+  MLMicroSeconds fadeTime; ///< fade time
+
+  MLTicket standbyTicket; ///< timer for switch to standby brightness
+  MLTicket fadeTicket; ///< timer for smooth transitions
+
+
+public:
+
+  BackLightController(AnalogIoPtr aBacklightOutput) :
+    backlightOutput(aBacklightOutput)
+  {
+    activeBrightness = 100;
+    standbyBrightness = 30;
+    currentBrightness = 0;
+    fadeTime = 1*Second;
+    active = true;
+    updateBacklight();
+  }
+
+
+  void setActiveBrightness(double aBrightness)
+  {
+    if (aBrightness!=activeBrightness) {
+      activeBrightness = aBrightness;
+      updateBacklight();
+    }
+  }
+
+  void setFadeTime(MLMicroSeconds aFadeTime)
+  {
+    fadeTime = aFadeTime;
+  }
+
+
+  void setStandbyBrightness(double aBrightness)
+  {
+    if (aBrightness!=standbyBrightness) {
+      standbyBrightness = aBrightness;
+      updateBacklight();
+    }
+  }
+
+
+  void setActive(bool aActive)
+  {
+    if (aActive!=active) {
+      active = aActive;
+      updateBacklight();
+    }
+  }
+
+
+  void updateBacklight()
+  {
+    if (active) fadeTo(activeBrightness, 0);
+    else fadeTo(standbyBrightness, fadeTime);
+  }
+
+
+  void fadeTo(double aTo, MLMicroSeconds aFadeTime)
+  {
+    if(fabs(currentBrightness - aTo) < 1e-4) return;
+    if (aTo!=currentBrightness) {
+      MLMicroSeconds numSteps = aFadeTime / fadeStep;
+      fadeTicket.executeOnce(boost::bind(&BackLightController::updateFading, this, _1, (aTo-currentBrightness) / (numSteps>0 ? numSteps : 1), aTo));
+    }
+  }
+
+  void updateFading(MLTimer &aTimer, double aDv, double aTo)
+  {
+    double newValue = currentBrightness + aDv;
+    bool done = false;
+    if((aDv > 0 && newValue >= aTo) || (aDv < 0 && newValue <= aTo)) {
+      newValue = aTo;
+      done = true;
+    }
+    currentBrightness = newValue;
+    LOG(LOG_DEBUG, "New brightness value = %.1f", currentBrightness);
+    setBackLight(currentBrightness);
+    if(!done) MainLoop::currentMainLoop().retriggerTimer(aTimer, fadeStep);
+  }
+
+
+  void setBackLight(double aBrightness)
+  {
+    backlightOutput->setValue(100*((exp(aBrightness*4/100)-1)/(exp(4)-1)));
+  }
+
+
+};
+typedef boost::intrusive_ptr<BackLightController> BackLightControllerPtr;
+
+
+
 class P44mbcd : public CmdLineApp
 {
   typedef CmdLineApp inherited;
@@ -75,19 +179,22 @@ class P44mbcd : public CmdLineApp
 
   // app
   LvGLUi ui;
-  MLTicket appTicket;
+  bool active;
+  MLMicroSeconds activityTimeout; ///< inactivity time that triggers activityTimeoutScript
+  MLMicroSeconds backlightTimeout; ///< inactivity time that triggers backlight standby
 
   // scripting
   string initScript;
-  string writeHandlerScript;
-  string readHandlerScript;
+  string modbusWriteScript;
+  string modbusReadScript;
+  string activityTimeoutScript;
+  string activationScript;
   int accessAddress;
   bool accessBit;
   bool accessInput;
 
-
-  // LCD backlight
-  AnalogIoPtr backlight;
+  // LCD backlight control
+  BackLightControllerPtr backlight;
 
 public:
 
@@ -95,6 +202,9 @@ public:
   {
     ui.isMemberVariable();
     modBus.isMemberVariable();
+    active = true;
+    activityTimeout = Never;
+    backlightTimeout = Never;
   }
 
   virtual int main(int argc, char **argv)
@@ -377,11 +487,34 @@ public:
     // LCD backlight
     string blspec = "missing";
     getStringOption("backlight", blspec);
-    backlight = AnalogIoPtr(new AnalogIo(blspec.c_str(), true, 100));
+    AnalogIoPtr backlightOutput = AnalogIoPtr(new AnalogIo(blspec.c_str(), true, 100));
+    backlight = BackLightControllerPtr(new BackLightController(backlightOutput));
     // start littlevGL
     initLvgl();
+    LvGL::lvgl().setTaskCallback(boost::bind(&P44mbcd::taskCallBack, this));
     // call init script
     ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), initScript);
+  }
+
+
+  void taskCallBack()
+  {
+    MLMicroSeconds inactivetime = (MLMicroSeconds)lv_disp_get_inactive_time(NULL)*MilliSecond;
+    // backlight standby
+    if (backlight) backlight->setActive(backlightTimeout==0 || inactivetime<backlightTimeout);
+    // inactivity script
+    if (activityTimeout && inactivetime>activityTimeout) {
+      if (active) {
+        active = false;
+        ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), activityTimeoutScript);
+      }
+    }
+    else {
+      if (!active) {
+        active = true;
+        ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), activationScript);
+      }
+    }
   }
 
 
@@ -450,10 +583,10 @@ public:
     accessBit = aBit;
     accessInput = aInput;
     if (aWrite) {
-      ui.queueGlobalScript(writeHandlerScript);
+      ui.queueGlobalScript(modbusWriteScript);
     }
     else {
-      ui.queueGlobalScript(readHandlerScript);
+      ui.queueGlobalScript(modbusReadScript);
     }
     return ErrorPtr();
   }
@@ -501,15 +634,36 @@ public:
       bool inp = aArgs[1].boolValue(); // null or false means non-input
       aResult.setNumber(modBus.getReg(addr, inp));
     }
+    else if (aFunc=="modbus_getsreg" && aArgs.size()>=1 && aArgs.size()<=2) {
+      // modbus_getsreg(regaddr [,input])
+      int addr = aArgs[0].intValue();
+      bool inp = aArgs[1].boolValue(); // null or false means non-input
+      aResult.setNumber((int16_t)modBus.getReg(addr, inp));
+    }
     else if (aFunc=="modbus_getbit" && aArgs.size()>=1 && aArgs.size()<=2) {
       // modbus_getbit(regaddr [,input])
       int addr = aArgs[0].intValue();
       bool inp = aArgs[1].boolValue(); // null or false means non-input
       aResult.setBool(modBus.getBit(addr, inp));
     }
-    else if (aFunc=="backlight" && aArgs.size()==1) {
-      // backlight(percentage)
-      backlight->setValue(aArgs[0].numValue());
+    else if (aFunc=="activitytimeout" && aArgs.size()==1) {
+      activityTimeout = aArgs[0].numValue()*Second;
+    }
+    else if (aFunc=="backlight" && (aArgs.size()==1 || aArgs.size()==3 || aArgs.size()==4)) {
+      // backlight(active, [standby, timeout, [, fadetime]])
+      if (backlight) {
+        backlight->setActiveBrightness(aArgs[0].numValue());
+        if (aArgs.size()>=3) {
+          backlight->setStandbyBrightness(aArgs[1].numValue());
+          backlightTimeout = aArgs[2].numValue()*Second;
+          if (aArgs.size()>=4) {
+            backlight->setFadeTime(aArgs[3].numValue()*Second);
+          }
+        }
+      }
+    }
+    else if (aFunc=="exit" && aArgs.size()==1) {
+      terminateApp(aArgs[0].numValue());
     }
     else {
       // unknown function
@@ -526,10 +680,10 @@ public:
     if (mbCfg) {
       JsonObjectPtr o;
       if (mbCfg->get("writehandler", o)) {
-        writeHandlerScript = o->stringValue();
+        modbusWriteScript = o->stringValue();
       }
       if (mbCfg->get("readhandler", o)) {
-        readHandlerScript = o->stringValue();
+        modbusReadScript = o->stringValue();
       }
     }
     return err;
@@ -566,10 +720,16 @@ public:
       LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
       err = processModbusConfig(uiConfig);
       if (Error::isOK(err)) {
-        // check for init script
+        // check for global UI script
         JsonObjectPtr o;
         if (uiConfig->get("initscript", o)) {
           initScript = o->stringValue();
+        }
+        if (uiConfig->get("activitytimeoutscript", o)) {
+          activityTimeoutScript = o->stringValue();
+        }
+        if (uiConfig->get("activationscript", o)) {
+          activationScript = o->stringValue();
         }
         // read UI config
         err = ui.setConfig(uiConfig);
