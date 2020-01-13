@@ -78,9 +78,9 @@ class P44mbcd : public CmdLineApp
   MLTicket appTicket;
 
   // scripting
-  LvGLUiScriptContext initScript;
-  LvGLUiScriptContext writeHandlerScript;
-  LvGLUiScriptContext readHandlerScript;
+  string initScript;
+  string writeHandlerScript;
+  string readHandlerScript;
   int accessAddress;
   bool accessBit;
   bool accessInput;
@@ -91,16 +91,10 @@ class P44mbcd : public CmdLineApp
 
 public:
 
-  P44mbcd() :
-    writeHandlerScript(ui),
-    readHandlerScript(ui),
-    initScript(ui)
+  P44mbcd()
   {
     ui.isMemberVariable();
     modBus.isMemberVariable();
-    initScript.isMemberVariable();
-    writeHandlerScript.isMemberVariable();
-    readHandlerScript.isMemberVariable();
   }
 
   virtual int main(int argc, char **argv)
@@ -387,7 +381,7 @@ public:
     // start littlevGL
     initLvgl();
     // call init script
-    initScript.execute(true);
+    ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), initScript);
   }
 
 
@@ -456,10 +450,10 @@ public:
     accessBit = aBit;
     accessInput = aInput;
     if (aWrite) {
-      writeHandlerScript.execute(true);
+      ui.queueGlobalScript(writeHandlerScript);
     }
     else {
-      readHandlerScript.execute(true);
+      ui.queueGlobalScript(readHandlerScript);
     }
     return ErrorPtr();
   }
@@ -467,8 +461,15 @@ public:
 
   // MARK: - script and config interface
 
-  bool modbusFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
+
+  /// callback function for function evaluation
+  /// @param aFunc the name of the function to execute, always passed in in all lowercase
+  /// @param aArgs vector of function arguments, tuple contains expression starting position and value
+  /// @param aResult set to function's result
+  /// @return true if function executed, false if function signature (name, number of args) is unknown
+  bool uiFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
   {
+    // function for modbus read and write handlers
     if (aFunc=="reg" && aArgs.size()<=1) {
       // reg([input]) returns accessed register number or null
       bool inp = aArgs[2].boolValue(); // null or false means non-input
@@ -479,22 +480,8 @@ public:
       bool inp = aArgs[2].boolValue(); // null or false means non-input
       if (accessBit && inp==accessInput) aResult.setNumber(accessAddress);
     }
-    else {
-      return false;
-    }
-    return true;
-  }
-
-
-
-  /// callback function for function evaluation
-  /// @param aFunc the name of the function to execute, always passed in in all lowercase
-  /// @param aArgs vector of function arguments, tuple contains expression starting position and value
-  /// @param aResult set to function's result
-  /// @return true if function executed, false if function signature (name, number of args) is unknown
-  bool uiFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
-  {
-    if (aFunc=="modbus_setreg" && aArgs.size()>=2 && aArgs.size()<=3) {
+    // functions for UI scripts
+    else if (aFunc=="modbus_setreg" && aArgs.size()>=2 && aArgs.size()<=3) {
       // modbus_setreg(regaddr, value [,input])
       int addr = aArgs[0].intValue();
       uint16_t val = aArgs[1].intValue();
@@ -539,14 +526,10 @@ public:
     if (mbCfg) {
       JsonObjectPtr o;
       if (mbCfg->get("writehandler", o)) {
-        writeHandlerScript.setCode(o->stringValue());
-        writeHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
-        writeHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+        writeHandlerScript = o->stringValue();
       }
       if (mbCfg->get("readhandler", o)) {
-        readHandlerScript.setCode(o->stringValue());
-        readHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
-        readHandlerScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+        readHandlerScript = o->stringValue();
       }
     }
     return err;
@@ -586,9 +569,7 @@ public:
         // check for init script
         JsonObjectPtr o;
         if (uiConfig->get("initscript", o)) {
-          initScript.setCode(o->stringValue());
-          initScript.registerFunctionHandler(boost::bind(&P44mbcd::modbusFunctionHandler, this, _1, _2, _3, _4));
-          initScript.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
+          initScript = o->stringValue();
         }
         // read UI config
         err = ui.setConfig(uiConfig);
