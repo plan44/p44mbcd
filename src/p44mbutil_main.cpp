@@ -45,7 +45,7 @@ public:
       "  write <addr> <value>                  : write value to modbus register/bit\n"
       "  monitor <addr> [<interval in ms>]     : monitor (constantly poll) register/bit, default interval = 200mS\n"
       "  readinfo                              : read slave info\n"
-      "  scan                                  : scan for slaves on the bus by querying slave info\n"
+      "  scan [<from> <to>]                    : scan for slaves on the bus by querying slave info\n"
       "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n"
       "  getfile <path> <fileno>               : get file from slave\n";
     const CmdLineOptionDescriptor options[] = {
