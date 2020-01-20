@@ -717,7 +717,7 @@ public:
       uiConfig = JsonObject::objFromFile(resourcePath(UICONFIG_FILE_NAME).c_str(), &err, true);
     }
     if (uiConfig && Error::isOK(err)) {
-      LOG(LOG_NOTICE, "JSON read: %s", uiConfig->json_c_str());
+      LOG(LOG_INFO, "JSON read: %s", uiConfig->json_c_str());
       err = processModbusConfig(uiConfig);
       if (Error::isOK(err)) {
         // check for global UI script

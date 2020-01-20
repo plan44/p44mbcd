@@ -73,7 +73,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--connection /dev/tty.usbserial-A403OIP2:115200,8,N,1"
+            argument = "--connection /dev/tty.usbserial-AL062E2R:115200,8,N,1"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
@@ -106,11 +106,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 6"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 5"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--backlight sim.dimmer"
