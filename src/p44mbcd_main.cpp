@@ -45,6 +45,8 @@
 #define FILENO_IMAGES_BASE 200
 #define MAX_IMAGES 100
 
+#define TEMPSENS_REGISTER 124
+#define TEMPSENS_POLLINTERVAL (15*Second)
 
 using namespace p44;
 
@@ -217,6 +219,10 @@ class P44mbcd : public CmdLineApp
   // LCD backlight control
   BackLightControllerPtr backlight;
 
+  // temperature sensor
+  AnalogIoPtr tempSens; ///< the temperature sensor input
+  MLTicket tempSensTicket; ///< temperature sensor polling
+
 public:
 
   P44mbcd()
@@ -242,6 +248,7 @@ public:
       { 0  , "slaveswitch",     true,  "gpiono:numgpios;use GPIOs for slave address DIP switch, first GPIO=A0" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 0  , "backlight",       true,  "pinspec;analog output for LCD backlight control" },
+      { 0  , "tempsensor",      true,  "pinspec;analog input for temperature measurement" },
       #if MOUSE_CURSOR_SUPPORT
       { 0  , "mousecursor",     false, "show mouse cursor" },
       #endif
@@ -529,6 +536,12 @@ public:
     getStringOption("backlight", blspec);
     AnalogIoPtr backlightOutput = AnalogIoPtr(new AnalogIo(blspec.c_str(), true, 100));
     backlight = BackLightControllerPtr(new BackLightController(backlightOutput));
+    // optional temperature sensor
+    string tsspec = "missing";
+    if (getStringOption("tempsensor", tsspec)) {
+      tempSens = AnalogIoPtr(new AnalogIo(blspec.c_str(), false, 0));
+      tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
+    }
     // start littlevGL
     initLvgl();
     LvGL::lvgl().setTaskCallback(boost::bind(&P44mbcd::taskCallBack, this));
@@ -536,6 +549,26 @@ public:
     ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), initScript);
   }
 
+
+  // from: https://www.openhacks.com/uploadsproductos/pt1000-temp-probe.pdf
+  static double pt1000_Ohms_to_degreeC(double aResistance)
+  {
+    // T = -(SQRT(-0.00232*R + 17.59246) - 3.908)/0.00116
+    double x = -0.00232*aResistance + 17.59246;
+    if (x>=0) return -(sqrt(x) - 3.908)/0.00116;
+    return -9999; // error
+  }
+
+
+  void tempSensPoll(MLTimer &aTimer)
+  {
+    double val = tempSens->value();
+    double res = val;
+    #warning add proper PT1000 conversion here
+    double temp = pt1000_Ohms_to_degreeC(res);
+    modBus.setReg(TEMPSENS_REGISTER, false, temp);
+    MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
+  }
 
 
   void taskCallBack()
