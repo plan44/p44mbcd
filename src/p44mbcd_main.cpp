@@ -69,6 +69,7 @@ class BackLightController : public P44Obj
   double activeBrightness; ///< brightness when active
   double standbyBrightness; ///< brightness when in standby
   double currentBrightness; ///< (possibly intermediate) current brightness state
+  bool preventActivation; ///< prevent next activation
 
   MLMicroSeconds fadeTime; ///< fade time
 
@@ -81,9 +82,10 @@ public:
   BackLightController(AnalogIoPtr aBacklightOutput) :
     backlightOutput(aBacklightOutput)
   {
-    activeBrightness = 100;
-    standbyBrightness = 30;
+    activeBrightness = 90;
+    standbyBrightness = 40;
     currentBrightness = 0;
+    preventActivation = false;
     fadeTime = 1*Second;
     active = true;
     updateBacklight();
@@ -93,6 +95,7 @@ public:
   void setActiveBrightness(double aBrightness)
   {
     if (aBrightness!=activeBrightness) {
+      LOG(LOG_INFO, "Backlight active brightness set to %.1f", aBrightness);
       activeBrightness = aBrightness;
       updateBacklight();
     }
@@ -106,6 +109,7 @@ public:
 
   void setStandbyBrightness(double aBrightness)
   {
+    LOG(LOG_INFO, "Backlight standby brightness set to %.1f", aBrightness);
     if (aBrightness!=standbyBrightness) {
       standbyBrightness = aBrightness;
       updateBacklight();
@@ -116,9 +120,22 @@ public:
   void setActive(bool aActive)
   {
     if (aActive!=active) {
+      if (aActive && preventActivation) {
+        active = true; // consider activated, but not showing
+        LOG(LOG_INFO, "Set active but actual backlight activation suppressed for now");
+        return;
+      }
+      preventActivation = false;
+      LOG(LOG_INFO, "Backlight switched to %s", aActive ? "ACTIVE" : "STANDBY");
       active = aActive;
       updateBacklight();
     }
+  }
+
+
+  void suppressNextActivation()
+  {
+    preventActivation = true;
   }
 
 
@@ -153,9 +170,11 @@ public:
   }
 
 
+  #define DIM_CURVE_EXPONENT 4
+
   void setBackLight(double aBrightness)
   {
-    backlightOutput->setValue(100*((exp(aBrightness*4/100)-1)/(exp(4)-1)));
+    backlightOutput->setValue(100*((exp(aBrightness*DIM_CURVE_EXPONENT/100)-1)/(exp(DIM_CURVE_EXPONENT)-1)));
   }
 
 
@@ -181,7 +200,7 @@ class P44mbcd : public CmdLineApp
   LvGLUi ui;
   bool active;
   MLMicroSeconds activityTimeout; ///< inactivity time that triggers activityTimeoutScript
-  MLMicroSeconds backlightTimeout; ///< inactivity time that triggers backlight standby
+  MLMicroSeconds backlightTimeout; ///< inactivity time that triggers backlight standby. 0 = never, -1 = always inactive
 
   // scripting
   string initScript;
@@ -497,11 +516,17 @@ public:
   }
 
 
+
   void taskCallBack()
   {
     MLMicroSeconds inactivetime = (MLMicroSeconds)lv_disp_get_inactive_time(NULL)*MilliSecond;
     // backlight standby
-    if (backlight) backlight->setActive(backlightTimeout==0 || inactivetime<backlightTimeout);
+    if (backlight) {
+      backlight->setActive(
+        backlightTimeout>=0 && // not forced into standby...
+        (backlightTimeout==Never || inactivetime<backlightTimeout) // ...and no timeout at all or timeout not yet reached
+      );
+    }
     // inactivity script
     if (activityTimeout && inactivetime>activityTimeout) {
       if (active) {
@@ -655,7 +680,14 @@ public:
         backlight->setActiveBrightness(aArgs[0].numValue());
         if (aArgs.size()>=3) {
           backlight->setStandbyBrightness(aArgs[1].numValue());
-          backlightTimeout = aArgs[2].numValue()*Second;
+          MLMicroSeconds bt = aArgs[2].numValue()*Second;
+          if (bt!=backlightTimeout) {
+            backlightTimeout = bt;
+            if (backlightTimeout<0)
+              backlight->setActive(false); // force standby brightness
+            else
+              backlight->suppressNextActivation(); // avoid next activation
+          }
           if (aArgs.size()>=4) {
             backlight->setFadeTime(aArgs[3].numValue()*Second);
           }
