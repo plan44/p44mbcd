@@ -33,18 +33,20 @@
 #define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
 
 #define UICONFIG_FILE_NAME "uiconfig.json"
+#define COMMCONFIG_FILE_NAME "commconfig"
 
 #define FATAL_ERROR_IMG "errorscreen.png"
 
 #define FILENO_FIRMWARE 1
 #define FILENO_LOG 90
 #define FILENO_UICONFIG 100
+#define FILENO_TEMPCOMMCONFIG 101
+#define FILENO_COMMCONFIG 102
 #define FILENO_IMAGES_BASE 200
 #define MAX_IMAGES 100
 
 
 using namespace p44;
-
 
 #if ENABLE_UBUS
 static const struct blobmsg_policy logapi_policy[] = {
@@ -487,6 +489,25 @@ public:
       false, // R/W
       dataPath()+"/" // write to temp, then copy to data path
     )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+    // - communication (daemon startup) config
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      FILENO_TEMPCOMMCONFIG,
+      1, // max segs
+      1, // single file
+      true, // p44 header
+      COMMCONFIG_FILE_NAME,
+      false, // R/W
+      tempPath()+"/" // keep in temp
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+      FILENO_COMMCONFIG,
+      1, // max segs
+      1, // single file
+      true, // p44 header
+      COMMCONFIG_FILE_NAME,
+      false, // R/W
+      dataPath()+"/" // write to temp, then copy to data path
+    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
     // - UI images
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
       FILENO_IMAGES_BASE,
@@ -547,6 +568,11 @@ public:
   {
     // config or image file received, copy it to datadir
     if (!aTempPath.empty()) {
+      if (aTempPath==aFinalPath) {
+        // already in place (i.e. is a temp file anyway) -> nothing to copy
+        modbusFileStored(aFileNo, aFinalPath, ErrorPtr());
+        return;
+      }
       MainLoop::currentMainLoop().fork_and_system(
         boost::bind(&P44mbcd::modbusFileStored, this, aFileNo, aFinalPath, _1),
         string_format("cp %s %s", aTempPath.c_str(), aFinalPath.c_str()).c_str()
@@ -564,6 +590,10 @@ public:
     LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
     if (aFileNo==FILENO_UICONFIG) {
       LOG(LOG_NOTICE, "new uiconfig received -> restart daemon");
+      terminateApp(EXIT_SUCCESS);
+    }
+    else if (aFileNo==FILENO_COMMCONFIG || aFileNo==FILENO_TEMPCOMMCONFIG) {
+      LOG(LOG_NOTICE, "new communication config received -> restart daemon");
       terminateApp(EXIT_SUCCESS);
     }
   }
