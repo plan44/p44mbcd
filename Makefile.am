@@ -56,6 +56,7 @@ endif
 LVGL_SOURCES = \
   src/lv_conf.h \
   src/lv_drv_conf.h \
+  src/lvgl/src/lv_core/lv_debug.c \
   src/lvgl/src/lv_core/lv_disp.c \
   src/lvgl/src/lv_core/lv_group.c \
   src/lvgl/src/lv_core/lv_indev.c \
@@ -93,6 +94,7 @@ LVGL_SOURCES = \
   src/lvgl/src/lv_misc/lv_log.c \
   src/lvgl/src/lv_misc/lv_math.c \
   src/lvgl/src/lv_misc/lv_mem.c \
+  src/lvgl/src/lv_misc/lv_printf.c \
   src/lvgl/src/lv_misc/lv_task.c \
   src/lvgl/src/lv_misc/lv_txt.c \
   src/lvgl/src/lv_misc/lv_utils.c \

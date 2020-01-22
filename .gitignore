@@ -21,6 +21,9 @@ configure_aux/
 .deps/
 stamp-h1
 p44mbcd
+ABOUT-NLS
+ChangeLog
+NEWS
 
 # openwrt USE_SRCDIR debris specifics
 .quilt_checked

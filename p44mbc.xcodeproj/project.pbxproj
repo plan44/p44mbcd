@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED12CF2923D88A4D00422DF0 /* lv_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ED12CF2823D88A4D00422DF0 /* lv_debug.c */; };
+		ED12CF2C23D88C9300422DF0 /* lv_printf.c in Sources */ = {isa = PBXBuildFile; fileRef = ED12CF2B23D88C9300422DF0 /* lv_printf.c */; };
 		ED16C41D22B25F14003F4276 /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF12276F0C3009B43A8 /* monitor.c */; };
 		ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; };
 		ED16C42022B27591003F4276 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -219,6 +221,10 @@
 		ED0E441D1732FE4F00C4C283 /* application.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = application.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907917B3FD0A009F9FE2 /* jsonrpccomm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = jsonrpccomm.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED10907A17B3FD0A009F9FE2 /* jsonrpccomm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = jsonrpccomm.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		ED12CF2723D88A4D00422DF0 /* lv_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_debug.h; sourceTree = "<group>"; };
+		ED12CF2823D88A4D00422DF0 /* lv_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_debug.c; sourceTree = "<group>"; };
+		ED12CF2A23D88C9300422DF0 /* lv_printf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_printf.h; sourceTree = "<group>"; };
+		ED12CF2B23D88C9300422DF0 /* lv_printf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lv_printf.c; sourceTree = "<group>"; };
 		ED16C41E22B27590003F4276 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		ED17F4C61769F51D0076B47C /* persistentparams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = persistentparams.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED17F4C71769F51D0076B47C /* persistentparams.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = persistentparams.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
@@ -784,6 +790,8 @@
 			isa = PBXGroup;
 			children = (
 				ED9D39AB2276F0A4009B43A8 /* lv_core.mk */,
+				ED12CF2823D88A4D00422DF0 /* lv_debug.c */,
+				ED12CF2723D88A4D00422DF0 /* lv_debug.h */,
 				EDF356B622DDC71A00C4110C /* lv_disp.c */,
 				EDF356B522DDC71A00C4110C /* lv_disp.h */,
 				ED9D39AF2276F0A4009B43A8 /* lv_group.c */,
@@ -803,12 +811,12 @@
 		ED9D39B32276F0A4009B43A8 /* lv_misc */ = {
 			isa = PBXGroup;
 			children = (
-				EDBE611B23C4BFDD00C2BA4E /* lv_async.c */,
-				EDBE611A23C4BFDC00C2BA4E /* lv_async.h */,
 				ED9D39CC2276F0A4009B43A8 /* lv_anim.c */,
 				ED9D39BA2276F0A4009B43A8 /* lv_anim.h */,
 				ED9D39C42276F0A4009B43A8 /* lv_area.c */,
 				ED9D39D02276F0A4009B43A8 /* lv_area.h */,
+				EDBE611B23C4BFDD00C2BA4E /* lv_async.c */,
+				EDBE611A23C4BFDC00C2BA4E /* lv_async.h */,
 				ED9D39CA2276F0A4009B43A8 /* lv_circ.c */,
 				ED9D39BC2276F0A4009B43A8 /* lv_circ.h */,
 				ED9D39C12276F0A4009B43A8 /* lv_color.c */,
@@ -826,6 +834,8 @@
 				ED9D39BD2276F0A4009B43A8 /* lv_mem.c */,
 				ED9D39C92276F0A4009B43A8 /* lv_mem.h */,
 				ED9D39BB2276F0A4009B43A8 /* lv_misc.mk */,
+				ED12CF2B23D88C9300422DF0 /* lv_printf.c */,
+				ED12CF2A23D88C9300422DF0 /* lv_printf.h */,
 				ED9D39B72276F0A4009B43A8 /* lv_task.c */,
 				ED9D39C62276F0A4009B43A8 /* lv_task.h */,
 				ED9D39C82276F0A4009B43A8 /* lv_templ.c */,
@@ -1231,6 +1241,7 @@
 				ED9D3AC12276F0A5009B43A8 /* lv_cont.c in Sources */,
 				ED9D3AD12276F0A5009B43A8 /* lv_calendar.c in Sources */,
 				ED9D3ACD2276F0A5009B43A8 /* lv_arc.c in Sources */,
+				ED12CF2C23D88C9300422DF0 /* lv_printf.c in Sources */,
 				ED9D3AA92276F0A5009B43A8 /* lv_hal_tick.c in Sources */,
 				ED9D3A812276F0A5009B43A8 /* lv_ll.c in Sources */,
 				ED9D3ABB2276F0A5009B43A8 /* lv_ta.c in Sources */,
@@ -1291,6 +1302,7 @@
 				ED43FD7C22CC154900ED57F3 /* modbus-data.c in Sources */,
 				ED7D396F17EF5BC100A920FF /* p44mbcd_main.cpp in Sources */,
 				EDF356CD22DDC99D00C4110C /* lv_font.c in Sources */,
+				ED12CF2923D88A4D00422DF0 /* lv_debug.c in Sources */,
 				ED9D3AB52276F0A5009B43A8 /* lv_gauge.c in Sources */,
 				ED9D3AC62276F0A5009B43A8 /* lv_preload.c in Sources */,
 				EDF356D122DDC99D00C4110C /* lv_font_unscii_8.c in Sources */,
