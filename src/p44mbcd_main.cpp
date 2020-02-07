@@ -563,9 +563,10 @@ public:
   void tempSensPoll(MLTimer &aTimer)
   {
     double val = tempSens->value();
-    double res = val;
     #warning add proper PT1000 conversion here
+    double res = val;
     double temp = pt1000_Ohms_to_degreeC(res);
+    LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", val, res, temp);
     modBus.setReg(TEMPSENS_REGISTER, false, temp);
     MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
   }
