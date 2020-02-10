@@ -80,7 +80,6 @@ class BackLightController : public P44Obj
   MLTicket standbyTicket; ///< timer for switch to standby brightness
   MLTicket fadeTicket; ///< timer for smooth transitions
 
-
 public:
 
   BackLightController(AnalogIoPtr aBacklightOutput) :
@@ -222,6 +221,7 @@ class P44mbcd : public CmdLineApp
   // temperature sensor
   AnalogIoPtr tempSens; ///< the temperature sensor input
   MLTicket tempSensTicket; ///< temperature sensor polling
+  MLTicket exitTicket; ///< terminate delay
 
 public:
 
@@ -615,6 +615,12 @@ public:
   }
 
 
+  void delayedTerminate(int aExitCode)
+  {
+    terminateApp(aExitCode);
+  }
+
+
   void modbusFileStored(uint16_t aFileNo, const string aFinalPath, ErrorPtr aError)
   {
     if (Error::notOK(aError)) {
@@ -624,11 +630,13 @@ public:
     LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
     if (aFileNo==FILENO_UICONFIG) {
       LOG(LOG_NOTICE, "new uiconfig received -> restart daemon");
-      terminateApp(EXIT_SUCCESS);
+      exitTicket.executeOnce(boost::bind(&P44mbcd::delayedTerminate, this, EXIT_SUCCESS), 2*Second);
+      return;
     }
     else if (aFileNo==FILENO_COMMCONFIG || aFileNo==FILENO_TEMPCOMMCONFIG) {
       LOG(LOG_NOTICE, "new communication config received -> restart daemon");
-      terminateApp(EXIT_SUCCESS);
+      exitTicket.executeOnce(boost::bind(&P44mbcd::delayedTerminate, this, EXIT_SUCCESS), 2*Second);
+      return;
     }
   }
 
