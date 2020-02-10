@@ -59,7 +59,6 @@ public:
       { 0  , "stdmodbusfiles",  false, "disable p44 file handling, just use standard modbus file record access" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 's', "slave",           true,  "slave;slave to address (default=1)" },
-      CMDLINE_APPLICATION_PATHOPTIONS,
       CMDLINE_APPLICATION_LOGOPTIONS,
       CMDLINE_APPLICATION_STDOPTIONS,
       { 0, NULL } // list terminator
