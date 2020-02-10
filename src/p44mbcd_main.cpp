@@ -539,7 +539,7 @@ public:
     // optional temperature sensor
     string tsspec = "missing";
     if (getStringOption("tempsensor", tsspec)) {
-      tempSens = AnalogIoPtr(new AnalogIo(blspec.c_str(), false, 0));
+      tempSens = AnalogIoPtr(new AnalogIo(tsspec.c_str(), false, 0));
       tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
     }
     // start littlevGL
