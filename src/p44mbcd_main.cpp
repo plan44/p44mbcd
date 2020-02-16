@@ -540,7 +540,9 @@ public:
     string tsspec = "missing";
     if (getStringOption("tempsensor", tsspec)) {
       tempSens = AnalogIoPtr(new AnalogIo(tsspec.c_str(), false, 0));
-      tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
+      if (tempSens) {
+        tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
+      }
     }
     // start littlevGL
     initLvgl();
@@ -747,7 +749,7 @@ public:
       activityTimeout = aArgs[0].numValue()*Second;
     }
     else if (aFunc=="backlight" && (aArgs.size()==1 || aArgs.size()==3 || aArgs.size()==4)) {
-      // backlight(active, [standby, timeout, [, fadetime]])
+      // backlight(active, [standby, timeout [, fadetime]])
       if (backlight) {
         backlight->setActiveBrightness(aArgs[0].numValue());
         if (aArgs.size()>=3) {
@@ -755,10 +757,10 @@ public:
           MLMicroSeconds bt = aArgs[2].numValue()*Second;
           if (bt!=backlightTimeout) {
             backlightTimeout = bt;
-            if (backlightTimeout<0)
+            if (backlightTimeout<0) {
               backlight->setActive(false); // force standby brightness
-            else
               backlight->suppressNextActivation(); // avoid next activation
+            }
           }
           if (aArgs.size()>=4) {
             backlight->setFadeTime(aArgs[3].numValue()*Second);

@@ -73,8 +73,8 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--tempsensor sim"
-            isEnabled = "YES">
+            argument = "--tempsensor sim.temp"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--connection /dev/tty.usbserial-AL062E2R:115200,8,N,1"
