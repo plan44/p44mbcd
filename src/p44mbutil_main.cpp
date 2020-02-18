@@ -46,7 +46,7 @@ public:
       "  monitor <addr> [<interval in ms>]     : monitor (constantly poll) register/bit, default interval = 200mS\n"
       "  readinfo                              : read slave info\n"
       "  scan [<from> <to>]                    : scan for slaves on the bus by querying slave info\n"
-      "  sendfile <path> <fileno> [<dest>,...] : send file to destination (<dest> can be ALL, idMatch or slave addr)\n"
+      "  sendfile <path> <fileno> [<dest>...]  : send file to destination (<dest> can be ALL, idMatch or slave addresses)\n"
       "  getfile <path> <fileno>               : get file from slave\n";
     const CmdLineOptionDescriptor options[] = {
       { 'i', "input",           false, "read input-only register / bit" },
