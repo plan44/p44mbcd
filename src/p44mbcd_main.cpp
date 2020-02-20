@@ -570,13 +570,26 @@ public:
 
   void tempSensPoll(MLTimer &aTimer)
   {
-    double val = tempSens->value();
-    // ADC 0 = 1201.5 Ohm
-    // ADC 1203 = 1000.0 Ohm
+    double adc = tempSens->value();
+    // Luz:
+    //  ADC 0 = 1201.5 Ohm
+    //  ADC 1203 = 1000.0 Ohm
     // R = ADC/1023*(1000-1201.5)+1201.5
-    double res = val/1023*(1000-1201.5)+1201.5;
+    //double res = adc/1023*(1000-1201.5)+1201.5;
+    // Astrol:
+    //  nbits = 10
+    //  Rpu = 30e3
+    //  Rref = 1e3
+    //  Vu = 160
+    //  Rpt = 1201.51 % PT1000 value
+    // ADCVal = 2^nbits * (1 - Vu * (Rpt/(Rpt+Rpu) - Rref/(Rref+Rpu)) )
+    // MuSimp/MuMath solves this for Rpt:
+    //  RPT = (ADC*RPU*RREF+A*RPU^2-1024*VU*RPU*RREF-1024*RPU*RREF-1024*RPU^2)/(1024*RPU+1024*RREF-A*RPU-A*RREF-1024*VU*RPU)
+    //  RPT = (-5867520000+930000*ADC)/(-4883456-31*ADC)
+    double res = (-5867520000.0+930000.0*adc)/(-4883456.0-31.0*adc);
+    // convert to temperature
     double temp = pt1000_Ohms_to_degreeC(res);
-    LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", val, res, temp);
+    LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", adc, res, temp);
     modBus.setReg(TEMPSENS_REGISTER, false, temp);
     MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
   }
