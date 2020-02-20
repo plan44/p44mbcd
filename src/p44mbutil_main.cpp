@@ -51,6 +51,7 @@ public:
     const CmdLineOptionDescriptor options[] = {
       { 'i', "input",           false, "read input-only register / bit" },
       { 'b', "bit",             false, "access bit (not register)" },
+      { 0  , "verify",          false, "verify write access by reading value back immediately" },
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
@@ -172,11 +173,29 @@ public:
       if (!getIntArgument(1, addr) || addr<0 || addr>0xFFFF) return TextError::err("missing or invalid address");
       int val;
       if (!getIntArgument(2, val) || val<0 || val>0xFFFF) return TextError::err("missing or invalid value");
+      ErrorPtr err;
+      bool verify = getOption("verify");
       if (isBit) {
-        return modBus.writeBit(addr, (bool)val);
+        err = modBus.writeBit(addr, (bool)val);
+        if (Error::isOK(err) && verify) {
+          bool vval;
+          err = modBus.readBit(addr, vval);
+          if (Error::isOK(err) && (vval!=(bool)val)) {
+            err = TextError::err("Bit write verification failed, written %d, read back %d", val, vval);
+          }
+        }
+        return err;
       }
       else {
-        return modBus.writeRegister(addr, (uint16_t)val);
+        err = modBus.writeRegister(addr, (uint16_t)val);
+        if (Error::isOK(err) && verify) {
+          uint16_t vval;
+          err = modBus.readRegister(addr, vval);
+          if (Error::isOK(err) && (vval!=(uint16_t)val)) {
+            err = TextError::err("Reg write verification failed, written %d, read back %d", val, vval);
+          }
+        }
+        return err;
       }
     }
     else if (cmd=="readinfo") {
