@@ -571,8 +571,10 @@ public:
   void tempSensPoll(MLTimer &aTimer)
   {
     double val = tempSens->value();
-    #warning add proper PT1000 conversion here
-    double res = val;
+    // ADC 0 = 1201.5 Ohm
+    // ADC 1203 = 1000.0 Ohm
+    // R = ADC/1023*(1000-1201.5)+1201.5
+    double res = val/1023*(1000-1201.5)+1201.5;
     double temp = pt1000_Ohms_to_degreeC(res);
     LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", val, res, temp);
     modBus.setReg(TEMPSENS_REGISTER, false, temp);
