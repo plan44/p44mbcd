@@ -185,6 +185,15 @@ public:
 typedef boost::intrusive_ptr<BackLightController> BackLightControllerPtr;
 
 
+class GlobScriptContext : public P44Obj
+{
+public:
+  GlobScriptContext(int aAddr, bool aBit, bool aInput) : accessAddress(aAddr), accessBit(aBit), accessInput(aInput) {};
+  int accessAddress;
+  bool accessBit;
+  bool accessInput;
+};
+
 
 class P44mbcd : public CmdLineApp
 {
@@ -211,9 +220,6 @@ class P44mbcd : public CmdLineApp
   string modbusReadScript;
   string activityTimeoutScript;
   string activationScript;
-  int accessAddress;
-  bool accessBit;
-  bool accessInput;
 
   // LCD backlight control
   BackLightControllerPtr backlight;
@@ -678,14 +684,12 @@ public:
       val, val
     );
     // report write access
-    accessAddress = aAddress;
-    accessBit = aBit;
-    accessInput = aInput;
+    P44ObjPtr ctx = P44ObjPtr(new GlobScriptContext(aAddress, aBit, aInput));
     if (aWrite) {
-      ui.queueGlobalScript(modbusWriteScript);
+      ui.queueGlobalScript(modbusWriteScript, ctx);
     }
     else {
-      ui.queueGlobalScript(modbusReadScript);
+      ui.queueGlobalScript(modbusReadScript, ctx);
     }
     return ErrorPtr();
   }
@@ -701,16 +705,18 @@ public:
   /// @return true if function executed, false if function signature (name, number of args) is unknown
   bool uiFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
   {
+    GlobScriptContext* ctx = dynamic_cast<GlobScriptContext *>(aEvalContext->getCallerContext().get());
+
     // function for modbus read and write handlers
     if (aFunc=="reg" && aArgs.size()<=1) {
       // reg([input]) returns accessed register number or null
       bool inp = aArgs[2].boolValue(); // null or false means non-input
-      if (!accessBit && inp==accessInput) aResult.setNumber(accessAddress);
+      if (!ctx->accessBit && inp==ctx->accessInput) aResult.setNumber(ctx->accessAddress);
     }
     else if (aFunc=="bit" && aArgs.size()<=1) {
       // bit([input]) returns accessed bit number or null
       bool inp = aArgs[2].boolValue(); // null or false means non-input
-      if (accessBit && inp==accessInput) aResult.setNumber(accessAddress);
+      if (ctx->accessBit && inp==ctx->accessInput) aResult.setNumber(ctx->accessAddress);
     }
     // functions for UI scripts
     else if (aFunc=="modbus_setreg" && aArgs.size()>=2 && aArgs.size()<=3) {
