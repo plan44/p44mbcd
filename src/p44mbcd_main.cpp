@@ -590,7 +590,7 @@ public:
     // convert to temperature
     double temp = pt1000_Ohms_to_degreeC(res);
     LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", adc, res, temp);
-    modBus.setReg(TEMPSENS_REGISTER, false, temp);
+    modBus.setReg(TEMPSENS_REGISTER, false, temp*10);
     MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
   }
 
