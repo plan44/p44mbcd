@@ -20,6 +20,7 @@
 #endif
 
 #include <stdio.h>
+#include <math.h>
 
 #include "lvglui.hpp"
 
