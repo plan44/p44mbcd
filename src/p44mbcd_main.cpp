@@ -46,6 +46,10 @@
 #define FILENO_IMAGES_BASE 200
 #define MAX_IMAGES 100
 
+
+#define REGISTER_FIRST 101
+#define REGISTER_LAST 129
+
 #define TEMPSENS_REGISTER 124
 #define TEMPSENS_POLLINTERVAL (15*Second)
 
@@ -469,7 +473,7 @@ public:
     modBus.setRegisterModel(
       0, 0, // coils
       0, 0, // input bits
-      101, 129-101+1, // registers
+      REGISTER_FIRST, REGISTER_LAST-REGISTER_FIRST+1, // registers
       0, 0 // input registers
     );
     modBus.setValueAccessHandler(boost::bind(&P44mbcd::modbusValueAccessHandler, this, _1, _2, _3, _4));
