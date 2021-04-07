@@ -221,8 +221,8 @@ p44mbcd_SOURCES = \
   src/p44utils/digitalio.hpp \
   src/p44utils/error.cpp \
   src/p44utils/error.hpp \
-  src/p44utils/expressions.cpp \
-  src/p44utils/expressions.hpp \
+  src/p44utils/p44script.cpp \
+  src/p44utils/p44script.hpp \
   src/p44utils/fdcomm.cpp \
   src/p44utils/fdcomm.hpp \
   src/p44utils/fnv.cpp \

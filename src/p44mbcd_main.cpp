@@ -50,10 +50,11 @@
 #define REGISTER_FIRST 101
 #define REGISTER_LAST 299
 
-#define TEMPSENS_REGISTER 124
-#define TEMPSENS_POLLINTERVAL (15*Second)
+//#define TEMPSENS_REGISTER 124
+//#define TEMPSENS_POLLINTERVAL (15*Second)
 
 using namespace p44;
+using namespace P44Script;
 
 #if ENABLE_UBUS
 static const struct blobmsg_policy logapi_policy[] = {
@@ -68,6 +69,8 @@ static const struct blobmsg_policy p44mbcapi_policy[] = {
 };
 #endif
 
+
+// MARK: - BackLightController
 
 class BackLightController : public P44Obj
 {
@@ -177,7 +180,6 @@ public:
     if(!done) MainLoop::currentMainLoop().retriggerTimer(aTimer, fadeStep);
   }
 
-
   #define DIM_CURVE_EXPONENT 4
 
   void setBackLight(double aBrightness)
@@ -190,13 +192,17 @@ public:
 typedef boost::intrusive_ptr<BackLightController> BackLightControllerPtr;
 
 
-class GlobScriptContext : public P44Obj
+// MARK: - P44mbcd
+
+class P44mbcd;
+
+/// global script function lookup for this app
+class P44mbcdLookup : public BuiltInMemberLookup
 {
+  typedef BuiltInMemberLookup inherited;
 public:
-  GlobScriptContext(int aAddr, bool aBit, bool aInput) : accessAddress(aAddr), accessBit(aBit), accessInput(aInput) {};
-  int accessAddress;
-  bool accessBit;
-  bool accessInput;
+  P44mbcd &mP44mbcd;
+  P44mbcdLookup(P44mbcd &aP44mbcd);
 };
 
 
@@ -216,33 +222,42 @@ class P44mbcd : public CmdLineApp
   // app
   LvGLUi ui;
   bool active;
-  MLMicroSeconds activityTimeout; ///< inactivity time that triggers activityTimeoutScript
-  MLMicroSeconds backlightTimeout; ///< inactivity time that triggers backlight standby. 0 = never, -1 = always inactive
 
   // scripting
-  string initScript;
-  string modbusWriteScript;
-  string modbusReadScript;
-  string activityTimeoutScript;
-  string activationScript;
+  ScriptSource mainScript;
+  ScriptSource activityTimeoutScript;
+  ScriptSource activationScript;
 
-  // LCD backlight control
-  BackLightControllerPtr backlight;
+  MLTicket exitTicket; ///< terminate delay
 
   // temperature sensor
   AnalogIoPtr tempSens; ///< the temperature sensor input
+  #if TEMPSENS_POLLINTERVAL
   MLTicket tempSensTicket; ///< temperature sensor polling
-  MLTicket exitTicket; ///< terminate delay
+  #endif
 
 public:
 
-  P44mbcd()
+  // LCD backlight control
+  MLMicroSeconds backlightTimeout; ///< inactivity time that triggers backlight standby. 0 = never, -1 = always inactive
+  BackLightControllerPtr backlight;
+  // activity
+  MLMicroSeconds activityTimeout; ///< inactivity time that triggers activityTimeoutScript
+
+  P44mbcd() :
+    mainScript(sourcecode+regular, "main"), // only init script may have declarations
+    activityTimeoutScript(scriptbody+regular, "activityTimeout"),
+    activationScript(scriptbody+regular, "activation")
   {
     ui.isMemberVariable();
     modBus.isMemberVariable();
     active = true;
     activityTimeout = Never;
     backlightTimeout = Never;
+    // let all scripts run in the same (ui) context
+    mainScript.setSharedMainContext(ui.getScriptMainContext());
+    activityTimeoutScript.setSharedMainContext(ui.getScriptMainContext());
+    activationScript.setSharedMainContext(ui.getScriptMainContext());
   }
 
   virtual int main(int argc, char **argv)
@@ -476,7 +491,6 @@ public:
       REGISTER_FIRST, REGISTER_LAST-REGISTER_FIRST+1, // registers
       0, 0 // input registers
     );
-    modBus.setValueAccessHandler(boost::bind(&P44mbcd::modbusValueAccessHandler, this, _1, _2, _3, _4));
     // Files
     // - firmware
     modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
@@ -551,15 +565,24 @@ public:
     string tsspec = "missing";
     if (getStringOption("tempsensor", tsspec)) {
       tempSens = AnalogIoPtr(new AnalogIo(tsspec.c_str(), false, 0));
+      #if TEMPSENS_POLLINTERVAL
       if (tempSens) {
         tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
       }
+      #endif
     }
+    // install app specific global predefined objects
+    // - app functions
+    StandardScriptingDomain::sharedDomain().registerMemberLookup(new P44mbcdLookup(*this));
+    // - LVGL
+    StandardScriptingDomain::sharedDomain().registerMember("ui", ui.representingScriptObj());
+    // - modbus slave
+    StandardScriptingDomain::sharedDomain().registerMember("modbus", modBus.representingScriptObj());
     // start littlevGL
     initLvgl();
     LvGL::lvgl().setTaskCallback(boost::bind(&P44mbcd::taskCallBack, this));
-    // call init script
-    ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), initScript);
+    // start main script
+    mainScript.run(inherit);
   }
 
 
@@ -573,31 +596,42 @@ public:
   }
 
 
+  double getTemp()
+  {
+    double temp = -999;
+    if (tempSens) {
+      double adc = tempSens->value();
+      // Luz:
+      //  ADC 0 = 1201.5 Ohm
+      //  ADC 1203 = 1000.0 Ohm
+      // R = ADC/1023*(1000-1201.5)+1201.5
+      //double res = adc/1023*(1000-1201.5)+1201.5;
+      // Astrol:
+      //  nbits = 10
+      //  Rpu = 30e3
+      //  Rref = 1e3
+      //  Vu = 160
+      //  Rpt = 1201.51 % PT1000 value
+      // ADCVal = 2^nbits * (1 - Vu * (Rpt/(Rpt+Rpu) - Rref/(Rref+Rpu)) )
+      // MuSimp/MuMath solves this for Rpt:
+      //  RPT = (ADC*RPU*RREF+A*RPU^2-1024*VU*RPU*RREF-1024*RPU*RREF-1024*RPU^2)/(1024*RPU+1024*RREF-A*RPU-A*RREF-1024*VU*RPU)
+      //  RPT = (-5867520000+930000*ADC)/(-4883456-31*ADC)
+      double res = (-5867520000.0+930000.0*adc)/(-4883456.0-31.0*adc);
+      // convert to temperature
+      double temp = pt1000_Ohms_to_degreeC(res);
+      LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", adc, res, temp);
+    }
+    return temp;
+  }
+
+  #if TEMPSENS_POLLINTERVAL
   void tempSensPoll(MLTimer &aTimer)
   {
-    double adc = tempSens->value();
-    // Luz:
-    //  ADC 0 = 1201.5 Ohm
-    //  ADC 1203 = 1000.0 Ohm
-    // R = ADC/1023*(1000-1201.5)+1201.5
-    //double res = adc/1023*(1000-1201.5)+1201.5;
-    // Astrol:
-    //  nbits = 10
-    //  Rpu = 30e3
-    //  Rref = 1e3
-    //  Vu = 160
-    //  Rpt = 1201.51 % PT1000 value
-    // ADCVal = 2^nbits * (1 - Vu * (Rpt/(Rpt+Rpu) - Rref/(Rref+Rpu)) )
-    // MuSimp/MuMath solves this for Rpt:
-    //  RPT = (ADC*RPU*RREF+A*RPU^2-1024*VU*RPU*RREF-1024*RPU*RREF-1024*RPU^2)/(1024*RPU+1024*RREF-A*RPU-A*RREF-1024*VU*RPU)
-    //  RPT = (-5867520000+930000*ADC)/(-4883456-31*ADC)
-    double res = (-5867520000.0+930000.0*adc)/(-4883456.0-31.0*adc);
-    // convert to temperature
-    double temp = pt1000_Ohms_to_degreeC(res);
-    LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", adc, res, temp);
+    double temp = getTemp();
     modBus.setReg(TEMPSENS_REGISTER, false, temp*10);
     MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
   }
+  #endif
 
 
   void taskCallBack()
@@ -614,13 +648,13 @@ public:
     if (activityTimeout && inactivetime>activityTimeout) {
       if (active) {
         active = false;
-        ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), activityTimeoutScript);
+        ui.runEventScript(LV_EVENT_REFRESH, activityTimeoutScript);
       }
     }
     else {
       if (!active) {
         active = true;
-        ui.queueEventScript(LV_EVENT_REFRESH, LVGLUiElementPtr(), activationScript);
+        ui.runEventScript(LV_EVENT_REFRESH, activationScript);
       }
     }
   }
@@ -703,7 +737,8 @@ public:
       aWrite ? "write" : "read",
       val, val
     );
-    // report write access
+    // report access
+    /*
     P44ObjPtr ctx = P44ObjPtr(new GlobScriptContext(aAddress, aBit, aInput));
     if (aWrite) {
       ui.queueGlobalScript(modbusWriteScript, ctx);
@@ -711,97 +746,8 @@ public:
     else {
       ui.queueGlobalScript(modbusReadScript, ctx);
     }
+    */
     return ErrorPtr();
-  }
-
-
-  // MARK: - script and config interface
-
-
-  /// callback function for function evaluation
-  /// @param aFunc the name of the function to execute, always passed in in all lowercase
-  /// @param aArgs vector of function arguments, tuple contains expression starting position and value
-  /// @param aResult set to function's result
-  /// @return true if function executed, false if function signature (name, number of args) is unknown
-  bool uiFunctionHandler(EvaluationContext* aEvalContext, const string& aFunc, const FunctionArguments& aArgs, ExpressionValue& aResult)
-  {
-    GlobScriptContext* ctx = dynamic_cast<GlobScriptContext *>(aEvalContext->getCallerContext().get());
-
-    // function for modbus read and write handlers
-    if (aFunc=="reg" && aArgs.size()<=1) {
-      // reg([input]) returns accessed register number or null
-      bool inp = aArgs[2].boolValue(); // null or false means non-input
-      if (!ctx->accessBit && inp==ctx->accessInput) aResult.setNumber(ctx->accessAddress);
-    }
-    else if (aFunc=="bit" && aArgs.size()<=1) {
-      // bit([input]) returns accessed bit number or null
-      bool inp = aArgs[2].boolValue(); // null or false means non-input
-      if (ctx->accessBit && inp==ctx->accessInput) aResult.setNumber(ctx->accessAddress);
-    }
-    // functions for UI scripts
-    else if (aFunc=="modbus_setreg" && aArgs.size()>=2 && aArgs.size()<=3) {
-      // modbus_setreg(regaddr, value [,input])
-      int addr = aArgs[0].intValue();
-      uint16_t val = aArgs[1].intValue();
-      bool inp = aArgs[2].boolValue(); // null or false means non-input
-      modBus.setReg(addr, inp, val);
-    }
-    else if (aFunc=="modbus_setbit" && aArgs.size()>=2 && aArgs.size()<=3) {
-      // modbus_setreg(regaddr, value [,input])
-      int addr = aArgs[0].intValue();
-      bool bit = aArgs[1].boolValue();
-      bool inp = aArgs[2].boolValue(); // null or false means non-input
-      modBus.setBit(addr, inp, bit);
-    }
-    else if (aFunc=="modbus_getreg" && aArgs.size()>=1 && aArgs.size()<=2) {
-      // modbus_getreg(regaddr [,input])
-      int addr = aArgs[0].intValue();
-      bool inp = aArgs[1].boolValue(); // null or false means non-input
-      aResult.setNumber(modBus.getReg(addr, inp));
-    }
-    else if (aFunc=="modbus_getsreg" && aArgs.size()>=1 && aArgs.size()<=2) {
-      // modbus_getsreg(regaddr [,input])
-      int addr = aArgs[0].intValue();
-      bool inp = aArgs[1].boolValue(); // null or false means non-input
-      aResult.setNumber((int16_t)modBus.getReg(addr, inp));
-    }
-    else if (aFunc=="modbus_getbit" && aArgs.size()>=1 && aArgs.size()<=2) {
-      // modbus_getbit(regaddr [,input])
-      int addr = aArgs[0].intValue();
-      bool inp = aArgs[1].boolValue(); // null or false means non-input
-      aResult.setBool(modBus.getBit(addr, inp));
-    }
-    else if (aFunc=="activitytimeout" && aArgs.size()==1) {
-      activityTimeout = aArgs[0].numValue()*Second;
-    }
-    else if (aFunc=="backlight" && (aArgs.size()==1 || aArgs.size()==3 || aArgs.size()==4)) {
-      // backlight(active, [standby, timeout [, fadetime]])
-      if (backlight) {
-        backlight->setActiveBrightness(aArgs[0].numValue());
-        if (aArgs.size()>=3) {
-          backlight->setStandbyBrightness(aArgs[1].numValue());
-          MLMicroSeconds bt = aArgs[2].numValue()*Second;
-          if (bt!=backlightTimeout) {
-            backlightTimeout = bt;
-            if (backlightTimeout<0) {
-              backlight->setActive(false); // force standby brightness
-              backlight->suppressNextActivation(); // avoid next activation
-            }
-          }
-          if (aArgs.size()>=4) {
-            backlight->setFadeTime(aArgs[3].numValue()*Second);
-          }
-        }
-      }
-    }
-    else if (aFunc=="exit" && aArgs.size()==1) {
-      terminateApp(aArgs[0].numValue());
-    }
-    else {
-      // unknown function
-      return false;
-    }
-    return true;
   }
 
 
@@ -810,13 +756,15 @@ public:
     ErrorPtr err;
     JsonObjectPtr mbCfg = aConfig->get("modbus");
     if (mbCfg) {
+      /*
       JsonObjectPtr o;
       if (mbCfg->get("writehandler", o)) {
-        modbusWriteScript = o->stringValue();
+        modbusWriteScript.setSource(o->stringValue());
       }
       if (mbCfg->get("readhandler", o)) {
-        modbusReadScript = o->stringValue();
+        modbusReadScript.setSource(o->stringValue());
       }
+      */
     }
     return err;
   }
@@ -830,8 +778,6 @@ public:
     LOG(LOG_NOTICE, "initializing littlevGL");
     LvGL::lvgl().init(getOption("mousecursor"));
     // create app UI
-    // - install app specific script functions
-    ui.uiScriptContext.registerFunctionHandler(boost::bind(&P44mbcd::uiFunctionHandler, this, _1, _2, _3, _4));
     // - init display
     ui.initForDisplay(lv_disp_get_default());
     // - load display config
@@ -854,14 +800,14 @@ public:
       if (Error::isOK(err)) {
         // check for global UI script
         JsonObjectPtr o;
-        if (uiConfig->get("initscript", o)) {
-          initScript = o->stringValue();
+        if (uiConfig->get("mainscript", o)) {
+          mainScript.setSource(o->stringValue());
         }
         if (uiConfig->get("activitytimeoutscript", o)) {
-          activityTimeoutScript = o->stringValue();
+          activityTimeoutScript.setSource(o->stringValue());
         }
         if (uiConfig->get("activationscript", o)) {
-          activationScript = o->stringValue();
+          activationScript.setSource(o->stringValue());
         }
         // read UI config
         err = ui.setConfig(uiConfig);
@@ -898,11 +844,83 @@ public:
 };
 
 
+// MARK: - script functions
+
+// activitytimeout(seconds)
+static const BuiltInArgDesc activitytimeout_args[] = { { numeric } };
+static const size_t activitytimeout_numargs = sizeof(activitytimeout_args)/sizeof(BuiltInArgDesc);
+static void activitytimeout_func(BuiltinFunctionContextPtr f)
+{
+  P44mbcd& p44mbcd = static_cast<P44mbcdLookup*>(f->funcObj()->getMemberLookup())->mP44mbcd;
+  p44mbcd.activityTimeout = f->arg(0)->doubleValue()*Second;
+  f->finish();
+}
+
+
+// backlight(active, [standby, timeout [, fadetime]])
+static const BuiltInArgDesc backlight_args[] = { { numeric }, { numeric|optionalarg }, { numeric|optionalarg }, { numeric|optionalarg } };
+static const size_t backlight_numargs = sizeof(backlight_args)/sizeof(BuiltInArgDesc);
+static void backlight_func(BuiltinFunctionContextPtr f)
+{
+  P44mbcd& p44mbcd = static_cast<P44mbcdLookup*>(f->funcObj()->getMemberLookup())->mP44mbcd;
+  if (p44mbcd.backlight) {
+    p44mbcd.backlight->setActiveBrightness(f->arg(0)->doubleValue());
+    if (f->numArgs()>=3) {
+      p44mbcd.backlight->setStandbyBrightness(f->arg(1)->doubleValue());
+      MLMicroSeconds bt = f->arg(2)->doubleValue()*Second;
+      if (bt!=p44mbcd.backlightTimeout) {
+        p44mbcd.backlightTimeout = bt;
+        if (p44mbcd.backlightTimeout<0) {
+          p44mbcd.backlight->setActive(false); // force standby brightness
+          p44mbcd.backlight->suppressNextActivation(); // avoid next activation
+        }
+      }
+      if (f->numArgs()>=4) {
+        p44mbcd.backlight->setFadeTime(f->arg(3)->doubleValue()*Second);
+      }
+    }
+  }
+  f->finish();
+}
+
+
+// temperature()
+static void temperature_func(BuiltinFunctionContextPtr f)
+{
+  P44mbcd& p44mbcd = static_cast<P44mbcdLookup*>(f->funcObj()->getMemberLookup())->mP44mbcd;
+  f->finish(new NumericValue(p44mbcd.getTemp()));
+}
+
+
+// exit(exitcode)
+static const BuiltInArgDesc exit_args[] = { { numeric } };
+static const size_t exit_numargs = sizeof(exit_args)/sizeof(BuiltInArgDesc);
+static void exit_func(BuiltinFunctionContextPtr f)
+{
+  P44mbcd& p44mbcd = static_cast<P44mbcdLookup*>(f->funcObj()->getMemberLookup())->mP44mbcd;
+  p44mbcd.terminateApp(f->arg(0)->intValue());
+  f->finish();
+}
 
 
 
+static const BuiltinMemberDescriptor p44mbcdGlobals[] = {
+  { "activitytimeout", executable|null, activitytimeout_numargs, activitytimeout_args, &activitytimeout_func },
+  { "backlight", executable|null, backlight_numargs, backlight_args, &backlight_func },
+  { "temperature", executable|numeric, 0, NULL, &temperature_func },
+  { "exit", executable|null, exit_numargs, exit_args, &exit_func },
+  { NULL } // terminator
+};
 
 
+P44mbcdLookup::P44mbcdLookup(P44mbcd &aP44mbcd) :
+  inherited(p44mbcdGlobals),
+  mP44mbcd(aP44mbcd)
+{
+}
+
+
+// MARK: - main
 
 int main(int argc, char **argv)
 {
@@ -918,4 +936,3 @@ int main(int argc, char **argv)
   delete application;
   return status;
 }
-
