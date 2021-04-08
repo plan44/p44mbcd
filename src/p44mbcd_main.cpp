@@ -33,25 +33,24 @@
 
 #define P44_EXIT_FIRMWAREUPGRADE 3 // request firmware upgrade, platform restart
 
-#define UICONFIG_FILE_NAME "uiconfig.json"
+#define MAINSCRIPT_FILE_NAME "mainscript.txt"
 #define COMMCONFIG_FILE_NAME "commconfig"
 
 #define FATAL_ERROR_IMG "errorscreen.png"
 
 #define FILENO_FIRMWARE 1
 #define FILENO_LOG 90
-#define FILENO_UICONFIG 100
+#define FILENO_MAINSCRIPT 100
 #define FILENO_TEMPCOMMCONFIG 101
 #define FILENO_COMMCONFIG 102
 #define FILENO_IMAGES_BASE 200
 #define MAX_IMAGES 100
+#define FILENO_JSON_BASE 300
+#define MAX_JSON 100
 
 
 #define REGISTER_FIRST 101
 #define REGISTER_LAST 299
-
-//#define TEMPSENS_REGISTER 124
-//#define TEMPSENS_POLLINTERVAL (15*Second)
 
 using namespace p44;
 using namespace P44Script;
@@ -216,7 +215,8 @@ class P44mbcd : public CmdLineApp
   #endif
 
   // modbus
-  ModbusSlave modBus;
+  ModbusSlavePtr modBusSlave; ///< modbus slave
+  ModbusMasterPtr modBusMaster; ///< modbus master
   DigitalIoPtr modbusRxEnable; ///< if set, modbus receive is enabled
 
   // app
@@ -225,16 +225,11 @@ class P44mbcd : public CmdLineApp
 
   // scripting
   ScriptSource mainScript;
-  ScriptSource activityTimeoutScript;
-  ScriptSource activationScript;
 
   MLTicket exitTicket; ///< terminate delay
 
   // temperature sensor
   AnalogIoPtr tempSens; ///< the temperature sensor input
-  #if TEMPSENS_POLLINTERVAL
-  MLTicket tempSensTicket; ///< temperature sensor polling
-  #endif
 
 public:
 
@@ -245,19 +240,14 @@ public:
   MLMicroSeconds activityTimeout; ///< inactivity time that triggers activityTimeoutScript
 
   P44mbcd() :
-    mainScript(sourcecode+regular, "main"), // only init script may have declarations
-    activityTimeoutScript(scriptbody+regular, "activityTimeout"),
-    activationScript(scriptbody+regular, "activation")
+    mainScript(sourcecode+regular, "main") // only init script may have declarations
   {
     ui.isMemberVariable();
-    modBus.isMemberVariable();
     active = true;
     activityTimeout = Never;
     backlightTimeout = Never;
     // let all scripts run in the same (ui) context
     mainScript.setSharedMainContext(ui.getScriptMainContext());
-    activityTimeoutScript.setSharedMainContext(ui.getScriptMainContext());
-    activationScript.setSharedMainContext(ui.getScriptMainContext());
   }
 
   virtual int main(int argc, char **argv)
@@ -270,7 +260,7 @@ public:
       { 0  , "rs485txdelay",    true,  "delay;delay of tx enable signal in uS" },
       { 0  , "rs485rxenable",   true,  "pinspec;a digital output pin specification for RX input enable" },
       { 0  , "bytetime",        true,  "time;custom time per byte in nS" },
-      { 0  , "slave",           true,  "slave;use this slave by default" },
+      { 0  , "slave",           true,  "slave;use this slave by default (0: act as master)" },
       { 0  , "slaveswitch",     true,  "gpiono:numgpios;use GPIOs for slave address DIP switch, first GPIO=A0" },
       { 0  , "debugmodbus",     false, "enable libmodbus debug messages to stderr" },
       { 0  , "backlight",       true,  "pinspec;analog output for LCD backlight control" },
@@ -358,12 +348,14 @@ public:
           // modbus commands
           string cmd = o->stringValue();
           if (cmd=="debug_on") {
-            modBus.setDebug(true);
+            if (modBusSlave) modBusSlave->setDebug(true);
+            if (modBusMaster) modBusMaster->setDebug(true);
           }
           else if (cmd=="debug_off") {
-            modBus.setDebug(false);
+            if (modBusSlave) modBusSlave->setDebug(false);
+            if (modBusMaster) modBusMaster->setDebug(false);
           }
-          else if (cmd=="read_registers") {
+          else if (modBusSlave && cmd=="read_registers") {
             int reg = -1;
             int numReg = 1;
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
@@ -374,11 +366,11 @@ public:
             else {
               uint16_t tab_reg[MAX_REG];
               for (int i=0; i<numReg; i++) {
-                result->arrayAppend(JsonObject::newInt32(modBus.getReg(reg+i, false)));
+                result->arrayAppend(JsonObject::newInt32(modBusSlave->getReg(reg+i, false)));
               }
             }
           }
-          else if (cmd=="write_registers") {
+          else if (modBusSlave && cmd=="write_registers") {
             int reg = -1;
             if (aJsonRequest->get("reg", o)) reg = o->int32Value();
             int numReg = 0;
@@ -391,12 +383,12 @@ public:
                 if (o->isType(json_type_array)) {
                   // multiple
                   for(int i=0; i<o->arrayLength(); i++) {
-                    modBus.setReg(reg+i, false, o->arrayGet(i)->int32Value());
+                    modBusSlave->setReg(reg+i, false, o->arrayGet(i)->int32Value());
                   }
                 }
                 else {
                   // single
-                  modBus.setReg(reg, false, o->int32Value());
+                  modBusSlave->setReg(reg, false, o->int32Value());
                 }
               }
               else {
@@ -433,6 +425,7 @@ public:
 
   virtual void initialize()
   {
+    ErrorPtr err;
     LOG(LOG_NOTICE, "p44mbcd: initialize");
     #if ENABLE_UBUS
     // start ubus API, if we have it
@@ -440,31 +433,7 @@ public:
       ubusApiServer->startServer();
     }
     #endif
-    // init modbus
-    string mbconn;
-    if (!getStringOption("connection", mbconn)) {
-      terminateAppWith(TextError::err("must specify --connection"));
-      return;
-    }
-    // - rx enable, static for now
-    string txen;
-    getStringOption("rs485txenable", txen);
-    int txDelayUs = Never;
-    getIntOption("rs485txdelay", txDelayUs);
-    int byteTimeNs = 0;
-    getIntOption("bytetime", byteTimeNs);
-    ErrorPtr err = modBus.setConnectionSpecification(
-      mbconn.c_str(),
-      DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
-      txen.c_str(), txDelayUs,
-      getOption("rs485rxenable"), // can be NULL if there is no separate rx enable
-      byteTimeNs
-    );
-    if (Error::notOK(err)) {
-      terminateAppWith(err->withPrefix("Invalid modbus connection: "));
-      return;
-    }
-    // slave address
+    // slave address (or master when address==255)
     int slave = 1;
     // - can be sampled from GPIOs
     string dipcfg;
@@ -481,80 +450,141 @@ public:
     }
     // - can be overridden
     getIntOption("slave", slave);
-    modBus.setSlaveAddress(slave);
-    modBus.setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
-    modBus.setDebug(getOption("debugmodbus"));
-    // registers
-    modBus.setRegisterModel(
-      0, 0, // coils
-      0, 0, // input bits
-      REGISTER_FIRST, REGISTER_LAST-REGISTER_FIRST+1, // registers
-      0, 0 // input registers
-    );
-    // Files
-    // - firmware
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_FIRMWARE,
-      9, // max segs
-      1, // single file
-      true, // p44 header
-      "fwimg",
-      false, // R/W
-      tempPath("final_") // write to temp, then copy to data path
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFWReceivedHandler, this, _1, _2, _3));
-    // - log
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_LOG,
-      9, // max segs
-      1, // single file
-      true, // p44 header
-      "/var/log/p44mbcd/current",
-      true // read only
-    )));
-    // - json config
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_UICONFIG,
-      1, // max segs
-      1, // single file
-      true, // p44 header
-      UICONFIG_FILE_NAME,
-      false, // R/W
-      dataPath()+"/" // write to temp, then copy to data path
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
-    // - communication (daemon startup) config
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_TEMPCOMMCONFIG,
-      1, // max segs
-      1, // single file
-      true, // p44 header
-      COMMCONFIG_FILE_NAME,
-      false, // R/W
-      tempPath()+"/" // keep in temp
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_COMMCONFIG,
-      1, // max segs
-      1, // single file
-      true, // p44 header
-      COMMCONFIG_FILE_NAME,
-      false, // R/W
-      dataPath()+"/" // write to temp, then copy to data path
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
-    // - UI images
-    modBus.addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
-      FILENO_IMAGES_BASE,
-      1, // max segs
-      MAX_IMAGES, // number of files allowed
-      true, // p44 header
-      "image%03d.png",
-      false, // R/W
-      dataPath()+"/" // write to temp, then copy to data path
-    )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
-    // connect
-    err = modBus.connect();
-    if (Error::notOK(err)) {
-      terminateAppWith(err->withPrefix("Failed to start modbus slave server: "));
+    // General modbus connection params
+    string mbconn;
+    if (!getStringOption("connection", mbconn)) {
+      terminateAppWith(TextError::err("must specify --connection"));
       return;
+    }
+    string txen;
+    getStringOption("rs485txenable", txen);
+    int txDelayUs = Never;
+    getIntOption("rs485txdelay", txDelayUs);
+    int byteTimeNs = 0;
+    getIntOption("bytetime", byteTimeNs);
+    string rxen;
+    getStringOption("rs485rxenable", rxen);
+    bool modbusDebug = getOption("debugmodbus");
+    // Master or slave
+    if (slave!=0) {
+      // we are a modbus slave
+      modBusSlave = ModbusSlavePtr(new ModbusSlave);
+      err = modBusSlave->setConnectionSpecification(
+        mbconn.c_str(),
+        DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
+        txen.c_str(), txDelayUs,
+        rxen.empty() ? NULL : rxen.c_str(), // NULL if there is no separate rx enable
+        byteTimeNs
+      );
+      if (Error::notOK(err)) {
+        terminateAppWith(err->withPrefix("Invalid modbus connection: "));
+        return;
+      }
+      modBusSlave->setSlaveAddress(slave);
+      modBusSlave->setSlaveId(string_format("p44mbc %s %06llX", version().c_str(), macAddress()));
+      modBusSlave->setDebug(modbusDebug);
+      // registers
+      modBusSlave->setRegisterModel(
+        0, 0, // coils
+        0, 0, // input bits
+        REGISTER_FIRST, REGISTER_LAST-REGISTER_FIRST+1, // registers
+        0, 0 // input registers
+      );
+      // Files
+      // - firmware
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_FIRMWARE,
+        9, // max segs
+        1, // single file
+        true, // p44 header
+        "fwimg",
+        false, // R/W
+        tempPath("final_") // write to temp, then copy to data path
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFWReceivedHandler, this, _1, _2, _3));
+      // - log
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_LOG,
+        9, // max segs
+        1, // single file
+        true, // p44 header
+        "/var/log/p44mbcd/current",
+        true // read only
+      )));
+      // - json config
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_MAINSCRIPT,
+        1, // max segs
+        1, // single file
+        true, // p44 header
+        MAINSCRIPT_FILE_NAME,
+        false, // R/W
+        dataPath()+"/" // write to temp, then copy to data path
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+      // - communication (daemon startup) config
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_TEMPCOMMCONFIG,
+        1, // max segs
+        1, // single file
+        true, // p44 header
+        COMMCONFIG_FILE_NAME,
+        false, // R/W
+        tempPath()+"/" // keep in temp
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_COMMCONFIG,
+        1, // max segs
+        1, // single file
+        true, // p44 header
+        COMMCONFIG_FILE_NAME,
+        false, // R/W
+        dataPath()+"/" // write to temp, then copy to data path
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+      // - UI images
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_IMAGES_BASE,
+        1, // max segs
+        MAX_IMAGES, // number of files allowed
+        true, // p44 header
+        "image%03d.png",
+        false, // R/W
+        dataPath()+"/" // write to temp, then copy to data path
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+      // - JSON files
+      modBusSlave->addFileHandler(ModbusFileHandlerPtr(new ModbusFileHandler(
+        FILENO_JSON_BASE,
+        1, // max segs
+        MAX_JSON, // number of files allowed
+        true, // p44 header
+        "data%03d.json",
+        false, // R/W
+        dataPath()+"/" // write to temp, then copy to data path
+      )))->setFileWriteCompleteCB(boost::bind(&P44mbcd::modbusFileReceivedHandler, this, _1, _2, _3));
+      // connect
+      err = modBusSlave->connect();
+      if (Error::notOK(err)) {
+        terminateAppWith(err->withPrefix("Failed to start modbus slave server: "));
+        return;
+      }
+      // - modbus slave scripting functions
+      StandardScriptingDomain::sharedDomain().registerMember("modbus", modBusSlave->representingScriptObj());
+    }
+    else {
+      // Modbus master
+      modBusMaster = ModbusMasterPtr(new ModbusMaster);
+      err = modBusMaster->setConnectionSpecification(
+        mbconn.c_str(),
+        DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
+        txen.c_str(), txDelayUs,
+        rxen.empty() ? NULL : rxen.c_str(), // NULL if there is no separate rx enable
+        byteTimeNs
+      );
+      if (Error::notOK(err)) {
+        terminateAppWith(err->withPrefix("Invalid modbus connection: "));
+        return;
+      }
+      modBusMaster->setDebug(modbusDebug);
+      // - modbus master scripting functions
+      StandardScriptingDomain::sharedDomain().registerMember("modbus", modBusMaster->representingScriptObj());
     }
     // LCD backlight
     string blspec = "missing";
@@ -565,24 +595,53 @@ public:
     string tsspec = "missing";
     if (getStringOption("tempsensor", tsspec)) {
       tempSens = AnalogIoPtr(new AnalogIo(tsspec.c_str(), false, 0));
-      #if TEMPSENS_POLLINTERVAL
-      if (tempSens) {
-        tempSensTicket.executeOnce(boost::bind(&P44mbcd::tempSensPoll, this, _1), 1*Second);
-      }
-      #endif
     }
     // install app specific global predefined objects
     // - app functions
     StandardScriptingDomain::sharedDomain().registerMemberLookup(new P44mbcdLookup(*this));
     // - LVGL
     StandardScriptingDomain::sharedDomain().registerMember("ui", ui.representingScriptObj());
-    // - modbus slave
-    StandardScriptingDomain::sharedDomain().registerMember("modbus", modBus.representingScriptObj());
     // start littlevGL
     initLvgl();
     LvGL::lvgl().setTaskCallback(boost::bind(&P44mbcd::taskCallBack, this));
-    // start main script
-    mainScript.run(inherit);
+    // load and start main script
+    string code;
+    err = string_fromfile(dataPath(MAINSCRIPT_FILE_NAME), code);
+    if (Error::notOK(err)) {
+      err = string_fromfile(resourcePath(MAINSCRIPT_FILE_NAME), code);
+      if (Error::notOK(err)) {
+        err->prefixMessage("Cannot open '" MAINSCRIPT_FILE_NAME "': ");
+      }
+    }
+    if (Error::isOK(err)) {
+      mainScript.setSource(code);
+      ScriptObjPtr res = mainScript.syntaxcheck();
+      if (res && res->isErr()) {
+        err = res->errorValue();
+        err->prefixMessage("Syntax Error in mainscript: ");
+      }
+      else {
+        LOG(LOG_NOTICE, "Starting mainscript");
+        mainScript.run(inherit, boost::bind(&P44mbcd::mainScriptDone, this, _1));
+      }
+    }
+    // display error
+    if (Error::notOK(err)) {
+      LOG(LOG_ERR, "Startup error: %s", Error::text(err));
+      fatalErrorScreen(string_format("Startup error: %s", Error::text(err)));
+    }
+  }
+
+
+  void mainScriptDone(ScriptObjPtr aResult)
+  {
+    if (aResult && aResult->isErr()) {
+      LOG(LOG_ERR, "mainscript failed: %s", aResult->errorValue()->text());
+      fatalErrorScreen(string_format("Mainscript error: %s", aResult->errorValue()->text()));
+    }
+    else {
+      LOG(LOG_NOTICE, "mainscript terminated with result: %s", ScriptObj::describe(aResult).c_str());
+    }
   }
 
 
@@ -624,15 +683,6 @@ public:
     return temp;
   }
 
-  #if TEMPSENS_POLLINTERVAL
-  void tempSensPoll(MLTimer &aTimer)
-  {
-    double temp = getTemp();
-    modBus.setReg(TEMPSENS_REGISTER, false, temp*10);
-    MainLoop::currentMainLoop().retriggerTimer(aTimer, TEMPSENS_POLLINTERVAL);
-  }
-  #endif
-
 
   void taskCallBack()
   {
@@ -648,13 +698,13 @@ public:
     if (activityTimeout && inactivetime>activityTimeout) {
       if (active) {
         active = false;
-        ui.runEventScript(LV_EVENT_REFRESH, activityTimeoutScript);
+        ui.uiActivation(false);
       }
     }
     else {
       if (!active) {
         active = true;
-        ui.runEventScript(LV_EVENT_REFRESH, activationScript);
+        ui.uiActivation(true);
       }
     }
   }
@@ -690,8 +740,8 @@ public:
       return;
     }
     LOG(LOG_NOTICE, "received file No %d, now stored in %s", aFileNo, aFinalPath.c_str());
-    if (aFileNo==FILENO_UICONFIG) {
-      LOG(LOG_NOTICE, "new uiconfig received -> restart daemon");
+    if (aFileNo==FILENO_MAINSCRIPT) {
+      LOG(LOG_NOTICE, "new mainscript received -> restart daemon");
       exitTicket.executeOnce(boost::bind(&P44mbcd::delayedTerminate, this, EXIT_SUCCESS), 2*Second);
       return;
     }
@@ -726,9 +776,10 @@ public:
   }
 
 
+  /*
   ErrorPtr modbusValueAccessHandler(int aAddress, bool aBit, bool aInput, bool aWrite)
   {
-    uint16_t val = modBus.getValue(aAddress, aBit, aInput);
+    uint16_t val = modBusSlave->getValue(aAddress, aBit, aInput);
     LOG(LOG_NOTICE,
       "%s%s %d accessed for %s, value = %d (0x%04X)",
       aInput ? "Readonly " : "",
@@ -737,37 +788,9 @@ public:
       aWrite ? "write" : "read",
       val, val
     );
-    // report access
-    /*
-    P44ObjPtr ctx = P44ObjPtr(new GlobScriptContext(aAddress, aBit, aInput));
-    if (aWrite) {
-      ui.queueGlobalScript(modbusWriteScript, ctx);
-    }
-    else {
-      ui.queueGlobalScript(modbusReadScript, ctx);
-    }
-    */
     return ErrorPtr();
   }
-
-
-  ErrorPtr processModbusConfig(JsonObjectPtr aConfig)
-  {
-    ErrorPtr err;
-    JsonObjectPtr mbCfg = aConfig->get("modbus");
-    if (mbCfg) {
-      /*
-      JsonObjectPtr o;
-      if (mbCfg->get("writehandler", o)) {
-        modbusWriteScript.setSource(o->stringValue());
-      }
-      if (mbCfg->get("readhandler", o)) {
-        modbusReadScript.setSource(o->stringValue());
-      }
-      */
-    }
-    return err;
-  }
+  */
 
 
   // MARK: - littlevGL
@@ -780,43 +803,6 @@ public:
     // create app UI
     // - init display
     ui.initForDisplay(lv_disp_get_default());
-    // - load display config
-    configUi();
-  }
-
-
-  void configUi()
-  {
-    ErrorPtr err;
-    JsonObjectPtr uiConfig = JsonObject::objFromFile(dataPath(UICONFIG_FILE_NAME).c_str(), &err, true);
-    if (Error::isError(err, SysError::domain(), ENOENT)) {
-      // try resources
-      err.reset();
-      uiConfig = JsonObject::objFromFile(resourcePath(UICONFIG_FILE_NAME).c_str(), &err, true);
-    }
-    if (uiConfig && Error::isOK(err)) {
-      LOG(LOG_INFO, "JSON read: %s", uiConfig->json_c_str());
-      err = processModbusConfig(uiConfig);
-      if (Error::isOK(err)) {
-        // check for global UI script
-        JsonObjectPtr o;
-        if (uiConfig->get("mainscript", o)) {
-          mainScript.setSource(o->stringValue());
-        }
-        if (uiConfig->get("activitytimeoutscript", o)) {
-          activityTimeoutScript.setSource(o->stringValue());
-        }
-        if (uiConfig->get("activationscript", o)) {
-          activationScript.setSource(o->stringValue());
-        }
-        // read UI config
-        err = ui.setConfig(uiConfig);
-      }
-    }
-    if (Error::notOK(err)) {
-      LOG(LOG_ERR, "Failed creating UI from config: %s", Error::text(err));
-      fatalErrorScreen(string_format("UI config error: %s", Error::text(err)));
-    }
   }
 
 
@@ -888,7 +874,12 @@ static void backlight_func(BuiltinFunctionContextPtr f)
 static void temperature_func(BuiltinFunctionContextPtr f)
 {
   P44mbcd& p44mbcd = static_cast<P44mbcdLookup*>(f->funcObj()->getMemberLookup())->mP44mbcd;
-  f->finish(new NumericValue(p44mbcd.getTemp()));
+  double temp = p44mbcd.getTemp();
+  if (temp>-999) {
+    f->finish(new NumericValue(temp));
+    return;
+  }
+  f->finish(new AnnotatedNullValue("no temperature sensor"));
 }
 
 

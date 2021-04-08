@@ -266,6 +266,8 @@ p44mbcd_SOURCES = \
   src/p44utils/timeutils.hpp \
   src/p44utils/utils.cpp \
   src/p44utils/utils.hpp \
+  src/p44utils/extutils.cpp \
+  src/p44utils/extutils.hpp \
   src/p44utils/thirdparty/civetweb/civetweb.c \
   src/p44utils/thirdparty/civetweb/civetweb.h \
   src/p44utils/thirdparty/civetweb/handle_form.inl \
@@ -298,7 +300,7 @@ endif
 # main
 
 p44mbutil_LDADD = ${LIBMODBUS_LIBS} ${PTHREAD_LIBS}
-p44mbutil_EXTRACFLAGS = -D NO_SSL_DL=1
+p44mbutil_EXTRACFLAGS = -D NO_SSL_DL=1 -D ENABLE_P44SCRIPT=0 -D ENABLE_JSON_APPLICATION=0
 
 
 p44mbutil_CPPFLAGS = \

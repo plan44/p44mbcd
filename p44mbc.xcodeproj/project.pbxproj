@@ -10,7 +10,6 @@
 		ED12CF2923D88A4D00422DF0 /* lv_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ED12CF2823D88A4D00422DF0 /* lv_debug.c */; };
 		ED12CF2C23D88C9300422DF0 /* lv_printf.c in Sources */ = {isa = PBXBuildFile; fileRef = ED12CF2B23D88C9300422DF0 /* lv_printf.c */; };
 		ED16C41D22B25F14003F4276 /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF12276F0C3009B43A8 /* monitor.c */; };
-		ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; };
 		ED16C42022B27591003F4276 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ED2461AB189BBB3000464D42 /* fnv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDCFE85E17203E47001D35F3 /* fnv.cpp */; };
 		ED25C41F17EC59D1005B115F /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED6D7BEE1716EAA6005DED18 /* logger.cpp */; };
@@ -138,6 +137,7 @@
 		ED9D3B062276F0C4009B43A8 /* fbdev.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AF42276F0C3009B43A8 /* fbdev.c */; };
 		ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */ = {isa = PBXBuildFile; fileRef = ED9D3AFC2276F0C3009B43A8 /* win_drv.c */; };
 		ED9D3C742279D6E1009B43A8 /* serialcomm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB284481733B59500EAE5DE /* serialcomm.cpp */; };
+		EDAF1B402624D4CD0026CE11 /* extutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDEAEBD126246A5E00E02E78 /* extutils.cpp */; };
 		EDB5B3F523226DBE00A0C84D /* timeutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3EC23226DBA00A0C84D /* timeutils.cpp */; };
 		EDB5B3F623226DBE00A0C84D /* analogio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3ED23226DBB00A0C84D /* analogio.cpp */; };
 		EDB5B3F823226DBE00A0C84D /* pwm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDB5B3F023226DBC00A0C84D /* pwm.cpp */; };
@@ -151,6 +151,8 @@
 		EDEAEBCC261CD57700E02E78 /* p44script.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDEAEBA7261605DF00E02E78 /* p44script.cpp */; };
 		EDEAEBCF261E223000E02E78 /* libcrypto.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEAEBCD261E223000E02E78 /* libcrypto.1.1.dylib */; };
 		EDEAEBD0261E223000E02E78 /* libssl.1.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEAEBCE261E223000E02E78 /* libssl.1.1.dylib */; };
+		EDEAEBD3262472F400E02E78 /* extutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDEAEBD126246A5E00E02E78 /* extutils.cpp */; };
+		EDEAEBD72624AEDE00E02E78 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED16C41E22B27590003F4276 /* SDL2.framework */; };
 		EDF1AF261D0D98D000302F77 /* spi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDF1AF241D0D98D000302F77 /* spi.cpp */; };
 		EDF356B722DDC71A00C4110C /* lv_disp.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356B622DDC71A00C4110C /* lv_disp.c */; };
 		EDF356BE22DDC78300C4110C /* lv_draw_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = EDF356B822DDC78300C4110C /* lv_draw_basic.c */; };
@@ -525,6 +527,8 @@
 		EDEAEBA8261605DF00E02E78 /* p44script.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = p44script.hpp; sourceTree = "<group>"; };
 		EDEAEBCD261E223000E02E78 /* libcrypto.1.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.1.1.dylib; path = "../../../../../../usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.1.1.dylib"; sourceTree = "<group>"; };
 		EDEAEBCE261E223000E02E78 /* libssl.1.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.1.1.dylib; path = "../../../../../../usr/local/Cellar/openssl@1.1/1.1.1h/lib/libssl.1.1.dylib"; sourceTree = "<group>"; };
+		EDEAEBD126246A5E00E02E78 /* extutils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = extutils.cpp; sourceTree = "<group>"; };
+		EDEAEBD226246A5E00E02E78 /* extutils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = extutils.hpp; sourceTree = "<group>"; };
 		EDF1AF241D0D98D000302F77 /* spi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spi.cpp; sourceTree = "<group>"; };
 		EDF1AF251D0D98D000302F77 /* spi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spi.hpp; sourceTree = "<group>"; };
 		EDF356B522DDC71A00C4110C /* lv_disp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lv_disp.h; sourceTree = "<group>"; };
@@ -560,9 +564,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ED16C41F22B27591003F4276 /* SDL2.framework in Frameworks */,
 				EDEAEBCF261E223000E02E78 /* libcrypto.1.1.dylib in Frameworks */,
 				EDEAEBD0261E223000E02E78 /* libssl.1.1.dylib in Frameworks */,
+				EDEAEBD72624AEDE00E02E78 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,6 +596,8 @@
 				ED369997178D5BE300376405 /* digitalio.hpp */,
 				ED026D03171E94D700AD5FD6 /* error.cpp */,
 				ED026D04171E94D700AD5FD6 /* error.hpp */,
+				EDEAEBD126246A5E00E02E78 /* extutils.cpp */,
+				EDEAEBD226246A5E00E02E78 /* extutils.hpp */,
 				EDB5BC1917B50E79004DB38D /* fdcomm.cpp */,
 				EDB5BC1A17B50E79004DB38D /* fdcomm.hpp */,
 				EDCFE85E17203E47001D35F3 /* fnv.cpp */,
@@ -1277,6 +1283,7 @@
 				ED9D3B092276F0C4009B43A8 /* win_drv.c in Sources */,
 				ED16C41D22B25F14003F4276 /* monitor.c in Sources */,
 				ED9D3AB92276F0A5009B43A8 /* lv_label.c in Sources */,
+				EDEAEBD3262472F400E02E78 /* extutils.cpp in Sources */,
 				ED9D3AC32276F0A5009B43A8 /* lv_tileview.c in Sources */,
 				ED9D3A872276F0A5009B43A8 /* lv_math.c in Sources */,
 				ED9D3AD32276F0A5009B43A8 /* lv_mbox.c in Sources */,
@@ -1348,6 +1355,7 @@
 				ED5A058022CE26BF0047D746 /* utils.cpp in Sources */,
 				ED5A058222CE26BF0047D746 /* p44obj.cpp in Sources */,
 				ED5A058B22CE26BF0047D746 /* consolekey.cpp in Sources */,
+				EDAF1B402624D4CD0026CE11 /* extutils.cpp in Sources */,
 				ED5A058D22CE26BF0047D746 /* gpio.cpp in Sources */,
 				ED5A058E22CE26BF0047D746 /* serialcomm.cpp in Sources */,
 				ED5A059622CE26BF0047D746 /* crc32.cpp in Sources */,
@@ -1471,6 +1479,8 @@
 					"$(inherited)",
 					"EMBEDDED_LIBMODBUS=1",
 					"ENABLE_MODBUS=1",
+					"ENABLE_P44SCRIPT=0",
+					"ENABLE_JSON_APPLICATION=0",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1505,6 +1515,8 @@
 					"$(inherited)",
 					"EMBEDDED_LIBMODBUS=1",
 					"ENABLE_MODBUS=1",
+					"ENABLE_P44SCRIPT=0",
+					"ENABLE_JSON_APPLICATION=0",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
