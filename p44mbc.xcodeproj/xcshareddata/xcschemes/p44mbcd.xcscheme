@@ -74,7 +74,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--connection 127.0.0.1:8765"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--tempsensor sim.temp"
@@ -83,6 +83,10 @@
          <CommandLineArgument
             argument = "--connection /dev/tty.usbserial-AL062E2R:115200,8,N,1"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--connection /dev/tty.usbserial-AL062E2R:19200,N,1"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--rs485rxenable missing"
