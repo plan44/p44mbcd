@@ -602,6 +602,7 @@ public:
     // - LVGL
     StandardScriptingDomain::sharedDomain().registerMember("ui", ui.representingScriptObj());
     // start littlevGL
+    ui.setResourceLoadOptions(true, "");
     initLvgl();
     LvGL::lvgl().setTaskCallback(boost::bind(&P44mbcd::taskCallBack, this));
     // load and start main script
