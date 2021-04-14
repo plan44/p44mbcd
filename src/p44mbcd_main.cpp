@@ -678,7 +678,7 @@ public:
       //  RPT = (-5867520000+930000*ADC)/(-4883456-31*ADC)
       double res = (-5867520000.0+930000.0*adc)/(-4883456.0-31.0*adc);
       // convert to temperature
-      double temp = pt1000_Ohms_to_degreeC(res);
+      temp = pt1000_Ohms_to_degreeC(res);
       LOG(LOG_INFO, "tempsens raw value = %.2f -> resistance = %.2f -> temperature = %.2f", adc, res, temp);
     }
     return temp;
