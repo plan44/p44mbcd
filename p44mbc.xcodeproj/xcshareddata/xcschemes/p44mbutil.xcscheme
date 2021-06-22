@@ -61,6 +61,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--connection /dev/tty.usbserial-AL062E2R:115200,8,N,1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--connection /dev/cu.usbserial-AL062E2R:19200,8,N,1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -69,7 +73,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--debugmodbus"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--slave 1"
@@ -85,6 +89,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "monitor 110 200"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "read 110 20"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -101,7 +109,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l 7"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
