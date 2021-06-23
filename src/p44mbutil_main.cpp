@@ -45,12 +45,16 @@ public:
       "  write <addr> <value>                  : write value to modbus register/bit\n"
       "  monitor <addr> [<interval in ms>]     : monitor (constantly poll) register/bit, default interval = 200mS\n"
       "  readinfo                              : read slave info\n"
+      "  flush                                 : just flush the communication channel and display number of bytes flushed\n"
       "  scan [<from> <to>]                    : scan for slaves on the bus by querying slave info\n"
       "  sendfile <path> <fileno> [<dest>...]  : send file to destination (<dest> can be ALL, idMatch or slave addresses)\n"
       "  getfile <path> <fileno>               : get file from slave\n";
     const CmdLineOptionDescriptor options[] = {
       { 'i', "input",           false, "read input-only register / bit" },
       { 'b', "bit",             false, "access bit (not register)" },
+      { 0  , "linkrecovery",    false, "enable link level modbus recovery" },
+      { 0  , "protocolrecovery",false, "enable protocol level modbus recovery" },
+      { 0  , "bit",             false, "access bit (not register)" },
       { 0  , "verify",          false, "verify write access by reading value back immediately" },
       { 'c', "connection",      true,  "connspec;serial interface for RTU or IP address for TCP (/device or IP[:port])" },
       { 0  , "rs485txenable",   true,  "pinspec;a digital output pin specification for TX driver enable, 'RTS' or 'RS232'" },
@@ -89,12 +93,16 @@ public:
     getIntOption("rs485txdelay", txDelayUs);
     int byteTimeNs = 0;
     getIntOption("bytetime", byteTimeNs);
+    int recoveryMode = MODBUS_ERROR_RECOVERY_NONE;
+    if (getOption("linkrecovery")) recoveryMode |= MODBUS_ERROR_RECOVERY_LINK;
+    if (getOption("protocolrecovery")) recoveryMode |= MODBUS_ERROR_RECOVERY_PROTOCOL;
     ErrorPtr err = modBus.setConnectionSpecification(
       mbconn.c_str(),
       DEFAULT_MODBUS_IP_PORT, DEFAULT_MODBUS_RTU_PARAMS,
       txen.c_str(), txDelayUs,
       getOption("rs485rxenable"), // can be NULL if there is no separate rx enable
-      byteTimeNs
+      byteTimeNs,
+      (modbus_error_recovery_mode)recoveryMode
     );
     if (Error::notOK(err)) {
       terminateAppWith(err->withPrefix("Invalid modbus connection: "));
@@ -273,6 +281,13 @@ public:
       int fileNo;
       if (!getIntArgument(2, fileNo) || fileNo<1 || fileNo>0xFFFF) return TextError::err("missing or invalid file number");
       return modBus.receiveFile(path, fileNo, !getOption("stdmodbusfiles"));
+    }
+    else if (cmd=="flush") {
+      modBus.connect(false); // prevent implicit flush
+      int f = modBus.flush(); // now explicitly flush
+      printf("Flushed %d bytes\n", f);
+      modBus.close();
+      return ErrorPtr();
     }
     return TextError::err("unknown command '%s'", cmd.c_str());
   }
